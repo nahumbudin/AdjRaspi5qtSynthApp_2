@@ -1,0 +1,185 @@
+/**
+*	@file		MainWindow.h
+*	@author		Nahum Budin
+*	@date		22-Sep-2025
+*	@version	1.1 
+*					1. Refactoring rename modules to instruments
+*	
+*	History:
+*			Version	1.0		8-May-2024
+*
+*	@brief		Application Main Window that hosts the modules pannels.
+*/
+
+#pragma once
+
+#include <QMainWindow>
+#include <QActionGroup>
+#include <QAction>
+#include <QDialog>
+#include <QThread>
+
+#include "libAdjRaspi5SynthAPI.h"
+#include "Defs.h"
+#include "InstrumentPannel.h"
+
+class InstrumentPannel;
+
+void wrapper_closeModulePannel(en_instruments_ids_t moId);
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+    
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+	
+	static MainWindow *get_instance();
+	
+	void close_instrument_pannel_id(en_instruments_ids_t mo_id);
+	void close_instrument_pannel_name(string inst_name);
+	
+	void request_close_instrument_pannel_id(en_instruments_ids_t mo_id);
+	void request_close_instrument_pannel_name(string inst_name);
+	
+	vector<string> get_active_instruments_names_list();
+	
+	void control_box_ui_update_callback(int evnt, uint16_t val);
+	
+	void register_active_dialog(QDialog *dialog);
+	void unregister_active_dialog(QDialog *dialog);
+	
+	void on_patch_file_saved(const QString &s);
+	void on_patch_file_loaded(const QString &s);
+	
+	void copy_sketch(int src, int dest);
+	
+	vector<string> pending_open_instruments_list;
+	
+	vector<active_instrument_data_t> active_instruments_list;
+	
+	QMenu *sketches_menu;
+	
+	
+public slots:
+	virtual void timerEvent(); // Called by a Timer
+
+private slots :
+	void on_add_fluid_synth_instrument();
+	void on_add_hammond_organ_instrument();
+	void on_add_adj_analog_synth_instrument();
+	void on_add_adj_karplus_strong_strings_synth_instrument();
+	void on_add_adj_morphed_sin_synth_instrument();
+	void on_add_adj_pad_synth_instrument();
+	void on_add_adj_midi_player_instrument();
+	void on_add_adj_reverb_effect_instrument();
+	void on_add_adj_distortion_effect_instrument();
+	void on_add_adj_graphic_equilizer_instrument();	
+	void on_add_midi_mixer_instrument();
+	void on_add_adj_midi_mapper_instrument();
+	void on_add_adj_external_midi_interface_control_instrument();
+	void on_add_adj_keyboard_control_instrument();
+	
+	void on_save_patch_file();
+	void on_load_patch_file();
+	
+	void on_copy_sketch1_to_sketch2();
+	void on_copy_sketch1_to_sketch3();
+	void on_copy_sketch2_to_sketch1();
+	void on_copy_sketch2_to_sketch3();
+	void on_copy_sketch3_to_sketch1();
+	void on_copy_sketch3_to_sketch2();
+
+	void on_open_master_volume_dialog();
+	
+protected:
+//	void timerEvent(QTimerEvent *event);
+	virtual void update_gui(); 
+    
+
+private:
+	InstrumentPannel* add_instrument_pannel(QString instrument_name_string="");	
+	int remove_instrument_pannel(InstrumentPannel *instrument);
+	int is_instrument_openned(en_instruments_ids_t instId);
+	
+	int update_layout_geometry();
+	
+	void create_actions();
+	void create_menus();
+	
+	void start_update_timer(int interval);
+	
+		
+    Ui::MainWindow *ui;
+	static MainWindow *mwind;	
+	
+	QLayout *layout;
+	
+	map<string, en_instruments_ids_t> instruments_ids_map;
+	
+	list<QDialog*> active_dialogs_list;
+	
+	QMenu *file_menu;
+	QMenu *add_module_menu;
+	
+	QMenu *help_menu;
+
+	
+	QActionGroup *add_modules_group;
+	QAction *add_fluid_synth_act;
+	QAction *add_hammond_organ_act;
+	QAction *add_adj_analog_synth_act;
+	QAction *add_adj_karplus_strong_strings_synth_act;
+	QAction *add_adj_morphed_sin_synth_act;
+	QAction *add_adj_pad_synth_act;
+	QAction *add_adj_midi_player_act;
+	QAction *add_adj_reverb_effect_act;
+	QAction *add_adj_distortion_effect_act;
+	QAction *add_adj_graphic_equilizer_act;
+	QAction *add_midi_mixer_act;
+	QAction *add_adj_midi_mapper_act;
+	QAction *add_adj_external_midi_interface_control_act;
+	QAction *add_adj_keyboard_control_act;
+
+	QMenu *controls_menu;
+	QAction *open_master_volume_act;
+	
+	QActionGroup *patch_files_group;
+	QAction *save_patch_file_act;
+	QAction *load_patch_file_act;
+	
+	QActionGroup *sketches_group;
+	QAction *copy_sketch1_to_sketch2_act;
+	QAction *copy_sketch1_to_sketch3_act;
+	QAction *copy_sketch2_to_sketch1_act;
+	QAction *copy_sketch2_to_sketch3_act;
+	QAction *copy_sketch3_to_sketch1_act;
+	QAction *copy_sketch3_to_sketch2_act;
+	
+};
+
+class SavePatchFileThread : public QThread
+{
+	Q_OBJECT	
+	void run();
+	
+signals:
+	void savePatchFileDone(const QString &s);	
+		
+};
+
+class LoadPatchFileThread : public QThread
+{
+	Q_OBJECT	
+	void run();
+	
+signals:
+	void loadPatchFileDone(const QString &s);	
+		
+};
+

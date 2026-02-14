@@ -1,0 +1,1 @@
+I:\Workspace\RaspberryPi5\VS_VGDB\AdjRaspi5qtSynth_2\AdjRaspi5qtSynthApp_2\AdjRaspi5qtSynthApp_2\Dialog_MidiMixer.cpp|CMakeFiles/AdjRaspi5qtSynthApp_2.dir/Dialog_MidiMixer.cpp.o
