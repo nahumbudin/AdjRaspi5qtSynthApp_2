@@ -31,7 +31,7 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	int result;
 
 	set_mso_signals_connections();
-	mso_update();
+	//mso_update();
 	mso_replot_waveform = true;
 
 	// Prepare MSO Presets Strings
@@ -55,7 +55,11 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoTuneOctave->blockSignals(true);
 	ui->comboBox_MsoTuneSemitones->blockSignals(true);
 	ui->comboBox_MsoTuneCents->blockSignals(true);
-	
+
+	ui->comboBox_MsoTuneOctave->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_MsoTuneSemitones->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_MsoTuneCents->setTextAlignment(Qt::AlignCenter);
+
 	for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
 	{
 		ui->comboBox_MsoTuneOctave->addItem(QString::number(i));
@@ -87,12 +91,14 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoFreqModLFO->blockSignals(true);
 	ui->comboBox_MsoFreqModLFO->addItems(string_lfo_values);
 	ui->comboBox_MsoFreqModLFO->setIdentifier(_MSO_FREQ_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_MsoFreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoFreqModLFO->blockSignals(false);
 	
 	result = init_combobox_control_colors(ui->comboBox_MsoFreqModAdsr);
 	ui->comboBox_MsoFreqModAdsr->blockSignals(true);
 	ui->comboBox_MsoFreqModAdsr->addItems(string_adsr_values);
 	ui->comboBox_MsoFreqModAdsr->setIdentifier(_MSO_FREQ_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_MsoFreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoFreqModAdsr->blockSignals(false);
 	
 	// MSO Amplitude Modulation frame and controls
@@ -106,12 +112,14 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoAmpModLFO->blockSignals(true);
 	ui->comboBox_MsoAmpModLFO->addItems(string_lfo_values);
 	ui->comboBox_MsoAmpModLFO->setIdentifier(_MSO_AMP_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_MsoAmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoAmpModLFO->blockSignals(false);
 	
 	result = init_combobox_control_colors(ui->comboBox_MsoAmpModAdsr);
 	ui->comboBox_MsoAmpModAdsr->blockSignals(true);
 	ui->comboBox_MsoAmpModAdsr->addItems(string_adsr_values);
 	ui->comboBox_MsoAmpModAdsr->setIdentifier(_MSO_AMP_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_MsoAmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoAmpModAdsr->blockSignals(false);
 	
 	// MSO PWM Modulation frame and controls
@@ -125,12 +133,14 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoPwmModLFO->blockSignals(true);
 	ui->comboBox_MsoPwmModLFO->addItems(string_lfo_values);
 	ui->comboBox_MsoPwmModLFO->setIdentifier(_MSO_PWM_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_MsoPwmModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoPwmModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_MsoPwmModAdsr);
 	ui->comboBox_MsoPwmModAdsr->blockSignals(true);
 	ui->comboBox_MsoPwmModAdsr->addItems(string_adsr_values);
 	ui->comboBox_MsoPwmModAdsr->setIdentifier(_MSO_PWM_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_MsoPwmModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoPwmModAdsr->blockSignals(false);
 
 	// MSO Segments frame and controls
@@ -139,6 +149,7 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	result = init_combobox_control_colors(ui->comboBox_MsoPreset);
 	ui->comboBox_MsoPreset->blockSignals(true);
 	ui->comboBox_MsoPreset->addItems(string_mso_presets_list);
+	ui->comboBox_MsoPreset->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoPreset->blockSignals(false);
 
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_MsoMorph);
@@ -150,6 +161,8 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_e);
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_f);
 
+	mso_update();
+
 	return 0;
 }
 
@@ -160,7 +173,7 @@ void Dialog_AnalogSynth_1900x1000::set_mso_signals_connections()
 	//		this,
 	//		SLOT(on_dialog_close()));
 
-	connect(ui->checkBox_MSOenable,
+	connect(ui->checkBox_MsoActive,
 			SIGNAL(toggled(bool)),
 			this,
 			SLOT(on_mso_enable_checkbox_changed(bool)));
@@ -500,9 +513,9 @@ void Dialog_AnalogSynth_1900x1000::mso_update()
 	ui->horizontalSlider_MsoMorph->blockSignals(false);
 
 	mso_enabled = mod_synth_get_active_mso_enable_state();
-	ui->checkBox_MSOenable->blockSignals(true);
-	ui->checkBox_MSOenable->setChecked(mso_enabled);
-	ui->checkBox_MSOenable->blockSignals(false);
+	ui->checkBox_MsoActive->blockSignals(true);
+	ui->checkBox_MsoActive->setChecked(mso_enabled);
+	ui->checkBox_MsoActive->blockSignals(false);
 
 	if (mso_enabled)
 	{
@@ -1087,17 +1100,17 @@ void Dialog_AnalogSynth_1900x1000::on_mso_amp_mod_env_level_dial_changed(int val
 
 void Dialog_AnalogSynth_1900x1000::on_mso_enable_checkbox_changed(bool val)
 {
-	ui->checkBox_MSOenable->blockSignals(true);
+	ui->checkBox_MsoActive->blockSignals(true);
 	if (val)
 	{
-		ui->checkBox_MSOenable->setCheckState(Qt::Checked);
+		ui->checkBox_MsoActive->setCheckState(Qt::Checked);
 		mod_synth_enable_mso();
 	}
 	else
 	{
-		ui->checkBox_MSOenable->setCheckState(Qt::Unchecked);
+		ui->checkBox_MsoActive->setCheckState(Qt::Unchecked);
 	}
-	ui->checkBox_MSOenable->blockSignals(false);
+	ui->checkBox_MsoActive->blockSignals(false);
 	mod_synth_disable_mso();
 
 	mso_enabled = val;

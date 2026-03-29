@@ -160,6 +160,34 @@ int Dialog_AnalogSynth_1900x1000::init_adsrs_gui()
 
 	update_adsr_plot[_ENV_6 - 1] = true;
 
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_1);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_1);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_1);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_1);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_2);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_2);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_2);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_2);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_3);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_3);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_3);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_3);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_4);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_4);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_4);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_4);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_5);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_5);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_5);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_5);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_6);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_6);
+	result - init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_6);
+	result - init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_6);
+
+
+	
+
 	return 0;
 }
 

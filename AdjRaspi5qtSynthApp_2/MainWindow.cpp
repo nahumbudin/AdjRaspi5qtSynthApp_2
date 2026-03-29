@@ -1,21 +1,23 @@
 /**
-*	@file		MainWindow.cpp
-*	@author		Nahum Budin
-*	@date		22-Sep-2025
-*	@version	1.1 
-*					1. Code refactoring and comments
-*
-*	@brief		Application Main Window that hosts the modules pannels as acolomn.
-*	
-*	History:	version 1.0		8-May-2024  initial
-*/
+ *	@file		MainWindow.cpp
+ *	@author		Nahum Budin
+ *	@date		22-Sep-2025
+ *	@version	1.1
+ *					1. Code refactoring and comments
+ *					2. Added support for GUI Navigator and Windows Manager
+ *					
+ *
+ *	@brief		Application Main Window that hosts the modules pannels as acolomn.
+ *
+ *	History:	version 1.0		8-May-2024  initial
+ */
 
 #include <QVBoxLayout>
 #include <QFrame>
 #include <QFileDialog>
 #include <QTHread>
 #include <QTimer>
-//#include <aarch64-linux-gnu/qt5/QtWidgets/qboxlayout.h>
+#include <QMessageBox>
 #include <QtWidgets/qboxlayout.h>
 
 #include <stdio.h>
@@ -29,6 +31,7 @@
 
 #include "Dialog_AdjFluidSynth.h"
 #include "Dialog_MasterVolume.h"
+#include "Dialog_AnalogSynth_1900x1000.h"
 
 SavePatchFileThread *save_patch_file_thread;
 LoadPatchFileThread *load_patch_file_thread;
@@ -91,72 +94,83 @@ void LoadPatchFileThread::run()
 
 MainWindow *MainWindow::mwind = NULL;
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+										  ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-	
+	ui->setupUi(this);
+
+	this->setWindowFlags(Qt::Window); // Ensure it's treated as a top-level window
+
 	mwind = this;
-	mwind->move(100, 10);
-	
+	mwind->move(100, 50);
+
 	ui->centralwidget->setLayout(new QVBoxLayout);
-	layout = qobject_cast<QVBoxLayout*>(ui->centralwidget->layout());
-	
-	// Create tools bar menus ections.
+	layout = qobject_cast<QVBoxLayout *>(ui->centralwidget->layout());
+
+	// Create tools bar menus actions
 	create_actions();
-	// Create tools bar menus.
+	// Create tools bar menus
 	create_menus();
-	
-	// Register callbacks.
+
+	// Initialize window manager
+	window_manager = Dialog_WindowManager::get_instance(this);
+
+	// Initialize GUI Navigator (simplified version)
+	gui_navigator = GuiNavigator::get_instance();
+
+	// Register MainWindow with GuiNavigator (no frame/tab navigation)
+	gui_navigator->register_widget_simple(this, "Main Window");
+
+	// Show the info panel
+	gui_navigator->show_info_panel();
+
+	// Register callbacks
 	mod_synth_register_callback_control_box_event_update_ui(
 		&main_window_control_box_event_update_ui_callback_wrapper);
-	
+
 	mod_synth_register_callback_get_active_instruments_names_list(
 		&get_active_instruments_names_list_wrapper);
-	
+
 	mod_synth_register_callback_wrapper_close_instrument_pannel_id(
 		&wrapper_request_close_instrument_pannel_id);
-	
+
 	mod_synth_register_callback_wrapper_close_instrument_pannel_name(
 		&wrapper_request_close_instrument_pannel_name);
-	
+
 	mod_synth_register_callback_wrapper_open_instrument_pannel_name(
 		&wrapper_request_open_instrument_window_name);
-	
-	// Build the instruments map - 
-	// Note: currently this list conatains all currentlly knowns instruments.
-	//       Not all of them are implemented yet in this version.
-	instruments_ids_map[_INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY] = 
+
+	// Build the instruments map
+	instruments_ids_map[_INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY] =
 		en_instruments_ids_t::fluid_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY] =
 		en_instruments_ids_t::adj_hammond_organ;
-	instruments_ids_map[_INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_analog_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_karplusstrong_string_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_morphed_sin_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_pad_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY] =
 		en_instruments_ids_t::adj_midi_player;
-	instruments_ids_map[_INSTRUMENT_NAME_MIDI_MIXER_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_MIDI_MIXER_STR_KEY] =
 		en_instruments_ids_t::midi_mixer;
-	instruments_ids_map[_INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY] =
 		en_instruments_ids_t::adj_midi_mapper;
-	instruments_ids_map[_INSTRUMENT_NAME_REVERB_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_REVERB_STR_KEY] =
 		en_instruments_ids_t::adj_reverb_effect;
-	instruments_ids_map[_INSTRUMENT_NAME_DISTORTION_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_DISTORTION_STR_KEY] =
 		en_instruments_ids_t::adj_distortion_effect;
-	instruments_ids_map[_INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY] =
 		en_instruments_ids_t::adj_graphic_equilizer;
-	instruments_ids_map[_INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY] =
 		en_instruments_ids_t::adj_ext_midi_interface;
-	instruments_ids_map[_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY] = 
+	instruments_ids_map[_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY] =
 		en_instruments_ids_t::adj_keyboard_control;
-	
-	// start the periodic gui update timer after this timeout - 
+
+	// Start the periodic gui update timer
 	start_update_timer(200);
 }
 
@@ -186,61 +200,129 @@ void MainWindow::control_box_ui_update_callback(int evnt, uint16_t val)
 	/* Holds a dialog position */
 	QPoint position;
 	
-	if (evnt == _CONTROL_FUNCTION_PUSHBUTTON_REDOO)
+	// I2C Interface Control Box
+	if ((evnt >= _I2C_CONTROL_PUSHBUTTON_OK) && (evnt <= _I2C_CONTROL_PUSHBUTTON_RIGHT) ||
+		(evnt == _I2C_CONTROL_ENCODER_SCROLL) || (evnt == _I2C_CONTROL_ENCODER_PUSHBUTTON_SCROLL))
 	{
-		if (val == 0)
+		// I2C Interface Control Box
+		switch (evnt)
 		{
-			// The button is pushed only 
-			// Used for round-robin selection between all open dialogs.
-			// NOTE - in Raspberry Pi 5 Wayland, Openbox window manger must be set to X11 backend
-			//		  to enable Qt control over dialogs position!!!
-			
-			
-			// Next dialog - ststic: kepy from last time
-			last_opened_dialog_index++; 
-			
-			if (last_opened_dialog_index >= active_dialogs_list.size())
+		case _I2C_CONTROL_PUSHBUTTON_RIGHT:
+			control_box_right_key_pressed = true;
+			//gui_navigator->handle_right_button(); -> gui_update
+			break;
+
+		case _I2C_CONTROL_PUSHBUTTON_LEFT:
+			control_box_left_key_pressed = true;
+			//gui_navigator->handle_left_button();
+			break;
+
+		case _I2C_CONTROL_PUSHBUTTON_OK:
+			control_box_ok_key_pressed = true;
+			//gui_navigator->handle_ok_button();
+			break;
+
+		case _I2C_CONTROL_PUSHBUTTON_UP:
+			control_box_up_key_pressed = true;
+			//gui_navigator->handle_up_button();
+			break;
+
+		case _I2C_CONTROL_PUSHBUTTON_DOWN:
+			control_box_down_key_pressed = true;
+			//gui_navigator->handle_down_button();
+			break;
+
+		case _I2C_CONTROL_ENCODER_SCROLL:
+			if (val == 0x1000)
 			{
-				// Wrap around
-				last_opened_dialog_index = 0;
+				// Scroll pushbutton pressed
+				control_box_scroll_pushbutton_pressed = true;
 			}
-			
-			int next_opened_dialog = 0;
-			
-			for (QDialog *dialog : active_dialogs_list) {
-				
-				if (dialog->isHidden())
+			else if (val == 0x2000)
+			{
+				// Scroll pushbutton released
+			}
+			else
+			{
+				// Scroll rotated
+				control_box_scroll_select_change_value = true;
+				control_box_scroll_select_new_value = val;
+				// gui_navigator->handle_scroll_rotation(val);
+			}
+
+			break;
+
+		default:
+			break;			
+		}
+		
+	}
+	else if ((evnt >= _CONTROL_FUNCTION_PUSHBUTTON_UP) && (evnt <= _CONTROL_FUNCTION_PUSHBUTTON_ENTER))
+	{
+		// COM Port based control box
+		if (evnt == _CONTROL_FUNCTION_PUSHBUTTON_REDOO)
+		{
+			if (val == 0)
+			{
+				// The button is pushed only
+				// Used for round-robin selection between all open dialogs.
+				// NOTE - in Raspberry Pi 5 Wayland, Openbox window manger must be set to X11 backend
+				//		  to enable Qt control over dialogs position!!!
+
+				// Next dialog - ststic: kepy from last time
+				last_opened_dialog_index++;
+
+				if (last_opened_dialog_index >= active_dialogs_list.size())
 				{
-					// Skip hidden dialogs
-					last_opened_dialog_index++;
-					next_opened_dialog++;
-			
-					if (last_opened_dialog_index >= active_dialogs_list.size())
+					// Wrap around
+					last_opened_dialog_index = 0;
+				}
+
+				int next_opened_dialog = 0;
+
+				for (QDialog *dialog : active_dialogs_list)
+				{
+
+					if (dialog->isHidden())
 					{
-						last_opened_dialog_index = 0;
-					}	
-					
-					continue;
+						// Skip hidden dialogs
+						last_opened_dialog_index++;
+						next_opened_dialog++;
+
+						if (last_opened_dialog_index >= active_dialogs_list.size())
+						{
+							last_opened_dialog_index = 0;
+						}
+
+						continue;
+					}
+
+					if (next_opened_dialog == last_opened_dialog_index)
+					{
+						position = dialog->pos();
+						// position = mapToGlobal(dialog->rect().center());
+						printf("%i %i\n", position.x(), position.y());
+						dialog->hide();
+						dialog->show();
+						dialog->move(position);
+						// dialog->move(mapFromGlobal(position));
+						dialog->setFocus(Qt::ActiveWindowFocusReason);
+						printf("%i %i\n", position.x(), position.y());
+						break;
+					}
+
+					next_opened_dialog++;
 				}
-				
-				if (next_opened_dialog == last_opened_dialog_index)
-				{
-					position = dialog->pos();
-					//position = mapToGlobal(dialog->rect().center());
-					printf("%i %i\n", position.x(), position.y());
-					dialog->hide();
-					dialog->show();
-					dialog->move(position);
-					//dialog->move(mapFromGlobal(position));
-					dialog->setFocus(Qt::ActiveWindowFocusReason);
-					printf("%i %i\n", position.x(), position.y());
-					break;
-				}
-				
-				next_opened_dialog++;
 			}
 		}
 	}
+
+		
+}
+
+void MainWindow::show_window_manager()
+{
+	window_manager->show_window_manager();
 }
 
 
@@ -280,7 +362,7 @@ void MainWindow::copy_sketch(int src, int dest)
 		if (msgBox.exec() == QMessageBox::Yes) 
 		{
 			mod_synth_copy_sketch(_SKETCH_PROGRAM_1 + src, _SKETCH_PROGRAM_1 + dest);
-			Dialog_AnalogSynth::get_instance()->update_all();
+			Dialog_AnalogSynth_1900x1000::get_instance()->update_all();
 		}
 		else 
 		{
@@ -443,15 +525,15 @@ void MainWindow::create_actions()
 */
 void MainWindow::create_menus()
 {
-	file_menu = menuBar()->addMenu(tr("&File"));
+	file_menu = ui->menubar->addMenu(tr("&File"));
 	file_menu->addAction(save_patch_file_act);
 	file_menu->addAction(load_patch_file_act);
 	file_menu->addSeparator();
 
-	controls_menu = menuBar()->addMenu(tr("&Controls"));
+	controls_menu = ui->menubar->addMenu(tr("&Controls"));
 	controls_menu->addAction(open_master_volume_act);
-	
-	add_module_menu = menuBar()->addMenu(tr("&Add Instrument"));
+
+	add_module_menu = ui->menubar->addMenu(tr("&Add Instrument"));
 	add_module_menu->addAction(add_fluid_synth_act);
 	add_module_menu->addAction(add_hammond_organ_act);
 	add_module_menu->addAction(add_adj_analog_synth_act);
@@ -470,8 +552,8 @@ void MainWindow::create_menus()
 	add_module_menu->addAction(add_adj_midi_mapper_act);
 	add_module_menu->addAction(add_adj_external_midi_interface_control_act);
 	add_module_menu->addAction(add_adj_keyboard_control_act);
-	
-	sketches_menu = menuBar()->addMenu(tr("&Sketches"));
+
+	sketches_menu = ui->menubar->addMenu(tr("&Sketches"));
 	sketches_menu->addAction(copy_sketch1_to_sketch2_act);
 	sketches_menu->addAction(copy_sketch1_to_sketch3_act);
 	sketches_menu->addAction(copy_sketch2_to_sketch1_act);
@@ -480,8 +562,24 @@ void MainWindow::create_menus()
 	sketches_menu->addAction(copy_sketch3_to_sketch2_act);	
 	
 	sketches_menu->setDisabled(true);
-	
-	help_menu = menuBar()->addMenu(tr("&Help"));
+
+	// Add Window menu
+	QMenu *windowMenu = ui->menubar->addMenu(tr("&Window"));
+
+	QAction *windowManagerAction = new QAction(tr("Show Window Manager"), this);
+	windowManagerAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+	windowManagerAction->setStatusTip(tr("Show all open dialogs"));
+	connect(windowManagerAction, SIGNAL(triggered()), this, SLOT(show_window_manager()));
+
+	QAction *toggle_info_panel_action = new QAction("Toggle Navigator Info", this);
+	connect(toggle_info_panel_action, &QAction::triggered, [this]() {
+		GuiNavigator::get_instance()->toggle_info_panel();
+	});
+
+	windowMenu->addAction(windowManagerAction);
+	windowMenu->addAction(toggle_info_panel_action);
+
+	help_menu = ui->menubar->addMenu(tr("&Help"));
 }
 /**
 *	@brief	Add an instrument pannel
@@ -489,74 +587,57 @@ void MainWindow::create_menus()
 *	@return none
 */
 
-InstrumentPannel* MainWindow::add_instrument_pannel(QString instrument_name_string)
-{	
-	QPoint last_posotion = QPoint(this->x(), this->y());
-	
-	if (instruments_ids_map.find(instrument_name_string.toStdString()) != instruments_ids_map.end())
+InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_string)
+{
+	QPoint last_position = QPoint(this->x(), this->y());
+
+	if (instruments_ids_map.find(instrument_name_string.toStdString()) == instruments_ids_map.end())
 	{
-		/* No such instrument name */	
+		// No such instrument name
+		return nullptr;
 	}
-	
+
 	en_instruments_ids_t instrument_id = instruments_ids_map[instrument_name_string.toStdString()];
-	
-	
+
 	if (instrument_id == en_instruments_ids_t::none_instrument_id)
 	{
-		return NULL;
+		return nullptr;
 	}
-	
+
 	InstrumentPannel *new_pannel = new InstrumentPannel(this,
-							instrument_name_string, 
-							&wrapper_close_instrument_pannel_id, 
-							instrument_id);
+														instrument_name_string,
+														&wrapper_close_instrument_pannel_id,
+														instrument_id);
 	layout->addWidget(new_pannel);
-	
+
 	active_instrument_data_t new_instrument;
 	new_instrument.instrument_id = instrument_id;
 	new_instrument.instrument_name = instrument_name_string;
 	new_instrument.instrument_pannel_object = new_pannel;
 	new_instrument.pending_close_event = false;
 	active_instruments_list.push_back(new_instrument);
-	
+
 	update_layout_geometry();
-	
-//	mod_synth_add_active_module(module_id);
-	
-	move(last_posotion);
-	 
+
+	move(last_position);
+
 	return new_pannel;
 }
 
 int MainWindow::remove_instrument_pannel(InstrumentPannel *instrument)
 {
-	if ((instrument == Q_NULLPTR) || (layout == Q_NULLPTR))
+	if ((instrument == nullptr) || (layout == nullptr))
 	{
 		return -1;
 	}
-	else
-	{
-		layout->removeWidget(instrument);
-		//delete(module);
-		instrument->hide();
-		
-		update_layout_geometry();
-		
-//		mod_synth_remove_active_module(module->module_id); 
-		
-		if (instrument->instrument_id == en_instruments_ids_t::fluid_synth)
-		{
-			
-		}
-		else if (instrument->instrument_id == en_instruments_ids_t::adj_midi_player)
-		{
-			
-		}
-	}
-	
+
+	layout->removeWidget(instrument);
+	instrument->hide();
+
+	update_layout_geometry();
+
 	return 0;
 }
-
 
 /**
 *   @brief Returns the instrument position in the active instruments list if th instrument is oppened.
@@ -682,6 +763,56 @@ void MainWindow::update_gui()
 	
 	pending_open_instruments_list.erase(pending_open_instruments_list.begin(),
 		pending_open_instruments_list.begin() + m);
+
+	if (control_box_right_key_pressed)
+	{
+		control_box_right_key_pressed = false;
+		gui_navigator->handle_right_button();
+	}
+
+	if (control_box_left_key_pressed)
+	{
+		control_box_left_key_pressed = false;
+		gui_navigator->handle_left_button();
+	}
+
+	if (control_box_up_key_pressed)
+	{
+		control_box_up_key_pressed = false;
+		gui_navigator->handle_up_button();
+	}
+
+	if (control_box_down_key_pressed)
+	{
+		control_box_down_key_pressed = false;
+		gui_navigator->handle_down_button();
+	}
+
+	if (control_box_ok_key_pressed)
+	{
+		control_box_ok_key_pressed = false;
+		gui_navigator->handle_ok_button();
+	}
+	
+	if (control_box_scroll_select_change_value)
+	{
+		control_box_scroll_select_change_value = false;
+		if (control_box_scroll_select_prev_value == -1)
+		{
+			// 1st time
+			control_box_scroll_select_prev_value = control_box_scroll_select_new_value;
+			return; // Skip first time to establish baseline
+		}
+		
+		gui_navigator->handle_scroll_rotation(control_box_scroll_select_new_value - control_box_scroll_select_prev_value);
+		control_box_scroll_select_prev_value = control_box_scroll_select_new_value;
+	}
+	
+	if (control_box_scroll_pushbutton_pressed)
+	{
+		control_box_scroll_pushbutton_pressed = false;
+		gui_navigator->handle_scroll_button();
+	}
 }
 
 void MainWindow::on_add_fluid_synth_instrument()
@@ -872,59 +1003,88 @@ void MainWindow::on_add_adj_keyboard_control_instrument()
 
 void MainWindow::on_save_patch_file()
 {
-	QFileDialog dialog;
-	int res;
-	
-	patch_file_name = dialog.getSaveFileName(this,
-		tr("Save Patch File "),
-		QString(_PATCHES_FILES_DEFAULT_DIR),
-		tr("Presets (*.json *.JSON);;All Files (*)"));
+	// Create dialog explicitly instead of using static method
+	QFileDialog *dialog = new QFileDialog(this,
+										  tr("Save Patch File "),
+										  QString(_PATCHES_FILES_DEFAULT_DIR),
+										  tr("Presets (*.json *.JSON);;All Files (*)"));
 
-	if (!patch_file_name.isEmpty())
-	{
-		save_patch_file_thread = new SavePatchFileThread();
-		
-		connect(save_patch_file_thread,
-			&SavePatchFileThread::finished,
-			save_patch_file_thread,
-			&QObject::deleteLater);
-		connect(save_patch_file_thread,
-			&SavePatchFileThread::savePatchFileDone, 
-			this,
-			&MainWindow::on_patch_file_saved);
-		
-		save_patch_file_thread->start();		
-	}
+	dialog->setAcceptMode(QFileDialog::AcceptSave);
+	dialog->setFileMode(QFileDialog::AnyFile);
+	dialog->setDefaultSuffix("json");
+
+	connect(dialog, &QFileDialog::finished, [this, dialog](int result) {
+		if (result == QDialog::Accepted)
+		{
+			QStringList files = dialog->selectedFiles();
+			if (!files.isEmpty())
+			{
+				patch_file_name = files.first();
+
+				if (!patch_file_name.isEmpty())
+				{
+					save_patch_file_thread = new SavePatchFileThread();
+
+					connect(save_patch_file_thread,
+							&SavePatchFileThread::finished,
+							save_patch_file_thread,
+							&QObject::deleteLater);
+					connect(save_patch_file_thread,
+							&SavePatchFileThread::savePatchFileDone,
+							this,
+							&MainWindow::on_patch_file_saved);
+
+					save_patch_file_thread->start();
+				}
+			}
+		}
+		dialog->deleteLater();
+	});
+
+	dialog->open(); // GuiNavigator will handle focus automatically
 }
 
 void MainWindow::on_load_patch_file()
 {
-	QFileDialog dialog;
-	int res;
-	
-	patch_file_name = dialog.getOpenFileName(this,
-		tr("Open Patch File "),
-		QString(_PATCHES_FILES_DEFAULT_DIR),
-		tr("Presets (*.json *.JSON);;All Files (*)"));
+	// Create dialog explicitly instead of using static method
+	QFileDialog *dialog = new QFileDialog(this,
+										  tr("Open Patch File "),
+										  QString(_PATCHES_FILES_DEFAULT_DIR),
+										  tr("Presets (*.json *.JSON);;All Files (*)"));
 
-	if (!patch_file_name.isEmpty())
-	{
-		load_patch_file_thread = new LoadPatchFileThread();
-		
-		connect(load_patch_file_thread,
-			&LoadPatchFileThread::finished,
-			load_patch_file_thread,
-			&QObject::deleteLater);
-		connect(load_patch_file_thread,
-			&LoadPatchFileThread::loadPatchFileDone, 
-			this,
-			&MainWindow::on_patch_file_loaded);
-		
-		load_patch_file_thread->start();
-	}
-	
+	dialog->setAcceptMode(QFileDialog::AcceptOpen);
+	dialog->setFileMode(QFileDialog::ExistingFile);
+
+	connect(dialog, &QFileDialog::finished, [this, dialog](int result) {
+		if (result == QDialog::Accepted)
+		{
+			QStringList files = dialog->selectedFiles();
+			if (!files.isEmpty())
+			{
+				patch_file_name = files.first();
+
+				if (!patch_file_name.isEmpty())
+				{
+					load_patch_file_thread = new LoadPatchFileThread();
+
+					connect(load_patch_file_thread,
+							&LoadPatchFileThread::finished,
+							load_patch_file_thread,
+							&QObject::deleteLater);
+					connect(load_patch_file_thread,
+							&LoadPatchFileThread::loadPatchFileDone,
+							this,
+							&MainWindow::on_patch_file_loaded);
+
+					load_patch_file_thread->start();
+				}
+			}
+		}
+		dialog->deleteLater();
+	});
+
+	dialog->open(); // GuiNavigator will handle focus automatically
 }
-
 void MainWindow::on_copy_sketch1_to_sketch2()
 {
 	copy_sketch(0, 1);
@@ -963,6 +1123,15 @@ void MainWindow::on_open_master_volume_dialog()
 	{
 		master_volume_dialog = Dialog_MasterVolume::get_instance(this);
 		register_active_dialog(master_volume_dialog);
+
+		// Register with window manager
+		window_manager->register_dialog(master_volume_dialog, "Master Volume");
+
+		// Connect destroy signal to unregister
+		auto *dialog_ptr = master_volume_dialog;
+		connect(master_volume_dialog, &QObject::destroyed, [this, dialog_ptr]() {
+			window_manager->unregister_dialog(dialog_ptr);
+		});
 
 		// Position the dialog
 		QPoint position = this->pos();

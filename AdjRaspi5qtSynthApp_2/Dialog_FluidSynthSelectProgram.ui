@@ -28,8 +28,8 @@
    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#0055ff;&quot;&gt;Select Fluid Synth Prorams&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: qlineargradient(spread:pad, x1:0.0795909, y1:0.119, x2:0.983, y2:0.998455, stop:0 rgba(117, 117, 117, 255), stop:1 rgba(255, 255, 255, 255));
-border-color: rgb(0, 0, 0);</string>
+   <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(5, 5, 5);</string>
   </property>
   <widget class="QScrollArea" name="scrollArea_dialogFluidSelectProgram_soundfonts">
    <property name="geometry">

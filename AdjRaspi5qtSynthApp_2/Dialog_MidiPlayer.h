@@ -54,7 +54,9 @@ protected slots :
 	void on_play_clicked();
 	void on_pause_clicked();
 	void on_stop_clicked();
-	
+	void on_backward_clicked();
+	void on_forward_clicked();
+
 	void on_dialog_close();
 	
 	void on_midi_file_loaded(const QString &s);

@@ -23,43 +23,58 @@ CustomComboBox::CustomComboBox(QWidget *parent)
 	  frame_width(1), 
 	  background_color(QColor(60, 60, 60)), 
 	  text_color(Qt::white),
-	  id(-1)
+	  id(-1),
+	  text_alignment(Qt::AlignLeft | Qt::AlignVCenter)
 {
+	delegate = new CenteredComboBoxDelegate(this);
+	setItemDelegate(delegate);
+	
 	updateStyleSheet();
 }
 
 CustomComboBox::~CustomComboBox() 
 {
-}	
+}
 
 void CustomComboBox::paintEvent(QPaintEvent *event)
 {
-	// First, let the default painting happen
-	QComboBox::paintEvent(event);
+	QStylePainter painter(this);
+	painter.setPen(palette().color(QPalette::Text));
 
-	// Then draw our custom frame on top
+	// Draw the combo box frame and button
+	QStyleOptionComboBox opt;
+	initStyleOption(&opt);
+
+	// Clear text - we'll draw it ourselves
+	QString originalText = opt.currentText;
+	opt.currentText = "";
+
+	painter.drawComplexControl(QStyle::CC_ComboBox, opt);
+
+	// Draw the text with custom alignment
+	QRect textRect = style()->subControlRect(QStyle::CC_ComboBox, &opt,
+											 QStyle::SC_ComboBoxEditField, this);
+
+	painter.setPen(text_color);
+	painter.drawText(textRect, text_alignment, originalText);
+
+	// Draw custom frame on top
 	if (frame_visible && frame_width > 0)
 	{
-		QPainter painter(this);
-		painter.setRenderHint(QPainter::Antialiasing, false); // Disable for sharper lines
+		QPainter framePainter(this);
+		framePainter.setRenderHint(QPainter::Antialiasing, false);
 
 		QRect comboRect = rect();
 		int halfWidth = frame_width / 2;
-
-		// Adjust rect to center the border line
-		QRect frameRect = comboRect.adjusted(
-			halfWidth,
-			halfWidth,
-			-halfWidth,
-			-halfWidth);
+		QRect frameRect = comboRect.adjusted(halfWidth, halfWidth, -halfWidth, -halfWidth);
 
 		QPen framePen(isEnabled() ? frame_color : QColor(80, 80, 80), frame_width);
 		framePen.setStyle(Qt::SolidLine);
 		framePen.setCapStyle(Qt::SquareCap);
 		framePen.setJoinStyle(Qt::MiterJoin);
-		painter.setPen(framePen);
-		painter.setBrush(Qt::NoBrush);
-		painter.drawRect(frameRect);
+		framePainter.setPen(framePen);
+		framePainter.setBrush(Qt::NoBrush);
+		framePainter.drawRect(frameRect);
 	}
 }
 
@@ -120,6 +135,33 @@ void CustomComboBox::setTextColor(QColor color)
 	update();
 }
 
+void CustomComboBox::setTextAlignment(Qt::Alignment alignment)
+{
+	text_alignment = alignment;
+    delegate->setAlignment(alignment);
+    update();
+}
+
+Qt::Alignment CustomComboBox::getTextAlignment() const
+{
+	return text_alignment;
+}
+
+QString CustomComboBox::alignmentToStyleString(Qt::Alignment alignment) const
+{
+	QString horizontal;
+	if (alignment & Qt::AlignLeft)
+		horizontal = "left";
+	else if (alignment & Qt::AlignRight)
+		horizontal = "right";
+	else if (alignment & Qt::AlignHCenter)
+		horizontal = "center";
+	else
+		horizontal = "left"; // Default
+
+	return horizontal;
+}
+
 void CustomComboBox::updateStyleSheet()
 {
 	setStyleSheet(QString(
@@ -127,8 +169,8 @@ void CustomComboBox::updateStyleSheet()
 					  "    background-color: rgb(%1, %2, %3);"
 					  "    color: rgb(%4, %5, %6);"
 					  "    border: none;"
-					  "    padding: 5px;"
-					  "    min-height: 20px;"
+					  "    padding: 2px;"
+					  "    min-height: 0px;"
 					  "}"
 					  "QComboBox::drop-down {"
 					  "    border: none;"
@@ -156,4 +198,5 @@ void CustomComboBox::updateStyleSheet()
 					  .arg(frame_color.red())
 					  .arg(frame_color.green())
 					  .arg(frame_color.blue()));
+
 }

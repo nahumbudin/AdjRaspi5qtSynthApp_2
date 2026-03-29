@@ -36,182 +36,182 @@ void fluid_update_ui_callback_wrapper()
 }
 
 Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
-	: QDialog(parent)
-	, ui(new Ui::Dialog_AdjFluidSynth)
+	: QDialog(parent), ui(new Ui::Dialog_AdjFluidSynth)
 {
 	ui->setupUi(this);
 	dialog_adj_fluid_synth_instance = this;
-	
+
 	ui->comboBox_adjFluidSynth_Chorus_Type->addItem("Sine");
 	ui->comboBox_adjFluidSynth_Chorus_Type->addItem("Triangle");
-	
+
 	mod_synth_fluid_synth_register_ui_update_callback(&fluid_update_ui_callback_wrapper);
-	
+
 	mod_synth_register_callback_control_box_event_update_ui(
 		&fluid_control_box_event_update_ui_callback_wrapper);
-	
+
 	active_preset = 0;
-	set_default_settings_values(false); 
-	
+	set_default_settings_values(false);
+
 	close_event_callback_ptr = NULL;
-	
+
 	preset_radio_buttons[0] = ui->radioButton_Preset_1;
 	preset_radio_buttons[1] = ui->radioButton_Preset_2;
 	preset_radio_buttons[2] = ui->radioButton_Preset_3;
-	
-	connect(ui->dial_adjFluidSynth_Reverb_Room,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_room_size_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Reverb_Damp,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_damp_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Reverb_Width,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_width_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Reverb_Level,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_level_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Chorus_N,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_number_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Chorus_Level,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_level_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Chorus_Speed,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_speed_changed(int)));
-	
-	connect(ui->dial_adjFluidSynth_Chorus_Depth,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_depth_changed(int)));
-	
-	
-	connect(ui->spinBox_adjFluidSynth_Reverb_Room,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_room_size_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Reverb_Damp,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_damp_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Reverb_Width,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_width_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Reverb_Level,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(reverb_level_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Chorus_N,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_number_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Chorus_Level,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_level_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Chorus_Speed,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_speed_changed(int)));
-	
-	connect(ui->spinBox_adjFluidSynth_Chorus_Depth,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(chorus_depth_changed(int)));
-	
-	connect(ui->verticalSlider_adjFluidSynth_Gain,
-		SIGNAL(valueChanged(int)),
-		this,
-		SLOT(fluid_gain_changed(int)));
-	
-	connect(ui->checkBox_adjFluidSynth_Reverb_Active,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(reverb_activation_changed(bool)));
-	
-	connect(ui->checkBox_adjFluidSynth_Chorus_Active,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(chorus_activation_changed(bool)));
-	
-	connect(ui->comboBox_adjFluidSynth_Chorus_Type,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(chorus_waveform_changed(int)));
-	
-	connect(ui->pushButton_adjFluidSynth_Close,
-		SIGNAL(clicked()),
-		this,
-		SLOT(on_dialog_close()));
-	
-	connect(ui->pushButton_adjFluidSynth_Channels,
-		SIGNAL(clicked()),
-		this,
-		SLOT(on_module_channels_clicked()));
-	
-	connect(ui->pushButton_adjFluidSynth_Default_settings,
-		SIGNAL(clicked()),
-		this,
-		SLOT(on_default_settings_clicked()));
-	
-	connect(ui->pushButton_adjFluidSynth_Load_preset,
-		SIGNAL(clicked()),
-		this,
-		SLOT(on_load_presets_clicked()));
-	
-	connect(ui->pushButton_adjFluidSynth_Save_preset,
-		SIGNAL(clicked()),
-		this,
-		SLOT(on_save_presets_clicked()));
-	
-	connect(ui->radioButton_Preset_1,
-		SIGNAL(clicked(bool)),
-		this,
-		SLOT(on_preset_1_selected(bool)));
-	
-	connect(ui->radioButton_Preset_2,
-		SIGNAL(clicked(bool)),
-		this,
-		SLOT(on_preset_2_selected(bool)));
-	
-	connect(ui->radioButton_Preset_3,
-		SIGNAL(clicked(bool)),
-		this,
-		SLOT(on_preset_3_selected(bool)));
 
-	//update();
+	connect(ui->dial_adjFluidSynth_Reverb_Room,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_room_size_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Reverb_Damp,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_damp_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Reverb_Width,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_width_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Reverb_Level,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_level_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Chorus_N,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_number_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Chorus_Level,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_level_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Chorus_Speed,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_speed_changed(int)));
+
+	connect(ui->dial_adjFluidSynth_Chorus_Depth,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_depth_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Reverb_Room,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_room_size_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Reverb_Damp,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_damp_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Reverb_Width,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_width_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Reverb_Level,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(reverb_level_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Chorus_N,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_number_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Chorus_Level,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_level_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Chorus_Speed,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_speed_changed(int)));
+
+	connect(ui->spinBox_adjFluidSynth_Chorus_Depth,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(chorus_depth_changed(int)));
+
+	connect(ui->verticalSlider_adjFluidSynth_Gain,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(fluid_gain_changed(int)));
+
+	connect(ui->checkBox_adjFluidSynth_Reverb_Active,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(reverb_activation_changed(bool)));
+
+	connect(ui->checkBox_adjFluidSynth_Chorus_Active,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(chorus_activation_changed(bool)));
+
+	connect(ui->comboBox_adjFluidSynth_Chorus_Type,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(chorus_waveform_changed(int)));
+
+	connect(ui->pushButton_adjFluidSynth_Close,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_dialog_close()));
+
+	connect(ui->pushButton_adjFluidSynth_Channels,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_module_channels_clicked()));
+
+	connect(ui->pushButton_adjFluidSynth_Default_settings,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_default_settings_clicked()));
+
+	connect(ui->pushButton_adjFluidSynth_Load_preset,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_load_presets_clicked()));
+
+	connect(ui->pushButton_adjFluidSynth_Save_preset,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_save_presets_clicked()));
+
+	connect(ui->radioButton_Preset_1,
+			SIGNAL(clicked(bool)),
+			this,
+			SLOT(on_preset_1_selected(bool)));
+
+	connect(ui->radioButton_Preset_2,
+			SIGNAL(clicked(bool)),
+			this,
+			SLOT(on_preset_2_selected(bool)));
+
+	connect(ui->radioButton_Preset_3,
+			SIGNAL(clicked(bool)),
+			this,
+			SLOT(on_preset_3_selected(bool)));
+
 	mod_synth_fluid_synth_activate_ui_update_callback();
-	
-	/* Set focus on the Dialog */
+
+	// Set focus on the Dialog
 	this->setFocus(Qt::ActiveWindowFocusReason);
-	
+
+	// Register with GuiNavigator (no tabs, no frames for FluidSynth)
+	GuiNavigator::get_instance()->register_dialog(this, "FluidSynth");
+
+	// Also register with MainWindow for compatibility
 	MainWindow::get_instance()->register_active_dialog(this);
 }
 
 Dialog_AdjFluidSynth::~Dialog_AdjFluidSynth()
 {
-	
 }
 
 Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::get_instance(QWidget *parent)
@@ -220,7 +220,7 @@ Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::get_instance(QWidget *parent)
 	{
 		dialog_adj_fluid_synth_instance = new Dialog_AdjFluidSynth(parent);
 	}
-	
+
 	return dialog_adj_fluid_synth_instance;
 }
 
@@ -230,7 +230,10 @@ void Dialog_AdjFluidSynth::closeEvent(QCloseEvent *event)
 	{
 		close_event_callback_ptr();
 	}
-	
+
+	// Unregister from GuiNavigator
+	GuiNavigator::get_instance()->unregister_dialog(this);
+
 	hide();
 }
 
@@ -247,12 +250,13 @@ void Dialog_AdjFluidSynth::control_box_ui_update_callback(int evnt, uint16_t val
 	static int prev_knob_chorus_waveform_val = 0;
 	
 	int gain_slider_gap, norm_gain;
-	
+
+	// Only process events if this dialog has focus
 	if (!this->hasFocus())
 	{
 		return;
 	}
-	
+
 	if (evnt == _I2C_CONTROL_ENCODER_1)
 	{
 		/* En/Dis Reverb */

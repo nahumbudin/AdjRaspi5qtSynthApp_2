@@ -1,11 +1,15 @@
 /**
 * @file		FluidSynthSelectProgramDialog.cpp
 *	@author		Nahum Budin
-*	@date		26-Oct-2019
-*	@version	1.0
+*	@date		19-Feb-2026
+*	@version	2.0
+*					1. Update stilesheet to dark with white font
 *
 *	@brief		Used for selecting a program from the available
 *				programs in the loaded sounfonts banks.
+*				
+*	@History:
+*				version 1.0	26-Oct-19	1st release
 *
 */
 
@@ -167,6 +171,31 @@ void Dialog_FluidSynthSelectProgram::update_soundfonts_table(std::vector<_sondfo
 
 	fluid_select_soundfont_sheet = new NQgridWidget(sf_names->size(), 2);
 
+	// Set table widget styling - white text and dark gray selection
+	fluid_select_soundfont_sheet->getTableWidget()->setStyleSheet(
+		"QTableWidget {"
+		"    color: #FFFFFF !important;"
+		"    gridline-color: #555555;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item {"
+		"    color: #FFFFFF !important;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item:selected {"
+		"    background-color: #1a1a1a;"
+		"    color: #FFFFFF !important;"
+		"}"
+		"QTableWidget::item:hover {"
+		"    background-color: #2a2a2a;"
+		"}"
+		"QHeaderView::section {"
+		"    background-color: #0a0a0a;"
+		"    color: #FFFFFF;"
+		"    border: 1px solid #555555;"
+		"    padding: 4px;"
+		"}");
+
 	fluid_select_soundfont_sheet->registerOnClickEvent(&soundfont_selected_wrapper);
 
 	fluid_select_soundfont_sheet->getTableWidget()->setToolTip("Loaded SoundFonts");
@@ -218,7 +247,34 @@ void Dialog_FluidSynthSelectProgram::update_banks_table()
 		banks_table_vertical_headers.push_back("");
 		banks_table_rows_heights.push_back(18);
 	}
+	
 	fluid_select_program_banks_sheet = new NQgridWidget(Dialog_FluidSynthChannels::active_soundfont_bank_nums.size(), 1);
+
+	// Set table widget styling - white text and dark gray selection
+	fluid_select_program_banks_sheet->getTableWidget()->setStyleSheet(
+		"QTableWidget {"
+		"    color: #FFFFFF !important;"
+		"    gridline-color: #555555;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item {"
+		"    color: #FFFFFF !important;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item:selected {"
+		"    background-color: #1a1a1a;"
+		"    color: #FFFFFF !important;"
+		"}"
+		"QTableWidget::item:hover {"
+		"    background-color: #2a2a2a;"
+		"}"
+		"QHeaderView::section {"
+		"    background-color: #0a0a0a;"
+		"    color: #FFFFFF;"
+		"    border: 1px solid #555555;"
+		"    padding: 4px;"
+		"}");
+	
 	fluid_select_program_banks_sheet->registerOnClickEvent(&bank_selected_wrapper);
 	fluid_select_program_banks_sheet->getTableWidget()->setToolTip("SoundFont Banks");
 	fluid_select_program_banks_sheet->getTableWidget()->setFont(QFont("Helvetica", 11));
@@ -286,6 +342,32 @@ void Dialog_FluidSynthSelectProgram::update_bank_presets_table(int bank, int sou
 	bank_presets_table_columns_width.push_back(150);
 	
 	fluid_bank_presets_sheet = new NQgridWidget(active_soundfont_presets.size(), 4);
+
+	// Set table widget styling - white text and dark gray selection
+	fluid_bank_presets_sheet->getTableWidget()->setStyleSheet(
+		"QTableWidget {"
+		"    color: #FFFFFF !important;"
+		"    gridline-color: #555555;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item {"
+		"    color: #FFFFFF !important;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item:selected {"
+		"    background-color: #1a1a1a;"
+		"    color: #FFFFFF !important;"
+		"}"
+		"QTableWidget::item:hover {"
+		"    background-color: #2a2a2a;"
+		"}"
+		"QHeaderView::section {"
+		"    background-color: #0a0a0a;"
+		"    color: #FFFFFF;"
+		"    border: 1px solid #555555;"
+		"    padding: 4px;"
+		"}");
+	
 	fluid_bank_presets_sheet->registerOnClickEvent(&program_selected_wrapper);
 	fluid_bank_presets_sheet->registerOnDoubleClickEvent(&on_row_double_clicked_wrapper);
 	fluid_bank_presets_sheet->getTableWidget()->setToolTip("FluidSynth selected sound font and bank presets");

@@ -18,7 +18,20 @@
 
 int Dialog_AnalogSynth_1900x1000::init_reverb_gui()
 {
+	int result = -1;
+
 	init_reverb_combboxes_and_labels();
+
+	result = init_dial_control_colors(ui->dial_ReverbRoomSize);
+	result = init_dial_control_colors(ui->dial_ReverbDamp);
+	result = init_dial_control_colors(ui->dial_ReverbWet);
+	result = init_dial_control_colors(ui->dial_ReverbDry);
+	result = init_dial_control_colors(ui->dial_ReverbWidth);
+	result = init_dial_control_colors(ui->dial_ReverbMode);
+
+	result = init_combobox_control_colors(ui->comboBox_ReverbType);
+	ui->comboBox_ReverbType->setTextAlignment(Qt::AlignCenter);
+
 	set_reverb_signals_connections();
 	reverb_update();
 

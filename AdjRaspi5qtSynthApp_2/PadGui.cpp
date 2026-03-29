@@ -22,7 +22,7 @@ int Dialog_AnalogSynth_1900x1000::init_pad_gui()
 	int result;
 
 	set_pad_signals_connections();
-	pad_update();
+	//pad_update();
 
 	string_pad_qualities_list.append("32K");
 	string_pad_qualities_list.append("64K");
@@ -64,6 +64,10 @@ int Dialog_AnalogSynth_1900x1000::init_pad_gui()
 	ui->comboBox_PadTuneSemitones->blockSignals(true);
 	ui->comboBox_PadTuneCents->blockSignals(true);
 
+	ui->comboBox_PadTuneOctave->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_PadTuneSemitones->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_PadTuneCents->setTextAlignment(Qt::AlignCenter);
+
 	for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
 	{
 		ui->comboBox_PadTuneOctave->addItem(QString::number(i));
@@ -94,12 +98,14 @@ int Dialog_AnalogSynth_1900x1000::init_pad_gui()
 	ui->comboBox_PadFreqModLFO->blockSignals(true);
 	ui->comboBox_PadFreqModLFO->addItems(string_lfo_values);
 	ui->comboBox_PadFreqModLFO->setIdentifier(_PAD_FREQ_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_PadFreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadFreqModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_PadFreqModAdsr);
 	ui->comboBox_PadFreqModAdsr->blockSignals(true);
 	ui->comboBox_PadFreqModAdsr->addItems(string_adsr_values);
 	ui->comboBox_PadFreqModAdsr->setIdentifier(_PAD_FREQ_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_PadFreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadFreqModAdsr->blockSignals(false);
 
 	// Amplitude Modulation frame and controls
@@ -112,12 +118,14 @@ int Dialog_AnalogSynth_1900x1000::init_pad_gui()
 	ui->comboBox_PadAmpModLFO->blockSignals(true);
 	ui->comboBox_PadAmpModLFO->addItems(string_lfo_values);
 	ui->comboBox_PadAmpModLFO->setIdentifier(_PAD_AMP_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_PadAmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadAmpModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_PadAmpModAdsr);
 	ui->comboBox_PadAmpModAdsr->blockSignals(true);
 	ui->comboBox_PadAmpModAdsr->addItems(string_adsr_values);
 	ui->comboBox_PadAmpModAdsr->setIdentifier(_PAD_AMP_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_PadAmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadAmpModAdsr->blockSignals(false);
 
 	// PAD Profile frame and controls
@@ -126,21 +134,25 @@ int Dialog_AnalogSynth_1900x1000::init_pad_gui()
 	result = init_combobox_control_colors(ui->comboBox_PadBaseNote);
 	ui->comboBox_PadBaseNote->blockSignals(true);
 	ui->comboBox_PadBaseNote->addItems(string_pad_base_notes_list);
+	ui->comboBox_PadBaseNote->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadBaseNote->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_PadShape);
 	ui->comboBox_PadShape->blockSignals(true);
 	ui->comboBox_PadShape->addItems(string_pad_shapes_list);
+	ui->comboBox_PadShape->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadShape->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_PadShapeCutoff);
 	ui->comboBox_PadShapeCutoff->blockSignals(true);
 	ui->comboBox_PadShapeCutoff->addItems(string_pad_shape_cutoffs_list);
+	ui->comboBox_PadShapeCutoff->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadShapeCutoff->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_PadQuality);
 	ui->comboBox_PadQuality->blockSignals(true);
 	ui->comboBox_PadQuality->addItems(string_pad_qualities_list);
+	ui->comboBox_PadQuality->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_PadQuality->blockSignals(false);
 
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_PadBaseWidth);
@@ -163,6 +175,8 @@ int Dialog_AnalogSynth_1900x1000::init_pad_gui()
 	result = init_vertical_slider_control_colors(ui->verticalSlider_PadHarmony_9);
 	result = init_vertical_slider_control_colors(ui->verticalSlider_PadHarmony_10);
 	result = init_vertical_slider_control_colors(ui->verticalSlider_PadHarmonyDetune);
+
+	pad_update();
 
 	return 0;
 }

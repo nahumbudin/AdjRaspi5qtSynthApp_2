@@ -16,6 +16,8 @@
 #include <QFileDialog>
 #include <QTimer>
 #include <QMoveEvent>
+#include <QStyle>
+#include <QPainter>
 
 #include "MainWindow.h"
 #include "Dialog_MidiPlayer.h"
@@ -80,13 +82,76 @@ void update_ui_song_remaining_playing_time(int min, int sec)
 
 Dialog_MidiPlayer *Dialog_MidiPlayer::dialog_adj_midi_player_instance = NULL;
 
+static QIcon recolorIcon(const QIcon &icon, const QColor &color, const QSize &size)
+{
+	QPixmap pixmap = icon.pixmap(size);
+	QPixmap colored(pixmap.size());
+	colored.fill(Qt::transparent);
+
+	QPainter painter(&colored);
+	painter.setCompositionMode(QPainter::CompositionMode_Source);
+	painter.drawPixmap(0, 0, pixmap);
+	painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+	painter.fillRect(colored.rect(), color);
+	painter.end();
+
+	return QIcon(colored);
+}
+
 Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 	: QDialog(parent)
 	, ui(new Ui::Dialog_MidiPlayer)
 {
 	ui->setupUi(this);
 	dialog_adj_midi_player_instance = this;
+
+	// ADD ICONS TO BUTTONS
+	QStyle *style = QApplication::style();
+	QSize iconSize(32, 32);
+
+	// Open File button - Gray icon
+	ui->pushButton_MidiPlayerOpenFile->setIcon(
+		recolorIcon(style->standardIcon(QStyle::SP_DialogOpenButton), Qt::darkGray, iconSize));
+	ui->pushButton_MidiPlayerOpenFile->setIconSize(iconSize);
+	ui->pushButton_MidiPlayerOpenFile->setFrameColor(_CONTROLS_COLOR_RED);
+	ui->pushButton_MidiPlayerOpenFile->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->pushButton_MidiPlayerBackward->setIcon(
+		recolorIcon(style->standardIcon(QStyle::SP_MediaSkipBackward), Qt::darkGray, iconSize));
+	ui->pushButton_MidiPlayerBackward->setIconSize(iconSize);
+	ui->pushButton_MidiPlayerBackward->setFrameColor(_CONTROLS_COLOR_PURPLE);
+	ui->pushButton_MidiPlayerBackward->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
 	
+	ui->pushButton_MidiPlayerPlay->setIcon(
+		recolorIcon(style->standardIcon(QStyle::SP_MediaPlay), Qt::darkGray, iconSize));
+	ui->pushButton_MidiPlayerPlay->setIconSize(QSize(32, 32));
+	ui->pushButton_MidiPlayerPlay->setFrameColor(_CONTROLS_COLOR_BLUE);
+	ui->pushButton_MidiPlayerPlay->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->pushButton_MidiPlayerPause->setIcon(
+		recolorIcon(style->standardIcon(QStyle::SP_MediaPause), Qt::darkGray, iconSize));
+	ui->pushButton_MidiPlayerPause->setIconSize(QSize(32, 32));
+	ui->pushButton_MidiPlayerPause->setFrameColor(_CONTROLS_COLOR_GREEN);
+	ui->pushButton_MidiPlayerPause->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->pushButton_MidiPlayerForward->setIcon(
+		recolorIcon(style->standardIcon(QStyle::SP_MediaSeekForward), Qt::darkGray, iconSize));
+	ui->pushButton_MidiPlayerForward->setIconSize(iconSize);
+	ui->pushButton_MidiPlayerForward->setFrameColor(_CONTROLS_COLOR_WHITE);
+	ui->pushButton_MidiPlayerForward->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+	
+	
+
+	ui->pushButton_MidiPlayerStop->setIcon(
+		recolorIcon(style->standardIcon(QStyle::SP_MediaStop), Qt::darkGray, iconSize));
+	ui->pushButton_MidiPlayerStop->setIconSize(QSize(32, 32));
+	ui->pushButton_MidiPlayerStop->setFrameColor(_CONTROLS_COLOR_YELLOW);
+	ui->pushButton_MidiPlayerStop->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->verticalSlider_MidiPlayer_Volume->setFrameColor(_CONTROLS_COLOR_PURPLE);
+	ui->verticalSlider_MidiPlayer_Volume->setHandleColor(_CONTROLS_COLOR_PURPLE);
+	ui->verticalSlider_MidiPlayer_Volume->setProgressColor(_CONTROLS_COLOR_PURPLE);
+
 	move(100, 100);
 	
 	this->setFocus(Qt::ActiveWindowFocusReason);
@@ -125,8 +190,29 @@ Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 		SIGNAL(clicked()),
 		this,
 		SLOT(on_stop_clicked()));
+
+	connect(ui->pushButton_MidiPlayerBackward,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_backward_clicked()));
+
+	connect(ui->pushButton_MidiPlayerForward,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_forward_clicked()));
 	
 	MainWindow::get_instance()->register_active_dialog(this);
+
+	// Register with GuiNavigator (no tabs for MIDI Players, but has frames)
+	QList<QString> frame_names;
+	frame_names << "Frame 1" << "Frame 2";
+
+	GuiNavigator::get_instance()->register_dialog(
+		this,
+		"MIDI Player",
+		nullptr,									// No tab widget
+		QMap<int, QList<QString>>{{0, frame_names}} // All frames in tab 0 (no tabs)
+	);
 	
 	// start a periodic timer after this timeout - 
 	start_update_timer(200);
@@ -156,6 +242,9 @@ void Dialog_MidiPlayer::closeEvent(QCloseEvent *event)
 	{
 		close_event_callback_ptr();
 	}
+
+	// Unregister from GuiNavigator
+	GuiNavigator::get_instance()->unregister_dialog(this);
 	
 	hide();
 
@@ -295,6 +384,15 @@ void Dialog_MidiPlayer::on_pause_clicked()
 void Dialog_MidiPlayer::on_stop_clicked()
 {
 	mod_synth_midi_player_stop();	
+}
+
+void Dialog_MidiPlayer::on_backward_clicked()
+{
+	mod_synth_midi_player_backward();
+}
+void Dialog_MidiPlayer::on_forward_clicked()
+{
+	mod_synth_midi_player_forward();
 }
 
 void Dialog_MidiPlayer::start_update_timer(int interval)

@@ -19,8 +19,18 @@
 
 int Dialog_AnalogSynth_1900x1000::init_distortion_gui()
 {
+	int result = -1;
+
 	set_distortion_signals_connections();
 	distortion_update();
+
+	result = init_dial_control_colors(ui->dial_DistortionDrive_1);
+	result = init_dial_control_colors(ui->dial_DistortionRange_1);
+	result = init_dial_control_colors(ui->dial_DistortionBlend_1);
+	
+	result = init_dial_control_colors(ui->dial_DistortionDrive_2);
+	result = init_dial_control_colors(ui->dial_DistortionRange_2);
+	result = init_dial_control_colors(ui->dial_DistortionBlend_2);
 
 	return 0;
 }

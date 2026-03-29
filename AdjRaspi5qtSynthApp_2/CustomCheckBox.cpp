@@ -8,186 +8,315 @@
  *	@brief		Custom checkbox class with advanced styling options
  */
 
-#include <QCheckBox>
-#include <QPainter>
-#include <QStylePainter>
-#include <QResizeEvent>
-#include <QDebug>
 #include "CustomCheckBox.h"
+#include <QPainterPath>
+#include <QStyleOption>
+
+#include "Defs.h"
 
 CustomCheckBox::CustomCheckBox(QWidget *parent)
-	: QCheckBox(parent), frame_color(QColor(100, 100, 100)), frame_visible(true), background_color(QColor(40, 40, 40)), text_color(Qt::white), check_color(QColor(34, 200, 98)) // Default green
+	: QCheckBox(parent),
+	  m_checkBoxColor(_CONTROLS_COLOR_BLACK),
+	  m_checkMarkColor(QColor(0, 255, 0)),
+	  m_frameColor(QColor(150, 150, 150)),
+	  m_backgroundColor(_CONTROLS_COLOR_BLACK), 
+	  m_textColor(QColor(255, 255, 255)), 
+	  m_ledOnColor(QColor(0, 255, 0)), 
+	  m_ledOffColor(QColor(50, 50, 50)), 
+	  m_frameWidth(2), m_checkBoxSize(20), 
+	  m_identifier(-1), 
+	  m_readOnly(false), 
+	  m_ledStyle(false), 
+	  m_mouseOver(false), 
+	  m_pressed(false)
 {
-	connect(this, &QCheckBox::stateChanged, this, [this]() { update(); });
-}
+	// Remove default styling
+	setStyleSheet("");
 
-CustomCheckBox::CustomCheckBox(const QString &text, QWidget *parent)
-	: QCheckBox(text, parent), frame_color(QColor(100, 100, 100)), frame_visible(true), background_color(QColor(40, 40, 40)), text_color(Qt::white), check_color(QColor(34, 200, 98)) // Default green
-{
-	connect(this, &QCheckBox::stateChanged, this, [this]() { update(); });
+	// Connect internal state changed signal
+	connect(this, &QCheckBox::stateChanged, this, &CustomCheckBox::onStateChanged);
 }
 
 CustomCheckBox::~CustomCheckBox()
 {
 }
 
-void CustomCheckBox::mousePressEvent(QMouseEvent *event)
+void CustomCheckBox::setCheckBoxColor(const QColor &color)
 {
-	if (!read_only)
-	{
-		QCheckBox::mousePressEvent(event);
-	}
-	// If read_only, ignore the event (don't call base class)
-}
-
-void CustomCheckBox::mouseReleaseEvent(QMouseEvent *event)
-{
-	if (!read_only)
-	{
-		QCheckBox::mouseReleaseEvent(event);
-	}
-}
-
-void CustomCheckBox::setChecked(bool checked)
-{
-	QCheckBox::setChecked(checked);
-	update(); // Force repaint after state change
-}
-
-void CustomCheckBox::setFrameColor(QColor color)
-{
-	frame_color = color;
+	m_checkBoxColor = color;
 	update();
 }
 
-void CustomCheckBox::setFrameVisible(bool visible)
+void CustomCheckBox::setCheckMarkColor(const QColor &color)
 {
-	frame_visible = visible;
+	m_checkMarkColor = color;
 	update();
 }
 
-void CustomCheckBox::setBackgroundColor(QColor color)
+void CustomCheckBox::setFrameColor(const QColor &color)
 {
-	background_color = color;
+	m_frameColor = color;
 	update();
 }
 
-void CustomCheckBox::setTextColor(QColor color)
+void CustomCheckBox::setBackgroundColor(const QColor &color)
 {
-	text_color = color;
+	m_backgroundColor = color;
 	update();
 }
 
-void CustomCheckBox::setCheckColor(QColor color)
+void CustomCheckBox::setTextColor(const QColor &color)
 {
-	check_color = color;
+	m_textColor = color;
 	update();
 }
 
-int CustomCheckBox::calculateIndicatorSize() const
+void CustomCheckBox::setFrameWidth(int width)
 {
-	// Calculate indicator size based on font metrics
-	QFontMetrics fm(font());
-	int size = fm.height() - 2; // Slightly smaller than text height
+	m_frameWidth = qMax(1, width);
+	update();
+}
 
-	// Ensure minimum and maximum sizes
-	if (size < 14)
-		size = 14;
-	if (size > 22)
-		size = 22;
+void CustomCheckBox::setCheckBoxSize(int size)
+{
+	m_checkBoxSize = qMax(10, size);
+	setMinimumHeight(m_checkBoxSize + 4);
+	update();
+}
 
-	return size;
+void CustomCheckBox::setReadOnly(bool readOnly)
+{
+	m_readOnly = readOnly;
+	setEnabled(!readOnly);
+}
+
+void CustomCheckBox::setIdentifier(int id)
+{
+	m_identifier = id;
+}
+
+int CustomCheckBox::getIdentifier() const
+{
+	return m_identifier;
+}
+
+void CustomCheckBox::setLedStyle(bool enabled)
+{
+	m_ledStyle = enabled;
+	update();
+}
+
+void CustomCheckBox::setLedOnColor(const QColor &color)
+{
+	m_ledOnColor = color;
+	update();
+}
+
+void CustomCheckBox::setLedOffColor(const QColor &color)
+{
+	m_ledOffColor = color;
+	update();
 }
 
 void CustomCheckBox::paintEvent(QPaintEvent *event)
 {
-	//static int paintCount = 0;
-	//qDebug() << "paintEvent called" << ++paintCount << "isChecked:" << isChecked();
-	
+	Q_UNUSED(event);
+
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing);
 
-	// Get dimensions
-	int indicatorSize = calculateIndicatorSize();
-	int spacing = 6; // Space between checkbox and text
-	int borderWidth = 2;
-	int frameMargin = 1;
-
-	// Calculate checkbox rectangle position
-	QRect checkboxRect(frameMargin, (height() - indicatorSize) / 2, indicatorSize, indicatorSize);
-
-	// 1. Draw outer frame (if visible)
-	if (frame_visible)
+	if (m_ledStyle)
 	{
-		QPen framePen(isEnabled() ? frame_color : QColor(80, 80, 80), 1);
-		painter.setPen(framePen);
-		painter.setBrush(Qt::NoBrush);
+		drawLedCheckBox(painter);
+	}
+	else
+	{
+		drawCheckBox(painter);
+	}
+}
 
-		QRect outerFrame = checkboxRect.adjusted(-frameMargin, -frameMargin, frameMargin, frameMargin);
-		painter.drawRect(outerFrame);
+void CustomCheckBox::drawCheckBox(QPainter &painter)
+{
+	int boxSize = m_checkBoxSize;
+	int boxX = 2;
+	int boxY = (height() - boxSize) / 2;
+
+	// Draw background
+	painter.fillRect(rect(), m_backgroundColor);
+
+	// Draw checkbox box
+	QRectF checkBoxRect(boxX, boxY, boxSize, boxSize);
+
+	// Fill checkbox
+	QColor fillColor = m_checkBoxColor;
+	if (m_mouseOver && !m_readOnly)
+	{
+		fillColor = fillColor.lighter(120);
+	}
+	if (m_pressed && !m_readOnly)
+	{
+		fillColor = fillColor.darker(120);
 	}
 
-	// 2. Draw checkbox background
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(isEnabled() ? background_color : QColor(60, 60, 60));
-	painter.drawRect(checkboxRect);
+	painter.fillRect(checkBoxRect, fillColor);
 
-	// 3. Draw checkbox border
-	QPen borderPen(isEnabled() ? frame_color.lighter(120) : QColor(80, 80, 80), borderWidth);
-	painter.setPen(borderPen);
-	painter.setBrush(Qt::NoBrush);
-	QRect borderRect = checkboxRect.adjusted(
-		borderWidth / 2,
-		borderWidth / 2,
-		-borderWidth / 2,
-		-borderWidth / 2);
-	painter.drawRect(borderRect);
+	// Draw frame
+	painter.setPen(QPen(m_frameColor, m_frameWidth));
+	painter.drawRect(checkBoxRect);
 
-	// 4. Draw colored rectangle when checked
+	// Draw check mark if checked
 	if (isChecked())
 	{
-		int margin = 4; // Margin from checkbox edges for the colored rectangle
-		QRect fillRect = checkboxRect.adjusted(margin, margin, -margin, -margin);
+		painter.setPen(QPen(m_checkMarkColor, m_frameWidth + 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
-		painter.setPen(Qt::NoPen);
-		painter.setBrush(isEnabled() ? check_color : QColor(100, 100, 100));
-		painter.drawRect(fillRect);
+		// Draw checkmark
+		qreal margin = boxSize * 0.2;
+		QPointF p1(boxX + margin, boxY + boxSize / 2);
+		QPointF p2(boxX + boxSize * 0.4, boxY + boxSize - margin);
+		QPointF p3(boxX + boxSize - margin, boxY + margin);
+
+		painter.drawLine(p1, p2);
+		painter.drawLine(p2, p3);
+	}
+	else if (checkState() == Qt::PartiallyChecked)
+	{
+		// Draw horizontal line for partially checked
+		painter.setPen(QPen(m_checkMarkColor, m_frameWidth + 1));
+		qreal margin = boxSize * 0.3;
+		painter.drawLine(QPointF(boxX + margin, boxY + boxSize / 2),
+						 QPointF(boxX + boxSize - margin, boxY + boxSize / 2));
 	}
 
-	// 5. Draw text label (if exists)
+	// Draw text
 	if (!text().isEmpty())
 	{
-		QRect textRect(
-			checkboxRect.right() + spacing,
-			0,
-			width() - checkboxRect.right() - spacing,
-			height());
+		painter.setPen(m_textColor);
+		QFont font = this->font();
+		painter.setFont(font);
 
-		painter.setPen(isEnabled() ? text_color : QColor(120, 120, 120));
-		QFont textFont = font();
-		painter.setFont(textFont);
+		QRectF textRect(boxX + boxSize + 5, 0, width() - boxX - boxSize - 7, height());
 		painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, text());
 	}
+}
 
-	// 6. Draw focus indicator if widget has focus
-	if (hasFocus())
+void CustomCheckBox::drawLedCheckBox(QPainter &painter)
+{
+	int boxSize = m_checkBoxSize;
+	int boxX = 2;
+	int boxY = (height() - boxSize) / 2;
+
+	// Draw background
+	painter.fillRect(rect(), m_backgroundColor);
+
+	// Draw LED circle
+	QRectF ledRect(boxX, boxY, boxSize, boxSize);
+
+	// Choose color based on state
+	QColor ledColor = isChecked() ? m_ledOnColor : m_ledOffColor;
+
+	if (m_mouseOver && !m_readOnly)
 	{
-		QPen focusPen(check_color.lighter(150), 1, Qt::DotLine);
-		painter.setPen(focusPen);
-		painter.setBrush(Qt::NoBrush);
-		painter.drawRect(rect().adjusted(1, 1, -1, -1));
+		ledColor = ledColor.lighter(110);
+	}
+
+	// Draw outer glow if checked
+	if (isChecked())
+	{
+		painter.setPen(Qt::NoPen);
+		QRadialGradient gradient(ledRect.center(), boxSize * 0.7);
+		gradient.setColorAt(0, ledColor);
+		gradient.setColorAt(0.6, ledColor.darker(150));
+		gradient.setColorAt(1, Qt::transparent);
+		painter.setBrush(gradient);
+		painter.drawEllipse(ledRect.adjusted(-3, -3, 3, 3));
+	}
+
+	// Draw LED body
+	painter.setPen(QPen(m_frameColor, m_frameWidth));
+	painter.setBrush(ledColor);
+	painter.drawEllipse(ledRect);
+
+	// Draw highlight
+	if (isChecked())
+	{
+		QRectF highlightRect = ledRect.adjusted(boxSize * 0.2, boxSize * 0.2, -boxSize * 0.5, -boxSize * 0.5);
+		painter.setPen(Qt::NoPen);
+		painter.setBrush(QColor(255, 255, 255, 180));
+		painter.drawEllipse(highlightRect);
+	}
+
+	// Draw text
+	if (!text().isEmpty())
+	{
+		painter.setPen(m_textColor);
+		QFont font = this->font();
+		painter.setFont(font);
+
+		QRectF textRect(boxX + boxSize + 5, 0, width() - boxX - boxSize - 7, height());
+		painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, text());
 	}
 }
 
-void CustomCheckBox::resizeEvent(QResizeEvent *event)
+void CustomCheckBox::enterEvent(QEvent *event)
 {
-	QCheckBox::resizeEvent(event);
+	Q_UNUSED(event);
+	m_mouseOver = true;
 	update();
+
+	if (m_identifier >= 0)
+	{
+		emit mouseEntered(m_identifier);
+	}
 }
 
-void CustomCheckBox::updateStyleSheet()
+void CustomCheckBox::leaveEvent(QEvent *event)
 {
-	// This method can be used for additional stylesheet updates if needed
-	// Currently, all styling is done in paintEvent
+	Q_UNUSED(event);
+	m_mouseOver = false;
+	m_pressed = false;
 	update();
+
+	if (m_identifier >= 0)
+	{
+		emit mouseExited(m_identifier);
+	}
+}
+
+void CustomCheckBox::mousePressEvent(QMouseEvent *event)
+{
+	if (m_readOnly)
+	{
+		event->ignore();
+		return;
+	}
+
+	if (event->button() == Qt::LeftButton)
+	{
+		m_pressed = true;
+		update();
+	}
+
+	QCheckBox::mousePressEvent(event);
+}
+
+void CustomCheckBox::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (m_readOnly)
+	{
+		event->ignore();
+		return;
+	}
+
+	m_pressed = false;
+	update();
+
+	QCheckBox::mouseReleaseEvent(event);
+}
+
+void CustomCheckBox::onStateChanged(int state)
+{
+	if (m_identifier >= 0)
+	{
+		emit stateChangedWithId(m_identifier, state == Qt::Checked);
+	}
 }

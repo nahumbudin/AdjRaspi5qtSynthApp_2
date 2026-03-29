@@ -14,6 +14,31 @@
 
 #include <QComboBox>
 #include <QColor>
+#include <QStyledItemDelegate>
+#include <QPainter>	
+#include <QStyleOptionViewItem>
+#include <QStylePainter>
+
+class CenteredComboBoxDelegate : public QStyledItemDelegate
+{
+  public:
+	explicit CenteredComboBoxDelegate(QObject *parent = nullptr)
+		: QStyledItemDelegate(parent), alignment(Qt::AlignLeft | Qt::AlignVCenter) {}
+
+	void setAlignment(Qt::Alignment align) { alignment = align; }
+
+	void paint(QPainter *painter, const QStyleOptionViewItem &option,
+			   const QModelIndex &index) const override
+	{
+		QStyleOptionViewItem opt = option;
+		initStyleOption(&opt, index);
+		opt.displayAlignment = alignment;
+		QStyledItemDelegate::paint(painter, opt, index);
+	}
+
+  private:
+	Qt::Alignment alignment;
+};
 
 class CustomComboBox : public QComboBox
 {
@@ -32,6 +57,9 @@ class CustomComboBox : public QComboBox
 
 	void setIdentifier(int idn);
 	int getIdentifier() const;
+
+	void setTextAlignment(Qt::Alignment alignment);
+	Qt::Alignment getTextAlignment() const;
 
 signals:
 	void mouseEntered(int id);
@@ -52,4 +80,9 @@ private:
 	int frame_width;
 
 	int id;
+
+	Qt::Alignment text_alignment;
+	QString alignmentToStyleString(Qt::Alignment alignment) const;
+
+	CenteredComboBoxDelegate *delegate;
 };

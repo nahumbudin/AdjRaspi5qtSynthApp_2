@@ -45,6 +45,12 @@ class Dialog_AnalogSynth_1900x1000 : public QDialog
 
 	void update_all();
 
+	void control_box_ui_update_callback(int evnt, uint16_t val);
+	
+
+	// Handle frame navigation
+	void on_frame_changed(const QString &frame_name, int frame_index);
+
 	void sketch_selected(int sketch, bool val);
 
 	void osc1_set_unison_mode(int mode);
@@ -289,9 +295,9 @@ protected slots:
 	void on_filter1_kbd_track_dial_changed(int val);
 	void on_filter1_band_combo_hanged(int val);
 	void on_filter1_freq_mod_lfo_combo_changed(int val);
-	void on_filter1_freq_mod_level_lfo_dial_changed(int val);
+	void on_filter1_freq_mod_level_lfo_slider_changed(int val);
 	void on_filter1_freq_mod_adsr_combo_changed(int val);
-	void on_filter1_freq_mod_level_adsr_dial_hanged(int val);
+	void on_filter1_freq_mod_level_adsr_slider_hanged(int val);
 
 	void on_filter2_freq_dial_changed(int val);
 	void on_filter2_q_dial_changed(int val);
@@ -299,9 +305,9 @@ protected slots:
 	void on_filter2_kbd_track_dial_changed(int val);
 	void on_filter2_band_combo_hanged(int val);
 	void on_filter2_freq_mod_lfo_combo_changed(int val);
-	void on_filter2_freq_mod_level_lfo_dial_changed(int val);
+	void on_filter2_freq_mod_level_lfo_slider_changed(int val);
 	void on_filter2_freq_mod_adsr_combo_changed(int val);
-	void on_filter2_freq_mod_level_adsr_dial_hanged(int val);
+	void on_filter2_freq_mod_level_adsr_slider_hanged(int val);
 	void on_filter2_track_filter1_checkbox_changed(bool val);
 
 	void on_distortion1_drive_dial_changed(int val);
@@ -347,6 +353,30 @@ protected slots:
 	void on_reverb_width_spinbox_changed(int val);
 	void on_reverb_mode_spinbox_changed(int val);
 
+	void on_band_equilizer_band31_slider_changed(int val);
+	void on_band_equilizer_band62_slider_changed(int val);
+	void on_band_equilizer_band125_slider_changed(int val);
+	void on_band_equilizer_band250_slider_changed(int val);
+	void on_band_equilizer_band500_slider_changed(int val);
+	void on_band_equilizer_band1K_slider_changed(int val);
+	void on_band_equilizer_band2K_slider_changed(int val);
+	void on_band_equilizer_band4K_slider_changed(int val);
+	void on_band_equilizer_band8K_slider_changed(int val);
+	void on_band_equilizer_band16K_slider_changed(int val);
+
+	void on_band_equilizer_band31_spinbox_changed(int val);
+	void on_band_equilizer_band62_spinbox_changed(int val);
+	void on_band_equilizer_band125_spinbox_changed(int val);
+	void on_band_equilizer_band250_spinbox_changed(int val);
+	void on_band_equilizer_band500_spinbox_changed(int val);
+	void on_band_equilizer_band1K_spinbox_changed(int val);
+	void on_band_equilizer_band2K_spinbox_changed(int val);
+	void on_band_equilizer_band4K_spinbox_changed(int val);
+	void on_band_equilizer_band8K_spinbox_changed(int val);
+	void on_band_equilizer_band16K_spinbox_changed(int val);
+	
+	void on_band_equilizer_band_preset_changed(int val);
+	void on_band_equilizer_set_all_zero_licked(bool val);
 
 	void on_adsr1_attack_level_slider_changed(int val);
 	void on_adsr1_decay_level_slider_changed(int val);
@@ -739,6 +769,7 @@ protected slots:
 	int init_distortion_gui();
 	int init_amps_gui();
 	int init_reverb_gui();
+	int init_equalizer_gui();
 	int init_adsrs_gui();
 	int init_lfos_gui();
 
@@ -785,6 +816,10 @@ protected slots:
 	void set_reverb_signals_connections();
 	void reverb_update();
 	void init_reverb_combboxes_and_labels();
+
+	void set_equalizer_signals_connections();
+	void equalizer_update();
+	void init_equalizer_combboxes_and_labels();
 
 	void set_amps_signals_connections();
 	void amps_update();
@@ -833,6 +868,8 @@ protected slots:
 	QSlider *unison_level_sliders[9];
 
 	QList<QString> string_reverb_types_list;
+
+	QList<QString> string_equalizer_presets;
 
 	map<CustomComboBox *, int> select_adsr_combo_box_index;
 };

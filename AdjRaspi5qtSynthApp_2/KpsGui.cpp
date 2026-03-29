@@ -41,12 +41,14 @@ int Dialog_AnalogSynth_1900x1000::init_karplus_strong_gui()
 	result = init_combobox_control_colors(ui->comboBox_KarplusSynth_ExcitationWaveform);
 	ui->comboBox_KarplusSynth_ExcitationWaveform->blockSignals(true);
 	ui->comboBox_KarplusSynth_ExcitationWaveform->addItems(string_karplus_excitation_waveform_list);
+	ui->comboBox_KarplusSynth_ExcitationWaveform->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_KarplusSynth_ExcitationWaveform->blockSignals(false);
 
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_WaveformVariations);
 	result = init_combobox_control_colors(ui->comboBox_KarplusSynth_CalculationMode);
 	ui->comboBox_KarplusSynth_CalculationMode->blockSignals(true);
 	ui->comboBox_KarplusSynth_CalculationMode->addItems(string_karplus_string_damping_calc_mode_list);
+	ui->comboBox_KarplusSynth_CalculationMode->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_KarplusSynth_CalculationMode->blockSignals(false);
 
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_StringDamping);
@@ -121,7 +123,7 @@ void Dialog_AnalogSynth_1900x1000::set_kps_signals_connections()
 			this,
 			SLOT(on_karplus_send_filter2_dial_changed(int)));
 
-	connect(ui->checkBox_KpsEnable,
+	connect(ui->checkBox_KpsActive,
 			SIGNAL(toggled(bool)),
 			this,
 			SLOT(on_karplus_enable_checkbox_changed(bool)));
@@ -203,9 +205,9 @@ void Dialog_AnalogSynth_1900x1000::kps_update()
 
 	kps_enabled = mod_synth_get_active_karplus_enable_state();
 
-	ui->checkBox_KpsEnable->blockSignals(true);
-	ui->checkBox_KpsEnable->setChecked(kps_enabled);
-	ui->checkBox_KpsEnable->blockSignals(false);
+	ui->checkBox_KpsActive->blockSignals(true);
+	ui->checkBox_KpsActive->setChecked(kps_enabled);
+	ui->checkBox_KpsActive->blockSignals(false);
 
 	if (kps_enabled)
 	{
@@ -405,21 +407,20 @@ void Dialog_AnalogSynth_1900x1000::on_karplus_send_filter2_dial_changed(int val)
 
 void Dialog_AnalogSynth_1900x1000::on_karplus_enable_checkbox_changed(bool en)
 {
-	ui->checkBox_KpsEnable->blockSignals(true);
+	ui->checkBox_KpsActive->blockSignals(true);
 
 	if (en)
 	{
-		ui->checkBox_KpsEnable->setCheckState(Qt::Checked);
+		ui->checkBox_KpsActive->setCheckState(Qt::Checked);
 		mod_synth_enable_karplus();
 	}
 	else
 	{
-		ui->checkBox_KpsEnable->setCheckState(Qt::Unchecked);
+		ui->checkBox_KpsActive->setCheckState(Qt::Unchecked);
 		mod_synth_disable_karplus();
 	}
 
-	ui->checkBox_KpsEnable->blockSignals(false);
-
+	ui->checkBox_KpsActive->blockSignals(false);
 	kps_enabled = en;
 
 	mod_synth_karplus_event_bool(_KARPLUS_1_EVENT, _KARPLUS_STRONG_ENABLE, en);

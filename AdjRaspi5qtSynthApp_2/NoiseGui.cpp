@@ -34,6 +34,7 @@ int Dialog_AnalogSynth_1900x1000::init_noise_gui()
 	result = init_combobox_control_colors(ui->comboBox_NoiseColor);
 	ui->comboBox_NoiseColor->blockSignals(true);
 	ui->comboBox_NoiseColor->addItems(string_noise_colors_list);
+	ui->comboBox_NoiseColor->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_NoiseColor->blockSignals(false);
 
 	result = init_dial_control_colors(ui->dial_NoiseSendFilter1);
@@ -49,12 +50,14 @@ int Dialog_AnalogSynth_1900x1000::init_noise_gui()
 	ui->comboBox_NoiseAmpModAdsr->blockSignals(true);
 	ui->comboBox_NoiseAmpModAdsr->addItems(string_adsr_values);
 	ui->comboBox_NoiseAmpModAdsr->setIdentifier(_NOISE_AMP_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_NoiseAmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_NoiseAmpModAdsr->blockSignals(false);
 	
 	result = init_combobox_control_colors(ui->comboBox_NoiseAmpModLFO);
 	ui->comboBox_NoiseAmpModLFO->blockSignals(true);
 	ui->comboBox_NoiseAmpModLFO->addItems(string_lfo_values);
 	ui->comboBox_NoiseAmpModLFO->setIdentifier(_NOISE_AMP_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_NoiseAmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_NoiseAmpModLFO->blockSignals(false);
 
 		return 0;
@@ -117,7 +120,7 @@ void Dialog_AnalogSynth_1900x1000::set_noise_signals_connections()
 			this,
 			SLOT(on_noise_color_combobox_changed(int)));
 
-	connect(ui->checkBox_NoiseEnable,
+	connect(ui->checkBox_NoiseActive,
 			SIGNAL(toggled(bool)),
 			this,
 			SLOT(on_noise_enable_changed(bool)));
@@ -170,9 +173,9 @@ void Dialog_AnalogSynth_1900x1000::noise_update()
 	ui->spinBox_NoiseAmpModAdsrLevel->blockSignals(false);
 
 	noise_enabled = mod_synth_get_active_noise_enable_state();
-	ui->checkBox_NoiseEnable->blockSignals(true);
-	ui->checkBox_NoiseEnable->setChecked(noise_enabled);
-	ui->checkBox_NoiseEnable->blockSignals(false);
+	ui->checkBox_NoiseActive->blockSignals(true);
+	ui->checkBox_NoiseActive->setChecked(noise_enabled);
+	ui->checkBox_NoiseActive->blockSignals(false);
 
 	if (noise_enabled)
 	{
@@ -188,18 +191,18 @@ void Dialog_AnalogSynth_1900x1000::noise_update()
 
 void Dialog_AnalogSynth_1900x1000::on_noise_enable_changed(bool en)
 {
-	ui->checkBox_NoiseEnable->blockSignals(true);
+	ui->checkBox_NoiseActive->blockSignals(true);
 	if (en)
 	{
-		ui->checkBox_NoiseEnable->setCheckState(Qt::Checked);
+		ui->checkBox_NoiseActive->setCheckState(Qt::Checked);
 		mod_synth_enable_noise();
 	}
 	else
 	{
-		ui->checkBox_NoiseEnable->setCheckState(Qt::Unchecked);
+		ui->checkBox_NoiseActive->setCheckState(Qt::Unchecked);
 		mod_synth_disable_noise();
 	}
-	ui->checkBox_NoiseEnable->blockSignals(false);
+	ui->checkBox_NoiseActive->blockSignals(false);
 
 	noise_enabled = en;
 

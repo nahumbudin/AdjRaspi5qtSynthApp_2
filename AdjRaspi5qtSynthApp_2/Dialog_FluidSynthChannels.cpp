@@ -1,12 +1,14 @@
 /**
-* @file		Dialog_FluidSynthChannels.cpp
-*	@author		Nahum Budin
-*	@date		21-Jul-2024
-*	@version	1.0
-*
-*	@brief		Adj FluidSynth channels dialog
-*	
-*	History
+ * @file		Dialog_FluidSynthChannels.cpp
+ *	@author		Nahum Budin
+ *	@date		19-Feb-2026
+ *	@version	2.0
+ *					1. Update stilesheet to dark with white font
+ *
+ *	@brief		Adj FluidSynth channels dialog
+ *
+ *	@History:
+ *				version 1.0	21-Jul-24	1st release
 *	
 *		Based on AdjModSynth_2 project MainWindow.h V1.1 16-Jan-2021
 *
@@ -257,6 +259,31 @@ int Dialog_FluidSynthChannels::init_channels_table_widget(int chan_group)
 		fluid_channels_sheet_9_16 = new NQgridWidget(8, 6);
 		fluid_channels_sheet = fluid_channels_sheet_9_16;
 	}
+
+	// Set table widget styling - white text and dark gray selection
+	fluid_channels_sheet->getTableWidget()->setStyleSheet(
+		"QTableWidget {"
+		"    color: #FFFFFF !important;" // White text - force with !important
+		"    gridline-color: #555555;"
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item {"
+		"    color: #FFFFFF !important;" // Ensure all items are white
+		"    background-color: #0a0a0a;"
+		"}"
+		"QTableWidget::item:selected {"
+		"    background-color: #1a1a1a;" // Dark gray selection
+		"    color: #FFFFFF !important;" // Keep text white when selected
+		"}"
+		"QTableWidget::item:hover {"
+		"    background-color: #2a2a2a;"
+		"}"
+		"QHeaderView::section {"
+		"    background-color: #0a0a0a;"
+		"    color: #FFFFFF;" // White header text
+		"    border: 1px solid #555555;"
+		"    padding: 4px;"
+		"}");
 	
 	fluid_channels_sheet->getTableWidget()->setFont(QFont("Helvetica", 12));
 	fluid_channels_sheet->getTableWidget()->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);

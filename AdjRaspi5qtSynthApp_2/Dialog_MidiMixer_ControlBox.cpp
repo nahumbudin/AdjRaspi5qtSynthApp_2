@@ -18,19 +18,150 @@
 
 #include "Dialog_MidiMixer.h"
 #include "ui_Dialog_MidiMixer_1620x840.h"
+#include "GuiNavigator.h"
+
+#include "utils.h"
 
 void Dialog_MidiMixer::control_box_ui_update_callback(int evnt, uint16_t val)
 {
 	int channel = -1;
-	int volume, volume_slider_gap;
+	int level, level_slider_gap;
 	Qt::CheckState checked;
 
-	static int prev_knob_chan_vol_val[16] = {64};
+	const int channel_level_max = 100;
+	const int channels_level_min = 0;
+	const int pan_max = 100;
+	const int pan_min = 0;
+	const int pan_mod_level_max = 100;
+	const int pan_mod_level_min = 0;
+	const int pan_mod_lfo_selection_max = 6; // _LFO_NONE + 5 LFOs
+	const int pan_mod_lfo_selection_min = _LFO_NONE;
+	const int send_level_max = 100;
+	const int send_level_min = 0;
 
-	if (!this->hasFocus())
-	{
+	static int pan_val[16] = {50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50};
+	static int pan_mod_level_val[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static int pan_mod_lfo_selection_val[16] = {_LFO_NONE,_LFO_NONE,_LFO_NONE,_LFO_NONE,_LFO_NONE,											 
+												_LFO_NONE,_LFO_NONE,_LFO_NONE,_LFO_NONE,_LFO_NONE,											 
+												_LFO_NONE,_LFO_NONE,_LFO_NONE,_LFO_NONE,_LFO_NONE,												 
+												_LFO_NONE};
+	static int send_level_val[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	
+	static int prev_chan_level_val[16] = {64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64};
+	static int prev_knob_pan_val[16] = {64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64};
+	static int prev_knob_pan_mod_level_val[16] = {64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64};
+	static int prev_knob_pan_mod_lfo_selection_val[16] = {64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64};
+	static int prev_chan_send_level_val[16] = { 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64};
+
+	if (!this->hasFocus()){
+		// Only process events if this dialog has focus
 		return;
 	}
+
+	if ((evnt <= _I2C_CONTROL_SLIDER_16) && (evnt >= _I2C_CONTROL_SLIDER_1))
+	{
+		// Slider events for channels 1-16 level control
+		channel = evnt - _I2C_CONTROL_SLIDER_1; // Map slider event to channel index (0-15)
+
+		level = normalize_slider_value(val / 37, channel_level_max, channels_level_min); // 0-3700
+		// Change slider value only when it matches the UI slider position
+		if (channels_levels[channel] > channel_level_max)
+		{
+			channels_levels[channel] = channel_level_max; // TODO: how did we get here?
+		}
+		level_slider_gap = channels_levels[channel] - level;
+
+		if (abs((float)level_slider_gap) < ((channel_level_max - channels_level_min) / 5.0))
+		{
+			// Emits value changed signal.
+			sliders_levels[channel]->setValue(level);
+		}
+	}
+	else
+	{
+		if ((evnt <= _I2C_CONTROL_ENCODER_16) && (evnt >= _I2C_CONTROL_ENCODER_1))
+		{
+			// Dial events for channels 1-16 pan control and send control
+			channel = evnt - _I2C_CONTROL_ENCODER_1; // Map encoder event to channel index (0-15)
+
+			if (val == 4096)
+			{
+				// Knob pushbutton pressed - toggle static level state
+				checkboxes_static_levels[channel]->setCheckState(checkboxes_static_levels[channel]->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+			}
+			else if (val == 8192)
+			{
+				// Knob pushbutton released
+				
+			}
+			else
+			{
+				// Knob rotated
+				GuiNavigator *navigator = GuiNavigator::get_instance();
+				int current_frame_index = navigator->get_current_frame_index();
+
+				switch (current_frame_index)
+				{
+				case 0:
+					// Pans control box events for channels 1-16
+					pan_val[channel] = update_rotary_encoder_value(
+						pan_val[channel],
+						val,
+						&prev_knob_pan_val[channel],
+						pan_min,
+						pan_max,
+						4);
+
+					dials_pan[channel]->setValue(pan_val[channel]);
+
+					break;
+
+				case 1:
+					// Pan modulation LFO level control box events for channels 1-16
+					pan_mod_level_val[channel] = update_rotary_encoder_value(
+						pan_mod_level_val[channel],
+						val,
+						&prev_knob_pan_mod_level_val[channel],
+						pan_mod_level_min,
+						pan_mod_level_max,
+						4);
+
+					dials_pan_lfo_mod_level[channel]->setValue(pan_mod_level_val[channel]);
+
+					break;
+
+				case 2:
+					// Pan modulation LFO selection control box events for channels 1-16
+					pan_mod_lfo_selection_val[channel] = update_rotary_encoder_value(
+						pan_mod_lfo_selection_val[channel],
+						val,
+						&prev_knob_pan_mod_lfo_selection_val[channel],
+						pan_mod_lfo_selection_min,
+						pan_mod_lfo_selection_max,
+						1);
+
+					comboboxes_pan_lfo_mod[channel]->setCurrentIndex(pan_mod_lfo_selection_val[channel]);
+
+					break;
+
+				case 3:
+					// Send control box events for channels 1-16
+					send_level_val[channel] = update_rotary_encoder_value(
+						send_level_val[channel],
+						val,
+						&prev_chan_send_level_val[channel],
+						send_level_min,
+						send_level_max,
+						4);
+
+					dials_send[channel]->setValue(send_level_val[channel]);
+
+					break;
+				}
+			}
+		}
+	}
+
 	/*
 
 	if ((evnt == _CONTROL_FUNCTION_PUSHBUTTON_UP) &&
@@ -50,6 +181,7 @@ void Dialog_MidiMixer::control_box_ui_update_callback(int evnt, uint16_t val)
 		}
 
 	}
+// COM Port box
 	else if (evnt == _CONTROL_SLIDER_BLUE_GRAY)
 	{
 		channel = active_channels_tab * 8;

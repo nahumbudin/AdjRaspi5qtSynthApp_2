@@ -33,32 +33,63 @@ int Dialog_AnalogSynth_1900x1000::init_filters_gui()
 	ui->comboBox_FilterBand_1->blockSignals(true);
 	ui->comboBox_FilterBand_1->clear();
 	ui->comboBox_FilterBand_1->addItems(string_filters_bands);
+	ui->comboBox_FilterBand_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterBand_1->blockSignals(false);
 
 	ui->comboBox_FilterBand_2->blockSignals(true);
 	ui->comboBox_FilterBand_2->clear();
 	ui->comboBox_FilterBand_2->addItems(string_filters_bands);
+	ui->comboBox_FilterBand_2->setTextAlignment(Qt::AlignCenter);	
 	ui->comboBox_FilterBand_2->blockSignals(false);
 
 	ui->comboBox_FilterFreqModAdsr_1->blockSignals(true);
 	ui->comboBox_FilterFreqModAdsr_1->addItems(string_adsr_values);
 	ui->comboBox_FilterFreqModAdsr_1->setIdentifier(_FILTER1_FREQ_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_FilterFreqModAdsr_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModAdsr_1->blockSignals(false);
 
 	ui->comboBox_FilterFreqModLfo_1->blockSignals(true);
 	ui->comboBox_FilterFreqModLfo_1->addItems(string_lfo_values);
 	ui->comboBox_FilterFreqModLfo_1->setIdentifier(_FILTER1_FREQ_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_FilterFreqModLfo_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModLfo_1->blockSignals(false);
 
 	ui->comboBox_FilterFreqModAdsr_2->blockSignals(true);
 	ui->comboBox_FilterFreqModAdsr_2->addItems(string_adsr_values);
 	ui->comboBox_FilterFreqModAdsr_2->setIdentifier(_FILTER2_FREQ_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_FilterFreqModAdsr_2->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModAdsr_2->blockSignals(false);
 
 	ui->comboBox_FilterFreqModLfo_2->blockSignals(true);
 	ui->comboBox_FilterFreqModLfo_2->addItems(string_lfo_values);
 	ui->comboBox_FilterFreqModLfo_2->setIdentifier(_FILTER2_FREQ_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_FilterFreqModLfo_2->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModLfo_2->blockSignals(false);
+
+	result = init_dial_control_colors(ui->dial_FilterFreq_1);
+	result = init_dial_control_colors(ui->dial_FilterOctave_1);
+	result = init_dial_control_colors(ui->dial_FilterQ_1);
+	result = init_dial_control_colors(ui->dial_FilterKbdTrack_1);
+	
+	result = init_dial_control_colors(ui->dial_FilterFreq_2);
+	result = init_dial_control_colors(ui->dial_FilterOctave_2);
+	result = init_dial_control_colors(ui->dial_FilterQ_2);
+	result = init_dial_control_colors(ui->dial_FilterKbdTrack_2);
+
+	result = init_combobox_control_colors(ui->comboBox_FilterBand_1);
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModAdsr_1);
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModLfo_1);
+	
+	result = init_combobox_control_colors(ui->comboBox_FilterBand_2);
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModAdsr_2);
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModLfo_2);
+
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModLfoLevel_1);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModAdsrLevel_1);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModLfoLevel_2);
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModAdsrLevel_2);
+	
 
 	set_filters_signals_connections();
 	filters_update();
@@ -98,20 +129,20 @@ void Dialog_AnalogSynth_1900x1000::set_filters_signals_connections()
 			this,
 			SLOT(on_filter1_freq_mod_lfo_combo_changed(int)));
 
-	connect(ui->dial_FilterFreqModLfoLevel_1,
+	connect(ui->verticalSlider_FilterFreqModLfoLevel_1,
 			SIGNAL(valueChanged(int)),
 			this,
-			SLOT(on_filter1_freq_mod_level_lfo_dial_changed(int)));
+			SLOT(on_filter1_freq_mod_level_lfo_slider_changed(int)));
 
 	connect(ui->comboBox_FilterFreqModAdsr_1,
 			SIGNAL(currentIndexChanged(int)),
 			this,
 			SLOT(on_filter1_freq_mod_adsr_combo_changed(int)));
 
-	connect(ui->dial_FilterFreqModAdsrLevel_1,
+	connect(ui->verticalSlider_FilterFreqModAdsrLevel_1,
 			SIGNAL(valueChanged(int)),
 			this,
-			SLOT(on_filter1_freq_mod_level_adsr_dial_hanged(int)));
+			SLOT(on_filter1_freq_mod_level_adsr_slider_changed(int)));
 
 	connect(ui->dial_FilterFreq_2,
 			SIGNAL(valueChanged(int)),
@@ -143,20 +174,20 @@ void Dialog_AnalogSynth_1900x1000::set_filters_signals_connections()
 			this,
 			SLOT(on_filter2_freq_mod_lfo_combo_changed(int)));
 
-	connect(ui->dial_FilterFreqModLfoLevel_2,
+	connect(ui->verticalSlider_FilterFreqModLfoLevel_2,
 			SIGNAL(valueChanged(int)),
 			this,
-			SLOT(on_filter2_freq_mod_level_lfo_dial_changed(int)));
+			SLOT(on_filter2_freq_mod_level_lfo_slider_changed(int)));
 
 	connect(ui->comboBox_FilterFreqModAdsr_2,
 			SIGNAL(currentIndexChanged(int)),
 			this,
 			SLOT(on_filter2_freq_mod_adsr_combo_changed(int)));
 
-	connect(ui->dial_FilterFreqModAdsrLevel_2,
+	connect(ui->verticalSlider_FilterFreqModAdsrLevel_2,
 			SIGNAL(valueChanged(int)),
 			this,
-			SLOT(on_filter2_freq_mod_level_adsr_dial_hanged(int)));
+			SLOT(on_filter2_freq_mod_level_adsr_slider_changed(int)));
 
 	connect(ui->checkBox_Filter2FollowFilter1,
 			SIGNAL(toggled(bool)),
@@ -218,9 +249,9 @@ void Dialog_AnalogSynth_1900x1000::filters_update()
 	ui->comboBox_FilterFreqModLfo_1->setCurrentIndex(mod_synth_get_active_filter_1_Freq_mod_lfo());
 	ui->comboBox_FilterFreqModLfo_1->blockSignals(false);
 
-	ui->dial_FilterFreqModLfoLevel_1->blockSignals(true);
-	ui->dial_FilterFreqModLfoLevel_1->setValue(mod_synth_get_active_filter_1_Freq_mod_lfo_level());
-	ui->dial_FilterFreqModLfoLevel_1->blockSignals(false);
+	ui->verticalSlider_FilterFreqModLfoLevel_1->blockSignals(true);
+	ui->verticalSlider_FilterFreqModLfoLevel_1->setValue(mod_synth_get_active_filter_1_Freq_mod_lfo_level());
+	ui->verticalSlider_FilterFreqModLfoLevel_1->blockSignals(false);
 
 	ui->spinBox_FilterFreqModLfoLevel_1->blockSignals(true);
 	ui->spinBox_FilterFreqModLfoLevel_1->setValue(mod_synth_get_active_filter_1_Freq_mod_lfo_level());
@@ -230,9 +261,9 @@ void Dialog_AnalogSynth_1900x1000::filters_update()
 	ui->comboBox_FilterFreqModAdsr_1->setCurrentIndex(mod_synth_get_active_filter_1_Freq_mod_env());
 	ui->comboBox_FilterFreqModAdsr_1->blockSignals(false);
 
-	ui->dial_FilterFreqModAdsrLevel_1->blockSignals(true);
-	ui->dial_FilterFreqModAdsrLevel_1->setValue(mod_synth_get_active_filter_1_Freq_mod_env_level());
-	ui->dial_FilterFreqModAdsrLevel_1->blockSignals(false);
+	ui->verticalSlider_FilterFreqModAdsrLevel_1->blockSignals(true);
+	ui->verticalSlider_FilterFreqModAdsrLevel_1->setValue(mod_synth_get_active_filter_1_Freq_mod_env_level());
+	ui->verticalSlider_FilterFreqModAdsrLevel_1->blockSignals(false);
 
 	ui->spinBox_FilterFreqModAdsrLevel_1->blockSignals(true);
 	ui->spinBox_FilterFreqModAdsrLevel_1->setValue(mod_synth_get_active_filter_1_Freq_mod_env_level());
@@ -288,9 +319,9 @@ void Dialog_AnalogSynth_1900x1000::filters_update()
 	ui->comboBox_FilterFreqModLfo_2->setCurrentIndex(mod_synth_get_active_filter_2_Freq_mod_lfo());
 	ui->comboBox_FilterFreqModLfo_2->blockSignals(false);
 
-	ui->dial_FilterFreqModLfoLevel_2->blockSignals(true);
-	ui->dial_FilterFreqModLfoLevel_2->setValue(mod_synth_get_active_filter_2_Freq_mod_lfo_level());
-	ui->dial_FilterFreqModLfoLevel_2->blockSignals(false);
+	ui->verticalSlider_FilterFreqModLfoLevel_2->blockSignals(true);
+	ui->verticalSlider_FilterFreqModLfoLevel_2->setValue(mod_synth_get_active_filter_2_Freq_mod_lfo_level());
+	ui->verticalSlider_FilterFreqModLfoLevel_2->blockSignals(false);
 
 	ui->spinBox_FilterFreqModLfoLevel_2->blockSignals(true);
 	ui->spinBox_FilterFreqModLfoLevel_2->setValue(mod_synth_get_active_filter_2_Freq_mod_lfo_level());
@@ -300,9 +331,9 @@ void Dialog_AnalogSynth_1900x1000::filters_update()
 	ui->comboBox_FilterFreqModAdsr_2->setCurrentIndex(mod_synth_get_active_filter_2_Freq_mod_env());
 	ui->comboBox_FilterFreqModAdsr_2->blockSignals(false);
 
-	ui->dial_FilterFreqModAdsrLevel_2->blockSignals(true);
-	ui->dial_FilterFreqModAdsrLevel_2->setValue(mod_synth_get_active_filter_2_Freq_mod_env_level());
-	ui->dial_FilterFreqModAdsrLevel_2->blockSignals(false);
+	ui->verticalSlider_FilterFreqModAdsrLevel_2->blockSignals(true);
+	ui->verticalSlider_FilterFreqModAdsrLevel_2->setValue(mod_synth_get_active_filter_2_Freq_mod_env_level());
+	ui->verticalSlider_FilterFreqModAdsrLevel_2->blockSignals(false);
 
 	ui->spinBox_FilterFreqModAdsrLevel_2->blockSignals(true);
 	ui->spinBox_FilterFreqModAdsrLevel_2->setValue(mod_synth_get_active_filter_2_Freq_mod_env_level());
@@ -317,9 +348,9 @@ void Dialog_AnalogSynth_1900x1000::copy_filter1_to_filter2()
 	on_filter2_kbd_track_dial_changed(mod_synth_get_active_filter_1_kbd_track());
 	on_filter2_band_combo_hanged(mod_synth_get_active_filter_1_band());
 	on_filter2_freq_mod_lfo_combo_changed(mod_synth_get_active_filter_1_Freq_mod_lfo());
-	on_filter2_freq_mod_level_lfo_dial_changed(mod_synth_get_active_filter_1_Freq_mod_lfo_level());
+	on_filter2_freq_mod_level_lfo_slider_changed(mod_synth_get_active_filter_1_Freq_mod_lfo_level());
 	on_filter2_freq_mod_adsr_combo_changed(mod_synth_get_active_filter_1_Freq_mod_env());
-	on_filter2_freq_mod_level_adsr_dial_hanged(mod_synth_get_active_filter_1_Freq_mod_env_level());
+	on_filter2_freq_mod_level_adsr_slider_hanged(mod_synth_get_active_filter_1_Freq_mod_env_level());
 }
 
 void Dialog_AnalogSynth_1900x1000::on_filter1_freq_dial_changed(int val)
@@ -500,12 +531,11 @@ void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_lfo_combo_changed(int val
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_level_lfo_dial_changed(int val)
+void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_level_lfo_slider_changed(int val)
 {
-	ui->dial_FilterFreqModLfoLevel_1->blockSignals(true);
-	ui->dial_FilterFreqModLfoLevel_1->setValue(val);
-	ui->dial_FilterFreqModLfoLevel_1->blockSignals(false);
-
+	ui->verticalSlider_FilterFreqModLfoLevel_1->blockSignals(true);
+	ui->verticalSlider_FilterFreqModLfoLevel_1->setValue(val);
+	ui->verticalSlider_FilterFreqModLfoLevel_1->blockSignals(false);
 	ui->spinBox_FilterFreqModLfoLevel_1->blockSignals(true);
 	ui->spinBox_FilterFreqModLfoLevel_1->setValue(val);
 	ui->spinBox_FilterFreqModLfoLevel_1->blockSignals(false);
@@ -515,9 +545,9 @@ void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_level_lfo_dial_changed(in
 
 	if (filter_2_follows_filter_1)
 	{
-		ui->dial_FilterFreqModLfoLevel_2->blockSignals(true);
-		ui->dial_FilterFreqModLfoLevel_2->setValue(val);
-		ui->dial_FilterFreqModLfoLevel_2->blockSignals(false);
+		ui->verticalSlider_FilterFreqModLfoLevel_2->blockSignals(true);
+		ui->verticalSlider_FilterFreqModLfoLevel_2->setValue(val);
+		ui->verticalSlider_FilterFreqModLfoLevel_2->blockSignals(false);
 
 		ui->spinBox_FilterFreqModLfoLevel_2->blockSignals(true);
 		ui->spinBox_FilterFreqModLfoLevel_2->setValue(val);
@@ -554,11 +584,11 @@ void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_adsr_combo_changed(int va
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_level_adsr_dial_hanged(int val)
+void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_level_adsr_slider_hanged(int val)
 {
-	ui->dial_FilterFreqModAdsrLevel_1->blockSignals(true);
-	ui->dial_FilterFreqModAdsrLevel_1->setValue(val);
-	ui->dial_FilterFreqModAdsrLevel_1->blockSignals(false);
+	ui->verticalSlider_FilterFreqModAdsrLevel_1->blockSignals(true);
+	ui->verticalSlider_FilterFreqModAdsrLevel_1->setValue(val);
+	ui->verticalSlider_FilterFreqModAdsrLevel_1->blockSignals(false);
 
 	ui->spinBox_FilterFreqModAdsrLevel_1->blockSignals(true);
 	ui->spinBox_FilterFreqModAdsrLevel_1->setValue(val);
@@ -569,9 +599,9 @@ void Dialog_AnalogSynth_1900x1000::on_filter1_freq_mod_level_adsr_dial_hanged(in
 
 	if (filter_2_follows_filter_1)
 	{
-		ui->dial_FilterFreqModAdsrLevel_2->blockSignals(true);
-		ui->dial_FilterFreqModAdsrLevel_2->setValue(val);
-		ui->dial_FilterFreqModAdsrLevel_2->blockSignals(false);
+		ui->verticalSlider_FilterFreqModAdsrLevel_2->blockSignals(true);
+		ui->verticalSlider_FilterFreqModAdsrLevel_2->setValue(val);
+		ui->verticalSlider_FilterFreqModAdsrLevel_2->blockSignals(false);
 
 		ui->spinBox_FilterFreqModAdsrLevel_2->blockSignals(true);
 		ui->spinBox_FilterFreqModAdsrLevel_2->setValue(val);
@@ -695,12 +725,11 @@ void Dialog_AnalogSynth_1900x1000::on_filter2_freq_mod_lfo_combo_changed(int val
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_AnalogSynth_1900x1000::on_filter2_freq_mod_level_lfo_dial_changed(int val)
+void Dialog_AnalogSynth_1900x1000::on_filter2_freq_mod_level_lfo_slider_changed(int val)
 {
-	ui->dial_FilterFreqModLfoLevel_2->blockSignals(true);
-	ui->dial_FilterFreqModLfoLevel_2->setValue(val);
-	ui->dial_FilterFreqModLfoLevel_2->blockSignals(false);
-
+	ui->verticalSlider_FilterFreqModLfoLevel_2->blockSignals(true);
+	ui->verticalSlider_FilterFreqModLfoLevel_2->setValue(val);
+	ui->verticalSlider_FilterFreqModLfoLevel_2->blockSignals(false);
 	ui->spinBox_FilterFreqModLfoLevel_2->blockSignals(true);
 	ui->spinBox_FilterFreqModLfoLevel_2->setValue(val);
 	ui->spinBox_FilterFreqModLfoLevel_2->blockSignals(false);
@@ -725,12 +754,11 @@ void Dialog_AnalogSynth_1900x1000::on_filter2_freq_mod_adsr_combo_changed(int va
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_AnalogSynth_1900x1000::on_filter2_freq_mod_level_adsr_dial_hanged(int val)
+void Dialog_AnalogSynth_1900x1000::on_filter2_freq_mod_level_adsr_slider_hanged(int val)
 {
-	ui->dial_FilterFreqModAdsrLevel_2->blockSignals(true);
-	ui->dial_FilterFreqModAdsrLevel_2->setValue(val);
-	ui->dial_FilterFreqModAdsrLevel_2->blockSignals(false);
-
+	ui->verticalSlider_FilterFreqModAdsrLevel_2->blockSignals(true);
+	ui->verticalSlider_FilterFreqModAdsrLevel_2->setValue(val);
+	ui->verticalSlider_FilterFreqModAdsrLevel_2->blockSignals(false);
 	ui->spinBox_FilterFreqModAdsrLevel_2->blockSignals(true);
 	ui->spinBox_FilterFreqModAdsrLevel_2->setValue(val);
 	ui->spinBox_FilterFreqModAdsrLevel_2->blockSignals(false);

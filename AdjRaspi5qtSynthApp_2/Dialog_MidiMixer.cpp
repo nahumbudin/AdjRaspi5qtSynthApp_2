@@ -23,6 +23,7 @@
 #include "MainWindow.h"
 #include "Dialog_MidiMixer.h"
 #include "ui_Dialog_MidiMixer_1620x840.h"
+#include "Dialog_AnalogSynth_1900x1000.h"
 #include "Defs.h"
 
 void midi_mixer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
@@ -112,8 +113,14 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	: QDialog(parent)
 	, ui(new Ui::Dialog_MidiMixer_1620x840)
 {
+	int result = -1;
+
 	ui->setupUi(this);
 	dialog_midi_mixer_instance = this;
+
+	// Must be called after ui is set.
+	// Controls the active remote control frame bounderies colors
+	control_widgets_color_manager = new (ControlWidgetsColorManager);
 
 	ui->frame_LFO->hide();
 	
@@ -135,6 +142,12 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	string_lfos_list.append("4");
 	string_lfos_list.append("5");
 	string_lfos_list.append("6");
+
+	string_waveforms_list.append("Sine");
+	string_waveforms_list.append("Square");
+	string_waveforms_list.append("Pulse");
+	string_waveforms_list.append("Triangle");
+	string_waveforms_list.append("Samp&Hold");
 
 	ui->comboBox_MixerChPanModLfo_1->blockSignals(true);
 	ui->comboBox_MixerChPanModLfo_1->addItems(string_lfos_list);
@@ -419,12 +432,125 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	checkboxes_activity_leds[13] = ui->checkBox_MixerChanActivity_14;
 	checkboxes_activity_leds[14] = ui->checkBox_MixerChanActivity_15;
 	checkboxes_activity_leds[15] = ui->checkBox_MixerChanActivity_16;
+	
+
+	for (int ch = 0; ch < 16; ch++)
+	{
+		checkboxes_static_levels[ch]->setLedStyle(true);
+		checkboxes_activity_leds[ch]->setReadOnly(true);
+		checkboxes_activity_leds[ch]->setLedStyle(true);
+		channels_active_counters[ch] = 0;
+	}
+
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_1);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_2);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_3);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_4);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_5);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_6);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_7);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_8);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_9);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_10);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_11);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_12);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_13);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_14);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_15);
+	result = control_widgets_color_manager->set_vertical_slider_color(ui->verticalSlider_MixerChLevel_16);
+
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_1);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_2);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_3);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_4);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_5);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_6);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_7);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_8);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_9);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_10);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_11);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_12);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_13);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_14);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_15);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPan_16);
+
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_1);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_2);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_3);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_4);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_5);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_6);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_7);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_8);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_9);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_10);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_11);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_12);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_13);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_14);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_15);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChPanModLevel_16);
+
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_1);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_2);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_3);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_4);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_5);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_6);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_7);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_8);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_9);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_10);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_11);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_12);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_13);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_14);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_15);
+	result = control_widgets_color_manager->set_dial_color(ui->dial_MixerChSend_16);
+
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_1);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_2);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_3);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_4);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_5);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_6);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_7);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_8);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_9);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_10);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_11);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_12);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_13);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_14);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_15);
+	result = control_widgets_color_manager->set_combobox_color(ui->comboBox_MixerChPanModLfo_16);
 
 	for (int ch = 0; ch < 16; ch++)
 	{
 		checkboxes_activity_leds[ch]->setReadOnly(true);
-		channels_active_counters[ch] = 0;
+		result = control_widgets_color_manager->set_checkbox_color(checkboxes_activity_leds[ch]);
 	}
+
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_1);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_2);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_3);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_4);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_5);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_6);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_7);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_8);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_9);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_10);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_11);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_12);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_13);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_14);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_15);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MixerChanStaticLevel_16);
+
+	init_active_lfo_widget();
 
 	close_event_callback_ptr = NULL;
 
@@ -460,11 +586,89 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 		&midi_mixer_channels_activity_update_callback_wrapper);
 
 	set_midi_mixer_signals_connections();
+	
 
 	MainWindow::get_instance()->register_active_dialog(this);
+
+	GuiNavigator *nav = GuiNavigator::get_instance();
+
+	// Define frames for the single "tab" (tab 0)
+	QMap<int, QList<QString>> frames_per_tab;
+
+	// All frames go under tab index 0
+	frames_per_tab[0] << "PAN Controls"
+					  << "PAN Modulation"
+					  << "PAN Modulation LFOs"
+					  << "Send Controls";
+
+	// Register dialog WITHOUT a tab widget (nullptr)
+	nav->register_dialog(
+		this,
+		"MIDI Mixer",
+		nullptr, // No tab widget
+		frames_per_tab
+	);
+
+	nav->set_gray_frame_widgets(this, 0, 0, // tab_index = 0, frame_index = 0
+								ui->frame_MixerPans_1_8,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_gray_frame_widgets(this, 0, 1, // tab_index = 0, frame_index = 1
+								ui->frame_MixerPanModulations_1_8,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_gray_frame_widgets(this, 0, 2,
+								ui->frame_MixerPanModulationsLfos_1_8,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_gray_frame_widgets(this, 0, 3,
+								ui->frame_MixerSends_1_8,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_white_frame_widgets(this, 0, 0, // tab_index = 0, frame_index = 0
+								ui->frame_MixerPans_9_16,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_white_frame_widgets(this, 0, 1, // tab_index = 0, frame_index = 1
+								ui->frame_MixerPanModulations_9_16,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_white_frame_widgets(this, 0, 2,
+								ui->frame_MixerPanModulationsLfos_9_16,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	nav->set_white_frame_widgets(this, 0, 3,
+								ui->frame_MixerSends_9_16,
+								nullptr,
+								nullptr,
+								nullptr);
+
+	// Highlight the first frame
+	nav->refresh_current_highlight();
+
+	// Connect to frame change signal
+	connect(GuiNavigator::get_instance(), &GuiNavigator::frame_changed,
+			this, &Dialog_MidiMixer::on_frame_changed);
 	
 	// This initializes the Analog Synthesizer LFO UI widgets pointer arrays, including the LFOs
-	Dialog_AnalogSynth_1900x1000::get_instance();
+	//Dialog_AnalogSynth_1900x1000::get_instance();
+
+	// Re-focus on the MIDI Mixer dialog
+	nav->focus_on_dialog(this);
 
 	// start a periodic timer after this timeout - 
 	start_update_timer(250);
@@ -487,18 +691,34 @@ Dialog_MidiMixer *Dialog_MidiMixer::get_instance(QWidget *parent)
 	return dialog_midi_mixer_instance;
 }
 
+Ui::Dialog_MidiMixer_1620x840 *Dialog_MidiMixer::get_ui_instance()
+{
+	if (dialog_midi_mixer_instance == NULL)
+	{
+		return NULL;
+	}
+	
+	return dialog_midi_mixer_instance->ui;
+}
+
 void Dialog_MidiMixer::closeEvent(QCloseEvent *event)
 {
 	if (close_event_callback_ptr != NULL)
 	{
 		close_event_callback_ptr();
 	}
+
+	// Unregister from GuiNavigator
+	GuiNavigator::get_instance()->unregister_dialog(this);
 	
 	hide();
 }
 
 void Dialog_MidiMixer::init_active_lfo_widget()
 {
+	ui->comboBox_LFOwaveform->blockSignals(true);
+	ui->comboBox_LFOwaveform->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform->blockSignals(false);
 }
 
 void Dialog_MidiMixer::update_active_lfo_frame()
@@ -952,7 +1172,25 @@ void Dialog_MidiMixer::on_static_levels_changed(int chan, bool state)
 	mod_synth_midi_mixer_set_channel_static_volume(chan, state);
 }
 
+// Handle frame navigation
+void Dialog_MidiMixer::on_frame_changed(const QString &frame_name, int frame_index)
+{
+	qDebug() << "Switching to frame:" << frame_name;
 
+	// Hide all frames first
+	// ... hide all frames ...
+
+	// Show the selected frame
+	//if (frame_name == "OSC1")
+	//{
+	//	// ui->frame_OSC1->show();
+	//}
+	//else if (frame_name == "OSC2")
+	//{
+	//	// ui->frame_OSC2->show();
+	//}
+	// ... etc for all frames ...
+}
 
 void Dialog_MidiMixer::on_dialog_close()
 {

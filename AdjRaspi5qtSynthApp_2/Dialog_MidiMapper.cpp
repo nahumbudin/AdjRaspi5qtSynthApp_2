@@ -89,6 +89,17 @@ Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
 		&midi_mapper_control_box_event_update_ui_callback_wrapper);
 	
 	MainWindow::get_instance()->register_active_dialog(this);
+
+	// Register with GuiNavigator (no tabs for MIDI Mixer, but has frames)
+	QList<QString> frame_names;
+	frame_names << "Channel 1-8" << "Channel 9-16";
+
+	GuiNavigator::get_instance()->register_dialog(
+		this,
+		"MIDI Mixer",
+		nullptr,									// No tab widget
+		QMap<int, QList<QString>>{{0, frame_names}} // All frames in tab 0 (no tabs)
+	);
 	
 	channels_combos[0] = ui->comboBox_MidiMapperCh_1;
 	channels_combos[1] = ui->comboBox_MidiMapperCh_2;
@@ -251,6 +262,9 @@ void Dialog_MidiMapper::closeEvent(QCloseEvent *event)
 	{
 		close_event_callback_ptr();
 	}
+
+	// Unregister from GuiNavigator
+	GuiNavigator::get_instance()->unregister_dialog(this);
 	
 	hide();
 }
@@ -600,6 +614,7 @@ void Dialog_MidiMapper::on_dialog_close()
 	
 	hide();
 }
+
 
 void Dialog_MidiMapper::start_update_timer(int interval)
 {

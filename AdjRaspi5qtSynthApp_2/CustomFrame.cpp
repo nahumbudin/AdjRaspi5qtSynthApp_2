@@ -9,6 +9,7 @@
  */
 
 #include "CustomFrame.h"
+#include "Defs.h"
 
 CustomFrame::CustomFrame(QWidget *parent)
 	: QFrame(parent)
@@ -81,9 +82,11 @@ void CustomFrame::setBorderStyle(Qt::PenStyle style)
 
 void CustomFrame::paintEvent(QPaintEvent *event)
 {
-	QFrame::paintEvent(event);
+	Q_UNUSED(event);
 
+	// Fill background and draw custom borders
 	QPainter painter(this);
+	painter.fillRect(rect(), _CONTROLS_COLOR_BLACK);
 	painter.setRenderHint(QPainter::Antialiasing);
 
 	if (m_useIndividualWidths)
@@ -124,7 +127,7 @@ void CustomFrame::paintEvent(QPaintEvent *event)
 		{
 			QPen pen(m_borderColor, m_borderWidth, m_borderStyle);
 			painter.setPen(pen);
-			
+
 			int halfWidth = m_borderWidth / 2;
 			QRect rect = this->rect().adjusted(halfWidth, halfWidth, -halfWidth, -halfWidth);
 			painter.drawRect(rect);

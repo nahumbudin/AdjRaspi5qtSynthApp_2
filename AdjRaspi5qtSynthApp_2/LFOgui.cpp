@@ -33,27 +33,53 @@ int Dialog_AnalogSynth_1900x1000::init_lfos_gui()
 
 	ui->comboBox_LFOwaveform_1->blockSignals(true);
 	ui->comboBox_LFOwaveform_1->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_LFOwaveform_1->blockSignals(false);
 
 	ui->comboBox_LFOwaveform_2->blockSignals(true);
 	ui->comboBox_LFOwaveform_2->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform_2->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_LFOwaveform_2->blockSignals(false);
 
 	ui->comboBox_LFOwaveform_3->blockSignals(true);
 	ui->comboBox_LFOwaveform_3->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform_3->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_LFOwaveform_3->blockSignals(false);
 
 	ui->comboBox_LFOwaveform_4->blockSignals(true);
 	ui->comboBox_LFOwaveform_4->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform_4->setTextAlignment(Qt::AlignCenter);	
 	ui->comboBox_LFOwaveform_4->blockSignals(false);
 
 	ui->comboBox_LFOwaveform_5->blockSignals(true);
 	ui->comboBox_LFOwaveform_5->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform_5->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_LFOwaveform_5->blockSignals(false);
 
 	ui->comboBox_LFOwaveform_6->blockSignals(true);
 	ui->comboBox_LFOwaveform_6->addItems(string_waveforms_list);
+	ui->comboBox_LFOwaveform_6->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_LFOwaveform_6->blockSignals(false);
+
+	result = init_dial_control_colors(ui->dial_LFOsymmetry_1);
+	result = init_dial_control_colors(ui->dial_LFOrate_1);
+	result = init_dial_control_colors(ui->dial_LFOsymmetry_2);
+	result = init_dial_control_colors(ui->dial_LFOrate_2);
+	result = init_dial_control_colors(ui->dial_LFOsymmetry_3);
+	result = init_dial_control_colors(ui->dial_LFOrate_3);
+	result = init_dial_control_colors(ui->dial_LFOsymmetry_4);
+	result = init_dial_control_colors(ui->dial_LFOrate_4);
+	result = init_dial_control_colors(ui->dial_LFOsymmetry_5);
+	result = init_dial_control_colors(ui->dial_LFOrate_5);
+	result = init_dial_control_colors(ui->dial_LFOsymmetry_6);
+	result = init_dial_control_colors(ui->dial_LFOrate_6);
+
+	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_1);
+	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_2);
+	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_3);
+	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_4);
+	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_5);
+	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_6);
 
 	set_lfos_signals_connections();
 	lfos_update();

@@ -27,7 +27,7 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	int result;
 
 	set_osc1_signals_connections();
-	osc1_update();
+	//osc1_update();
 
 	// OSC1 Waveform frame and controls
 	result = init_frame_colors(ui->frame_Osc1Waveform);
@@ -35,6 +35,7 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	result = init_combobox_control_colors(ui->comboBox_Osc1Waveform);	
 	ui->comboBox_Osc1Waveform->blockSignals(true);
 	ui->comboBox_Osc1Waveform->addItems(string_waveforms_list);
+	ui->comboBox_Osc1Waveform->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1Waveform->blockSignals(false);
 
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_Osc1Symmetry);	
@@ -51,6 +52,10 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1TuneOctave->blockSignals(true);
 	ui->comboBox_Osc1TuneSemitones->blockSignals(true);
 	ui->comboBox_Osc1TuneCents->blockSignals(true);
+
+	ui->comboBox_Osc1TuneOctave->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_Osc1TuneSemitones->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_Osc1TuneCents->setTextAlignment(Qt::AlignCenter);
 
 	for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
 	{
@@ -84,12 +89,14 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1FreqModLFO->blockSignals(true);
 	ui->comboBox_Osc1FreqModLFO->addItems(string_lfo_values);
 	ui->comboBox_Osc1FreqModLFO->setIdentifier(_OSC1_FREQ_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_Osc1FreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1FreqModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1FreqModAdsr);
 	ui->comboBox_Osc1FreqModAdsr->blockSignals(true);
 	ui->comboBox_Osc1FreqModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc1FreqModAdsr->setIdentifier(_OSC1_FREQ_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_Osc1FreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1FreqModAdsr->blockSignals(false);
 
 	// OSC1 Amplitude Modulation frame and controls
@@ -102,12 +109,14 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1AmpModLFO->blockSignals(true);
 	ui->comboBox_Osc1AmpModLFO->addItems(string_lfo_values);
 	ui->comboBox_Osc1AmpModLFO->setIdentifier(_OSC1_AMP_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_Osc1AmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1AmpModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1AmpModAdsr);
 	ui->comboBox_Osc1AmpModAdsr->blockSignals(true);
 	ui->comboBox_Osc1AmpModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc1AmpModAdsr->setIdentifier(_OSC1_AMP_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_Osc1AmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1AmpModAdsr->blockSignals(false);
 
 	// OSC1 PWM Modulation frame and controls
@@ -120,12 +129,14 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1PwmModLFO->blockSignals(true);
 	ui->comboBox_Osc1PwmModLFO->addItems(string_lfo_values);
 	ui->comboBox_Osc1PwmModLFO->setIdentifier(_OSC1_PWM_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_Osc1PwmModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1PwmModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1PwmModAdsr);
 	ui->comboBox_Osc1PwmModAdsr->blockSignals(true);
 	ui->comboBox_Osc1PwmModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc1PwmModAdsr->setIdentifier(_OSC1_PWM_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_Osc1PwmModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1PwmModAdsr->blockSignals(false);
 
 	// OSC1 Unison Drawbars 1-6 Frame
@@ -149,12 +160,14 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	result = init_combobox_control_colors(ui->comboBox_Osc1UnisonMode);
 	ui->comboBox_Osc1UnisonMode->blockSignals(true);
 	ui->comboBox_Osc1UnisonMode->addItems(string_unison_modes_list);
+	ui->comboBox_Osc1UnisonMode->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1UnisonMode->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1HammondPercussionMode);
 	ui->comboBox_Osc1HammondPercussionMode->blockSignals(true);
 	ui->comboBox_Osc1HammondPercussionMode->addItems(string_hammond_modes_list);
 	ui->comboBox_Osc1HammondPercussionMode->setVisible(true); // false - hide for non Hammond unison mode
+	ui->comboBox_Osc1HammondPercussionMode->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1HammondPercussionMode->blockSignals(false);
 
 	// OSC1 Unison Drawbars 7-9 detune and distortion Frame
@@ -216,6 +229,8 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	unison_level_sliders[6] = ui->verticalSlider_Osc1UnisonLevel_7;
 	unison_level_sliders[7] = ui->verticalSlider_Osc1UnisonLevel_8;
 	unison_level_sliders[8] = ui->verticalSlider_Osc1UnisonLevel_9;
+
+	osc1_update();
 
 	return 0;
 }

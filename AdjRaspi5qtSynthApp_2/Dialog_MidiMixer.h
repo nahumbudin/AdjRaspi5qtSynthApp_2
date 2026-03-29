@@ -31,6 +31,7 @@
 #include "CustomVerticalSlider.h"
 #include "CustomComboBox.h"
 #include "CustomCheckBox.h"
+#include "ControlWidgetsColorManager.h"
 
 #define _CHANNEL_ACTIVE_ON_TIME_COUNTER 1 // 0.25sec (assuming timer period of 250ms)
 
@@ -48,8 +49,9 @@ public :
 	~Dialog_MidiMixer();
 	
 	static Dialog_MidiMixer *get_instance(QWidget *parent = 0);
-	
-	
+
+	static Ui::Dialog_MidiMixer_1620x840 *get_ui_instance();
+
 	void control_box_ui_update_callback(int evnt, uint16_t val);
 	void channels_levels_update_callback(int chan, int vol);
 	void channels_pans_update_callback(int chan, int vol);
@@ -61,6 +63,9 @@ public :
 	void channels_program_update_callback(int chan, int prog);
 
 	void channels_activity_update_callback(int chan, bool state);
+
+	// Handle frame navigation
+	void on_frame_changed(const QString &frame_name, int frame_index);
 
   public slots:
 	virtual void update_gui(); // Called by a Timer
@@ -292,13 +297,14 @@ private:
 
 	QString channels_programs_names[16];
 	QList<QString> string_lfos_list;
+	QList<QString> string_waveforms_list;
 
 	CustomDial *dials_pan[16];
 	CustomDial *dials_pan_lfo_mod_level[16];
 	CustomDial *dials_send[16];
 	CustomVerticalSlider *sliders_levels[16];
 	CustomComboBox *comboboxes_pan_lfo_mod[16];
-	QCheckBox *checkboxes_static_levels[16];
+	CustomCheckBox *checkboxes_static_levels[16];
 	CustomCheckBox *checkboxes_activity_leds[16];
 	QSpinBox *spinboxes_levels[16];
 	QSpinBox *spinboxes_pan[16];
@@ -332,5 +338,7 @@ private:
 	void on_static_levels_changed(int chan, bool state);
 
 	void start_update_timer(int interval);
+
+	ControlWidgetsColorManager *control_widgets_color_manager;
 	
 };

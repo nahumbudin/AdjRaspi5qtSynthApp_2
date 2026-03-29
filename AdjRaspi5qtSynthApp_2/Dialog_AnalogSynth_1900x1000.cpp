@@ -31,6 +31,11 @@ CustomDial *Dialog_AnalogSynth_1900x1000::dial_lfo_rate[_NUM_OF_LFOS];
 QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_rate[_NUM_OF_LFOS];
 QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_symmetry[_NUM_OF_LFOS];
 
+void analog_synth_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
+{
+	Dialog_AnalogSynth_1900x1000::get_instance()->control_box_ui_update_callback(evnt, val);
+}
+
 Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	: QDialog(parent), ui(new Ui::Dialog_AnalogSynth_1900x1000)
 {
@@ -68,7 +73,7 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	active_tab = _ANALOG_SOURCES_TAB;
 	prev_active_tab = -1;
 
-	// Controls the active remote control frame bounderies colors
+	// Controls the active remote control colors
 	control_widgets_color_manager = new (ControlWidgetsColorManager);
 
 	set_analog_synth_general_signals_connections();
@@ -268,11 +273,243 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	result = init_distortion_gui();
 	result = init_amps_gui();
 	result = init_reverb_gui();
+	result = init_equalizer_gui();
 	result = init_adsrs_gui();
 	result = init_lfos_gui();
+	
+	
+
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Osc1Active);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Osc2Active);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Osc2SyncOnOsc1);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Osc1UnisonSquareWave);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_NoiseActive);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_KpsActive);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_MsoActive);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_PadActive);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Distortion_Active);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Reverbration3_Active);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Reverbration_Active);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_Filter2FollowFilter1);
+	result = control_widgets_color_manager->set_checkbox_color(ui->checkBox_DistortionAutoGain);
+	
 
 	ui->frame_ADSR->hide();
 	ui->frame_LFO->hide();
+
+	mod_synth_register_callback_control_box_event_update_ui(
+		&analog_synth_control_box_event_update_ui_callback_wrapper);
+
+	// Register with GuiNavigator with frames organized per tab
+	QMap<int, QList<QString>> frames_per_tab;
+
+	GuiNavigator *nav = GuiNavigator::get_instance();
+
+	// Tab 0: Sources - has OSC1, OSC2, Noise, KPS, MSO, PAD frames
+	frames_per_tab[0] << "OSC1-Waveform" << "OSC1-Drawbars"
+					  << "OSC2-Waveform" << "OSC2-PWM"
+					  << "Noise"
+					  << "KPS"
+					  << "MSO-Tune" << "MSO-Segments"
+					  << "PAD-Tune" << "PAD-Harmonics";
+
+	// Tab 1: Effects - has Filters, Distortion, Reverb, Equalizer frames
+	frames_per_tab[1] << "Filters" << "Distortion + Reverb" << "Equalizer";
+
+	// Tab 2: Modulators - has ADSRs, LFOs frames
+	frames_per_tab[2] << "ADSR-1 ADSR-2 ADSR-3 ADSR-4 LFO-1 LFO-2 LFO-3 LFO-4"
+					  << "ADSR-1 ADSR-2 ADSR-5 ADSR-6 LFO-1 LFO-2 LFO-5 LFO-6";
+
+	nav->register_dialog(
+		this,
+		"Analog Synth",
+		ui->tabWidget_AnalogSynth, // The tab widget
+		frames_per_tab			   // Frames organized per tab
+	);
+
+	// Set gray frames for Tab 0 - Sources
+	nav->set_gray_frame_widgets(this, 0, 0,
+								ui->frame_Osc1Waveform,
+								ui->frame_Osc1TuneOffset,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 1,
+								ui->frame_Osc1Drawbars_1_6,
+								ui->frame_Osc1PwmMod,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 2,
+								ui->frame_Osc2Waveform,
+								ui->frame_Osc2TuneOffset,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 3, // No change for Tab 0, only white frame change.
+								ui->frame_Osc2Waveform,
+								ui->frame_Osc2TuneOffset,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 4,
+								ui->frame_MsoSendFiltersTuneOffset,
+								NULL,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 5,
+								ui->frame_MsoAmpMod,
+								ui->frame_MsoSegments,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 6,
+								ui->frame_AnalogSynthSources_Noise,
+								NULL,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 0, 7,
+								ui->frame_PAD_SendFiltersTuneOffset,
+								NULL,
+								NULL,
+								NULL);
+
+
+	nav->set_gray_frame_widgets(this, 0, 8,
+								ui->frame_PAD_Haromonys1_6,
+								ui->frame_PAD_Profile,
+								NULL,
+								NULL);
+
+	// Set white frames for Tab 0 - Sources
+	nav->set_white_frame_widgets(this, 0, 0,
+								 ui->frame_Osc1FrequencyModulation,
+								 ui->frame_Osc1AmpMod,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 1,
+								 ui->frame_Osc1Drawbars_7_9,
+								 NULL,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 2,
+								 ui->frame_Osc2FreqMod,
+								 ui->frame_Osc2AmpMod,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 3,
+								 ui->frame_Osc2AmpMod, // Keep it
+								 ui->frame_Osc2PwmMod,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 4,
+								 ui->frame_MsoFreqMod,
+								 ui->frame_MsoAmpMod,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 5,
+								 ui->frame_MsoAmpMod,
+								 ui->frame_MsoPwmMod,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 6,
+								 ui->frame_AnalogSynthSources_KarplusString,
+								 NULL,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 7,
+								 ui->frame_PAD_FreqMod,
+								 ui->frame_PAD_AmpMod,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 0, 8,
+								 ui->frame_PAD_Haromonys7_10,
+								 NULL,
+								 NULL,
+								 NULL);
+
+	// Set gray frames for Tab 1 - Processors
+	nav->set_gray_frame_widgets(this, 1, 0,
+								ui->frame_AnalogSynthProcessing_Filter_1,
+								NULL,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 1, 1,
+								ui->frame_AnalogSynthProcessing_Distortion,
+								NULL,
+								NULL,
+								NULL);
+
+	nav->set_gray_frame_widgets(this, 1, 2,
+								ui->frame_Equalizer,
+								NULL,
+								NULL,
+								NULL);
+
+	// Set white frames for Tab 1 - Processors
+	nav->set_white_frame_widgets(this, 1, 0,
+								ui->frame_AnalogSynthProcessing_Filter_2,
+								NULL,
+								NULL,
+								NULL);
+
+	nav->set_white_frame_widgets(this, 1, 1,
+								 ui->frame_freeVerb3,
+								 ui->frame_FreeVerb,
+								 NULL,
+								 NULL);
+
+	nav->set_white_frame_widgets(this, 1, 2,
+								 ui->frame_Equalizer_8_16,
+								 NULL,
+								 NULL,
+								 NULL);
+
+	// Set gray frames for Tab 2 - Modulators
+	nav->set_gray_frame_widgets(this, 2, 0,
+								ui->frame_LFO_1,
+								ui->frame_ADSR_1,
+								ui->frame_LFO_2,
+								ui->frame_ADSR_2);
+
+	nav->set_gray_frame_widgets(this, 2, 1, // No change for Tab 2, only white frame change.
+								ui->frame_LFO_1,
+								ui->frame_ADSR_1,
+								ui->frame_LFO_2,
+								ui->frame_ADSR_2);
+	
+	// Set white frames for Tab 2 - Modulators
+	nav->set_white_frame_widgets(this, 2, 0,
+								ui->frame_LFO_3,
+								ui->frame_ADSR_3,
+								ui->frame_LFO_4,
+								ui->frame_ADSR_4);
+
+	nav->set_white_frame_widgets(this, 2, 1,
+								 ui->frame_LFO_5,
+								 ui->frame_ADSR_5,
+								 ui->frame_LFO_6,
+								 ui->frame_ADSR_6);
+
+	nav->refresh_current_highlight();
+
+
+	// Connect to frame change signal
+	connect(GuiNavigator::get_instance(), &GuiNavigator::frame_changed,
+			this, &Dialog_AnalogSynth_1900x1000::on_frame_changed);
+
+	MainWindow::get_instance()->register_active_dialog(this);
 
 	// GUI Update timer start
 	start_update_timer(_UPDATE_TIMER_PERIOD_MS);
@@ -295,7 +532,12 @@ Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::get_instance(QWidget
 
 Ui::Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::get_ui_instance()
 {
-	return dialog_analog_synth_instance->ui;
+	if (dialog_analog_synth_instance)
+	{
+		return dialog_analog_synth_instance->ui;
+	}
+
+	return nullptr;
 }
 
 void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
@@ -306,6 +548,9 @@ void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 	// }
 
 	MainWindow::get_instance()->sketches_menu->setDisabled(true);
+
+	// Unregister from GuiNavigator
+	GuiNavigator::get_instance()->unregister_dialog(this);
 
 	hide();
 }
@@ -676,6 +921,7 @@ void Dialog_AnalogSynth_1900x1000::update_all()
 	filters_update();
 	distortion_update();
 	reverb_update();
+	equalizer_update();
 	amps_update();
 	adsrs_update();
 	lfos_update();
@@ -1115,6 +1361,7 @@ void Dialog_AnalogSynth_1900x1000::on_dialog_close()
 void Dialog_AnalogSynth_1900x1000::on_panic_clicked()
 {
 	mod_synth_adj_synt_panic_action();
+	mod_synth_panic_action();
 }
 
 void Dialog_AnalogSynth_1900x1000::on_tab_selected(int tab)
@@ -1137,6 +1384,28 @@ void Dialog_AnalogSynth_1900x1000::on_sketch2_selected(bool val)
 void Dialog_AnalogSynth_1900x1000::on_sketch3_selected(bool val)
 {
 	sketch_selected(2, val);
+}
+
+
+
+// Handle frame navigation
+void Dialog_AnalogSynth_1900x1000::on_frame_changed(const QString &frame_name, int frame_index)
+{
+	qDebug() << "Switching to frame:" << frame_name;
+
+	// Hide all frames first
+	// ... hide all frames ...
+
+	// Show the selected frame
+	if (frame_name == "OSC1")
+	{
+		//ui->frame_OSC1->show();
+	}
+	else if (frame_name == "OSC2")
+	{
+		//ui->frame_OSC2->show();
+	}
+	// ... etc for all frames ...
 }
 
 // Open ADSR control frame when mouse enters an ADSR or LFO combobox
@@ -1364,7 +1633,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 
 		active_adsr = ui->comboBox_FilterFreqModAdsr_1->currentIndex();
 		ui->label_ADSRtitle->setText("ADSR " + QString::number(active_adsr));
-		ui->frame_ADSR->move(360, 260);
+		ui->frame_ADSR->move(360, 180);
 		update_active_adsr_frame();
 		update_adsr_plot[_ENV_SELECTED - 1] = true;
 		active_adsr_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
@@ -1381,7 +1650,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 
 		active_adsr = ui->comboBox_FilterFreqModAdsr_2->currentIndex();
 		ui->label_ADSRtitle->setText("ADSR " + QString::number(active_adsr));
-		ui->frame_ADSR->move(360, 560);
+		ui->frame_ADSR->move(360, 480);
 		update_active_adsr_frame();
 		update_adsr_plot[_ENV_SELECTED - 1] = true;
 		active_adsr_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
@@ -1619,7 +1888,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 		active_lfo = (ui->comboBox_FilterFreqModLfo_1->currentIndex() - 1) % _NUM_OF_LFOS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
-		ui->frame_LFO->move(360, 260);
+		ui->frame_LFO->move(280, 180);
 		update_active_lfo_frame();
 		active_lfo_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
 		active_lfo_widget_showing = true;
@@ -1637,7 +1906,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 		active_lfo = (ui->comboBox_FilterFreqModLfo_2->currentIndex() - 1) % _NUM_OF_LFOS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
-		ui->frame_LFO->move(360, 560);
+		ui->frame_LFO->move(280, 480);
 		update_active_lfo_frame();
 		active_lfo_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
 		active_lfo_widget_showing = true;

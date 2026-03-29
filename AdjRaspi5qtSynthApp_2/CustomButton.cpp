@@ -14,6 +14,7 @@
 #include "CustomButton.h"
 
 
+
 CustomButton::CustomButton(QWidget *parent) 
 	: QPushButton(parent)
 	, frame_color(QColor(100, 100, 100))

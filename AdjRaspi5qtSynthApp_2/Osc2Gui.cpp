@@ -22,7 +22,7 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	int result;
 
 	set_osc2_signals_connections();
-	osc2_update();
+	//osc2_update();
 
 	// OSC2 Waveform frame and controls
 	result = init_frame_colors(ui->frame_Osc2Waveform);
@@ -30,6 +30,7 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	result = init_combobox_control_colors(ui->comboBox_Osc2Waveform);
 	ui->comboBox_Osc2Waveform->blockSignals(true);
 	ui->comboBox_Osc2Waveform->addItems(string_waveforms_list);
+	ui->comboBox_Osc2Waveform->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2Waveform->blockSignals(false);
 
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_Osc2Symmetry);
@@ -46,6 +47,10 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2TuneOctave->blockSignals(true);
 	ui->comboBox_Osc2TuneSemitones->blockSignals(true);
 	ui->comboBox_Osc2TuneCents->blockSignals(true);
+
+	ui->comboBox_Osc2TuneOctave->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_Osc2TuneSemitones->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_Osc2TuneCents->setTextAlignment(Qt::AlignCenter);
 
 	for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
 	{
@@ -78,12 +83,14 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2FreqModLFO->blockSignals(true);
 	ui->comboBox_Osc2FreqModLFO->addItems(string_lfo_values);
 	ui->comboBox_Osc2FreqModLFO->setIdentifier(_OSC2_FREQ_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_Osc2FreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2FreqModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2FreqModAdsr);
 	ui->comboBox_Osc2FreqModAdsr->blockSignals(true);
 	ui->comboBox_Osc2FreqModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc2FreqModAdsr->setIdentifier(_OSC2_FREQ_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_Osc2FreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2FreqModAdsr->blockSignals(false);
 
 	// OSC2 Amplitude Modulation frame and controls
@@ -96,12 +103,14 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2AmpModLFO->blockSignals(true);
 	ui->comboBox_Osc2AmpModLFO->addItems(string_lfo_values);
 	ui->comboBox_Osc2AmpModLFO->setIdentifier(_OSC2_AMP_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_Osc2AmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2AmpModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2AmpModAdsr);
 	ui->comboBox_Osc2AmpModAdsr->blockSignals(true);
 	ui->comboBox_Osc2AmpModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc2AmpModAdsr->setIdentifier(_OSC2_AMP_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_Osc2AmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2AmpModAdsr->blockSignals(false);
 
 	// OSC2 PWM Modulation frame and controls
@@ -114,13 +123,17 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2PwmModLFO->blockSignals(true);
 	ui->comboBox_Osc2PwmModLFO->addItems(string_lfo_values);
 	ui->comboBox_Osc2PwmModLFO->setIdentifier(_OSC2_PWM_MOD_LFO_COMBOBOX_INDEX);
+	ui->comboBox_Osc2PwmModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2PwmModLFO->blockSignals(false);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2PwmModAdsr);
 	ui->comboBox_Osc2PwmModAdsr->blockSignals(true);
 	ui->comboBox_Osc2PwmModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc2PwmModAdsr->setIdentifier(_OSC2_PWM_MOD_ADSR_COMBOBOX_INDEX);
+	ui->comboBox_Osc2PwmModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2PwmModAdsr->blockSignals(false);
+
+	osc2_update();
 
 	return 0;
 }

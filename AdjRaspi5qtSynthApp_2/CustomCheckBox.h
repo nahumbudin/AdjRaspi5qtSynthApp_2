@@ -12,42 +12,69 @@
 
 #include <QCheckBox>
 #include <QColor>
+#include <QMouseEvent>
+#include <QPainter>
 
 class CustomCheckBox : public QCheckBox
 {
-public:
-	CustomCheckBox(QWidget *parent = nullptr);
-	CustomCheckBox(const QString &text, QWidget *parent = nullptr);
+	Q_OBJECT
+
+  public:
+	explicit CustomCheckBox(QWidget *parent = nullptr);
 	~CustomCheckBox();
-	
-	void setFrameColor(QColor color);
-	void setFrameVisible(bool visible);
-	void setBackgroundColor(QColor color);
-	void setTextColor(QColor color);
-	void setCheckColor(QColor color);
 
-	void setReadOnly(bool readOnly) { read_only = readOnly; }
-	bool isReadOnly() const { return read_only; }
+	// Styling methods
+	void setCheckBoxColor(const QColor &color);
+	void setCheckMarkColor(const QColor &color);
+	void setFrameColor(const QColor &color);
+	void setBackgroundColor(const QColor &color);
+	void setTextColor(const QColor &color);
+	void setFrameWidth(int width);
+	void setCheckBoxSize(int size);
+	void setReadOnly(bool readOnly);
 
- public slots:
-	void setChecked(bool checked);
+	// Identifier for signal routing
+	void setIdentifier(int id);
+	int getIdentifier() const;
 
-protected:
+	// LED-style checkbox (for activity indicators)
+	void setLedStyle(bool enabled);
+	void setLedOnColor(const QColor &color);
+	void setLedOffColor(const QColor &color);
+
+  signals:
+	void mouseEntered(int identifier);
+	void mouseExited(int identifier);
+	void stateChangedWithId(int identifier, bool checked);
+
+  protected:
 	void paintEvent(QPaintEvent *event) override;
-	void resizeEvent(QResizeEvent *event) override;
-
+	void enterEvent(QEvent *event) override;
+	void leaveEvent(QEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 
-private:
-	QColor frame_color;
-	bool frame_visible;
-	QColor background_color;
-	QColor text_color;
-	QColor check_color;
+  private slots:
+	void onStateChanged(int state);
 
-	bool read_only;
-	
-	void updateStyleSheet();
-	int calculateIndicatorSize() const;
+  private:
+	QColor m_checkBoxColor;
+	QColor m_checkMarkColor;
+	QColor m_frameColor;
+	QColor m_backgroundColor;
+	QColor m_textColor;
+	QColor m_ledOnColor;
+	QColor m_ledOffColor;
+
+	int m_frameWidth;
+	int m_checkBoxSize;
+	int m_identifier;
+
+	bool m_readOnly;
+	bool m_ledStyle;
+	bool m_mouseOver;
+	bool m_pressed;
+
+	void drawCheckBox(QPainter &painter);
+	void drawLedCheckBox(QPainter &painter);
 };

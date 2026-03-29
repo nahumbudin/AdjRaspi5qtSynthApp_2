@@ -22,8 +22,12 @@
 #include "libAdjRaspi5SynthAPI.h"
 #include "Defs.h"
 #include "InstrumentPannel.h"
+#include "GuiNavigator.h"
+
+#include "Dialog_WindowsManager.h"
 
 class InstrumentPannel;
+class GuiNavigator;
 
 void wrapper_closeModulePannel(en_instruments_ids_t moId);
 
@@ -64,10 +68,14 @@ public:
 	vector<active_instrument_data_t> active_instruments_list;
 	
 	QMenu *sketches_menu;
+
+	Dialog_WindowManager *window_manager;
 	
 	
 public slots:
 	virtual void timerEvent(); // Called by a Timer
+
+	void show_window_manager();
 
 private slots :
 	void on_add_fluid_synth_instrument();
@@ -103,7 +111,9 @@ protected:
     
 
 private:
-	InstrumentPannel* add_instrument_pannel(QString instrument_name_string="");	
+	InstrumentPannel* add_instrument_pannel(QString instrument_name_string="");
+
+	
 	int remove_instrument_pannel(InstrumentPannel *instrument);
 	int is_instrument_openned(en_instruments_ids_t instId);
 	
@@ -119,7 +129,9 @@ private:
 	static MainWindow *mwind;	
 	
 	QLayout *layout;
-	
+
+	GuiNavigator *gui_navigator;
+
 	map<string, en_instruments_ids_t> instruments_ids_map;
 	
 	list<QDialog*> active_dialogs_list;
@@ -160,7 +172,16 @@ private:
 	QAction *copy_sketch2_to_sketch3_act;
 	QAction *copy_sketch3_to_sketch1_act;
 	QAction *copy_sketch3_to_sketch2_act;
-	
+
+	bool control_box_left_key_pressed = false;
+	bool control_box_right_key_pressed = false;
+	bool control_box_up_key_pressed = false;
+	bool control_box_down_key_pressed = false;
+	bool control_box_ok_key_pressed = false;
+	bool control_box_scroll_select_change_value = false;
+	int control_box_scroll_select_new_value = 0;
+	int control_box_scroll_select_prev_value = -1;
+	bool control_box_scroll_pushbutton_pressed = false;
 };
 
 class SavePatchFileThread : public QThread

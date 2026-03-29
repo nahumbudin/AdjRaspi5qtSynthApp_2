@@ -14,8 +14,8 @@
    <string>FluidSynth Channels</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(188, 188, 188);
-border-color: rgb(0, 0, 0);</string>
+   <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(5, 5, 5);</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox_Dialog_Channels">
    <property name="geometry">
@@ -77,10 +77,11 @@ border-color: rgb(0, 0, 0);</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(207, 207, 207);</string>
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(5, 5, 5);</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_Channels_1_8">
      <attribute name="title">
@@ -94,6 +95,10 @@ border-color: rgb(0, 0, 0);</string>
         <width>691</width>
         <height>275</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(5, 5, 5);</string>
       </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
