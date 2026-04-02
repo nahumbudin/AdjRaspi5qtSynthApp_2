@@ -1,14 +1,19 @@
 /**
-* @file		Dialog_MidiPlayer.h
-*	@author		Nahum Budin
-*	@date		11-Aug-2024
-*	@version	1.0
-*
-*	@brief		Used for playing MIDI files
-*				
-*	History:
-*
-*/
+ * @file		Dialog_MidiPlayer.h
+ *	@author		Nahum Budin
+ *	@date		2-Apr-2026
+ *	@version	2.0
+ *					1. Custom icons for the control buttons.
+ *					2. Added support for loopback playing control.
+ *					3. Added support for playback volume and speed control.
+ *					4. Added support for retrieving midi file meta data.
+ *
+ *	@brief		Used for playing MIDI files
+ *
+ *	History:
+ *			ver 1.0 11-Aug-2024 Initial version
+ *
+ */
 
 #include <filesystem>
 
@@ -22,6 +27,8 @@
 #include "MainWindow.h"
 #include "Dialog_MidiPlayer.h"
 #include "ui_Dialog_MidiPlayer.h"
+#include "midi.h"
+#include "utils.h"
 
 QString midi_file_name;
 OpenFileThread *open_file_thread;
@@ -152,6 +159,28 @@ Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 	ui->verticalSlider_MidiPlayer_Volume->setHandleColor(_CONTROLS_COLOR_PURPLE);
 	ui->verticalSlider_MidiPlayer_Volume->setProgressColor(_CONTROLS_COLOR_PURPLE);
 
+	ui->verticalSlider_MidiPlayer_Volume->setFrameColor(_CONTROLS_COLOR_BLUE);
+	ui->verticalSlider_MidiPlayer_Volume->setHandleColor(_CONTROLS_COLOR_BLUE);
+	ui->verticalSlider_MidiPlayer_Volume->setProgressColor(_CONTROLS_COLOR_BLUE);
+
+	ui->checkBox_MidiPlayerLoopback->setLedStyle(true);
+	ui->checkBox_MidiPlayerLoopback->setLedOnColor(_CONTROLS_COLOR_YELLOW);
+	ui->checkBox_MidiPlayerLoopback->setFrameColor(_CONTROLS_COLOR_GRAY);
+	ui->checkBox_MidiPlayerLoopback->setBackgroundColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_MidiPlayerLoopback->setCheckBoxSize(16);
+	ui->checkBox_MidiPlayerLoopback->setFrameWidth(2);
+
+	ui->progressBar_MidiPlayerProgressPercents->setStyleSheet(
+		"QProgressBar {"
+		"   color: black;"					 // Text color
+		"   background-color: #1e1e1e;"		 // Very dark gray" // Keeps default background
+		"   border: 1px solid palette(mid);"  // Keeps default border
+		"   text-align: left;"
+		"}"
+		"QProgressBar::chunk {"
+		"   background-color: palette(highlight);" // Keeps default progress color
+		"}");
+
 	move(100, 100);
 	
 	this->setFocus(Qt::ActiveWindowFocusReason);
@@ -201,6 +230,21 @@ Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 			this,
 			SLOT(on_forward_clicked()));
 	
+	connect(ui->checkBox_MidiPlayerLoopback,
+		SIGNAL(toggled(bool)),
+		this,
+		SLOT(on_enable_loopback_enable(bool)));
+
+	connect(ui->verticalSlider_MidiPlayer_Volume,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(on_playback_volume_changed(int)));
+
+	connect(ui->verticalSlider_MidiPlayer_Speed,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(on_playback_speed_changed(int)));
+
 	MainWindow::get_instance()->register_active_dialog(this);
 
 	// Register with GuiNavigator (no tabs for MIDI Players, but has frames)
@@ -260,7 +304,7 @@ void Dialog_MidiPlayer::moveEvent(QMoveEvent *event) {
 
 bool Dialog_MidiPlayer::event(QEvent *event)
 {
-	printf("Event type: %i pos: %i:%i\n", event->type(), this->x(), this->y());
+	//printf("Event type: %i pos: %i:%i\n", event->type(), this->x(), this->y());
 
 	return QWidget::event(event);
 	
@@ -269,37 +313,107 @@ bool Dialog_MidiPlayer::event(QEvent *event)
 
 void Dialog_MidiPlayer::control_box_ui_update_callback(int evnt, uint16_t val)
 {
+	static int player_volume = 50;
+	static int player_speed = 100;
+
+	int slider_level_gap;
+
 	if (!this->hasFocus())
 	{
 		return;
 	}
-	
-	if(evnt == _CONTROL_PUSHBUTTON_BLUE_GREEN)
+
+	if (evnt == _I2C_CONTROL_ENCODER_1)
 	{
-		/* Preset 2 */
-		if (val == 0)
+		// Encoder Pushbutton Gray - Loopback
+		if (val == 0x2000)
 		{
 			/* Only when pressed */
-			on_play_clicked();
-			
+			// Toggle
+			ui->checkBox_MidiPlayerLoopback->setChecked(!ui->checkBox_MidiPlayerLoopback->isChecked());
 		}
 	}
-	else if(evnt == _CONTROL_PUSHBUTTON_BLUE_RED)
+	else if (evnt == _I2C_CONTROL_ENCODER_2)
 	{
-		/* Preset 3 */
-		if (val == 0)
+		// Encoder Pushbutton Purple - Backward
+		if (val == 0x2000)
 		{
 			/* Only when pressed */
-			on_pause_clicked();
+			ui->pushButton_MidiPlayerBackward->click();
 		}
 	}
-	else if(evnt == _CONTROL_PUSHBUTTON_BLUE_BLUE)
+	else if (evnt == _I2C_CONTROL_ENCODER_3)
 	{
-		/* Load */
-		if (val == 0)
+		// Encoder Pushbutton Blue - Play
+		if (val == 0x2000)
 		{
 			/* Only when pressed */
-			on_stop_clicked();
+			ui->pushButton_MidiPlayerPlay->click();
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_4)
+	{
+		// Encoder Pushbutton Green - Pause
+		if (val == 0x2000)
+		{
+			/* Only when pressed */
+			ui->pushButton_MidiPlayerPause->click();
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_5)
+	{
+		// Encoder Pushbutton White - Forward
+		if (val == 0x2000)
+		{
+			/* Only when pressed */
+			ui->pushButton_MidiPlayerForward->click();
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_6)
+	{
+		// Encoder Pushbutton Yellow - Stop
+		if (val == 0x2000)
+		{
+			/* Only when pressed */
+			ui->pushButton_MidiPlayerStop->click();
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_7)
+	{
+		// Encoder Pushbutton Red - File
+		if (val == 0x2000)
+		{
+			/* Only when pressed */
+			ui->pushButton_MidiPlayerOpenFile->click();
+		}
+	}
+	else if (evnt == _I2C_CONTROL_SLIDER_3)
+	{
+		// Slider Blue - Volume
+		// Get new volume value from slider and calculate gap from current UI value
+		player_volume = normalize_slider_value(val / 37, 100, 0); // 0-3700
+		slider_level_gap = player_volume - ui->verticalSlider_MidiPlayer_Volume->value();						 // 0-100
+
+		// Change slider value only when it matches the UI slider position.
+		if (abs((float)slider_level_gap) < ((100 - 0) / 5.0))
+		{
+			// Emits value changed signal.
+			ui->verticalSlider_MidiPlayer_Volume->setValue(player_volume);
+		}
+		
+	}
+	else if (evnt == _I2C_CONTROL_SLIDER_4)
+	{
+		// Slider Green - Speed
+		// Get new volume value from slider and calculate gap from current UI value
+		player_speed = normalize_slider_value(val / 37, 150, 50);						  // 0-3700
+		slider_level_gap = player_speed - ui->verticalSlider_MidiPlayer_Speed->value(); // 50-150
+
+		// Change slider value only when it matches the UI slider position.
+		if (abs((float)slider_level_gap) < ((150 - 50) / 5.0))
+		{
+			// Emits value changed signal.
+			ui->verticalSlider_MidiPlayer_Speed->setValue(player_speed);
 		}
 	}
 }
@@ -317,15 +431,121 @@ void Dialog_MidiPlayer::on_dialog_close()
 	hide();
 }
 
+void Dialog_MidiPlayer::display_channel_utilization(midi_file_meta_data_t &meta_data)
+{
+	// Find maximum count for normalization
+	int max_count = 0;
+
+	for (int ch = 0; ch < 16; ch++)
+	{
+		if (ch != 9 && meta_data.channels_counters[ch] > max_count)
+		{
+			max_count = meta_data.channels_counters[ch];
+		}
+	}
+
+	// Setup table - show all 16 channels, 3 rows of data
+	ui->tableWidget_MidiPlayerChannels->setRowCount(3);
+	ui->tableWidget_MidiPlayerChannels->setColumnCount(16); // Always show all 16 channels
+
+	// Hide horizontal header (column headers)
+	ui->tableWidget_MidiPlayerChannels->horizontalHeader()->setVisible(false);
+
+	// Show vertical header (row headers) and set labels
+	ui->tableWidget_MidiPlayerChannels->verticalHeader()->setVisible(true);
+	QStringList row_headers;
+	row_headers << "Channel" << "Notes" << "Usage %";
+	ui->tableWidget_MidiPlayerChannels->setVerticalHeaderLabels(row_headers);
+
+	// Populate table with all 16 channels
+	for (int ch = 0; ch < 16; ch++)
+	{
+		// Row 0: Channel number (1-16)
+		QTableWidgetItem *item_ch = new QTableWidgetItem(QString::number(ch + 1));
+		item_ch->setTextAlignment(Qt::AlignCenter);
+
+		// Highlight drums channel (Ch 10)
+		if (ch == 9)
+		{
+			item_ch->setBackground(QBrush(QColor(255, 200, 100))); // Orange for drums
+		}
+		// Gray out unused channels
+		else if (meta_data.channels_counters[ch] == 0)
+		{
+			item_ch->setBackground(QBrush(QColor(80, 80, 80)));	   // Dark gray for unused
+			item_ch->setForeground(QBrush(QColor(150, 150, 150))); // Light gray text
+		}
+
+		ui->tableWidget_MidiPlayerChannels->setItem(0, ch, item_ch);
+
+		// Row 1: Note count
+		QTableWidgetItem *item_count = new QTableWidgetItem(QString::number(meta_data.channels_counters[ch]));
+		item_count->setTextAlignment(Qt::AlignCenter);
+		item_count->setForeground(QBrush(Qt::black)); // Black text
+
+		if (meta_data.channels_counters[ch] == 0)
+		{
+			item_count->setBackground(QBrush(QColor(80, 80, 80)));
+			item_count->setForeground(QBrush(QColor(150, 150, 150))); // Override to gray for unused
+		}
+
+		ui->tableWidget_MidiPlayerChannels->setItem(1, ch, item_count);
+
+		// Row 2: Usage percentage
+		int percentage = (max_count > 0) ? (meta_data.channels_counters[ch] * 100 / max_count) : 0;
+		QTableWidgetItem *item_percent = new QTableWidgetItem(QString::number(percentage) + "%");
+		item_percent->setTextAlignment(Qt::AlignCenter);
+		item_percent->setForeground(QBrush(Qt::black)); // Black text
+
+		// Color code by usage level
+		QColor bgcolor;
+		if (meta_data.channels_counters[ch] == 0)
+		{
+			bgcolor = QColor(80, 80, 80);								// Dark gray - unused
+			item_percent->setForeground(QBrush(QColor(150, 150, 150))); // Override to gray for unused
+		}
+		else if (percentage >= 75)
+		{
+			bgcolor = QColor(100, 255, 100); // Green - heavy use
+		}
+		else if (percentage >= 25)
+		{
+			bgcolor = QColor(255, 255, 100); // Yellow - medium use
+		}
+		else
+		{
+			bgcolor = QColor(200, 200, 200); // Gray - light use
+		}
+
+		item_percent->setBackground(QBrush(bgcolor));
+		ui->tableWidget_MidiPlayerChannels->setItem(2, ch, item_percent);
+	}
+
+	// Auto-resize rows and columns
+	ui->tableWidget_MidiPlayerChannels->resizeRowsToContents();
+	ui->tableWidget_MidiPlayerChannels->resizeColumnsToContents();
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
 void Dialog_MidiPlayer::on_midi_file_loaded(const QString &s)
 {
 	std::string file_name;
-		
+	
+	midi_file_meta_data_t meta_data = mod_synth_midi_player_get_file_metadata();
+
 	file_name = std::string("Ready: ");
 	file_name += std::filesystem::path(midi_file_name.toStdString()).stem();
 	
 	ui->lineEdit_MidiPlayeFileName->setText(QString::fromStdString(file_name));
-	
+
+	ui->lineEdit_MidiPlayerScalesInfo->setText(
+		QString::fromStdString("File Scale: " + meta_data.major_scale_text + " | " + meta_data.minor_scale_text));
+
+	// Display channel utilization in table
+	display_channel_utilization(meta_data);
+
 	ui->pushButton_MidiPlayerPlay->setEnabled(true);
 	ui->pushButton_MidiPlayerPause->setEnabled(true);
 	ui->pushButton_MidiPlayerStop->setEnabled(true);
@@ -337,7 +557,7 @@ void Dialog_MidiPlayer::on_open_file_clicked()
 	
 	QFileDialog dialog;
 	// dialog.setOptions(QFileDialog::DontUseNativeDialog);
-	midi_file_name = dialog.getOpenFileName(this,
+	midi_file_name = QFileDialog::getOpenFileName(this,
 		tr("Open MIDI File "),
 		QString(_MIDI_PLAYBACK_FILES_DEFAULT_DIR),
 		tr("Presets (*.mid *.MID);;All Files (*)"));
@@ -393,6 +613,29 @@ void Dialog_MidiPlayer::on_backward_clicked()
 void Dialog_MidiPlayer::on_forward_clicked()
 {
 	mod_synth_midi_player_forward();
+}
+
+void Dialog_MidiPlayer::on_enable_loopback_enable(bool enabled)
+{
+	mod_synth_midi_player_set_auto_loop_back(enabled);
+}
+
+void Dialog_MidiPlayer::on_playback_volume_changed(int value)
+{
+	mod_synth_midi_player_set_playback_volume(value);
+
+	ui->spinBox_MidiPlayer_Volume->blockSignals(true);
+	ui->spinBox_MidiPlayer_Volume->setValue(value);
+	ui->spinBox_MidiPlayer_Volume->blockSignals(false);
+}
+
+void Dialog_MidiPlayer::on_playback_speed_changed(int value)
+{
+	mod_synth_midi_player_set_playback_speed(value);
+
+	ui->spinBox_MidiPlayer_Speed->blockSignals(true);
+	ui->spinBox_MidiPlayer_Speed->setValue(value);
+	ui->spinBox_MidiPlayer_Speed->blockSignals(false);
 }
 
 void Dialog_MidiPlayer::start_update_timer(int interval)

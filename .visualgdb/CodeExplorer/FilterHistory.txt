@@ -1,2 +1,8 @@
 update
 show
+pa
+program
+load
+reverb
+chorus
+font

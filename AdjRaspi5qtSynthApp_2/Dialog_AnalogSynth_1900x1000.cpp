@@ -949,7 +949,7 @@ void Dialog_AnalogSynth_1900x1000::update_gui()
 	{
 		pad_replot_spectrum();
 
-		update_profile_plot = false;
+		update_spectrum_plot = false;
 	}
 
 	if (active_adsr_widget_showing)

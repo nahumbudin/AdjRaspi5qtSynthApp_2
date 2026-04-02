@@ -1,13 +1,19 @@
 /**
-* @file		Dialog_MidiPlayer.h
-*	@author		Nahum Budin
-*	@date		11-Aug-2024
-*	@version	1.0
-*
-*	@brief		Used for playing MIDI files
-*				
-*	History:
-*
+ * @file		Dialog_MidiPlayer.h
+ *	@author		Nahum Budin
+ *	@author		Nahum Budin
+ *	@date		2-Apr-2026
+ *	@version	2.0
+ *					1. Custom icons for the control buttons.
+ *					2. Added support for loopback playing control.
+ *					3. Added support for playback volume and speed control.
+ *					4. Added support for retrieving midi file meta data.
+ *
+ *	@brief		Used for playing MIDI files
+ *
+ *	History:
+ *			ver 1.0 11-Aug-2024 Initial version
+ *
 */
 
 #pragma once
@@ -57,6 +63,11 @@ protected slots :
 	void on_backward_clicked();
 	void on_forward_clicked();
 
+	void on_enable_loopback_enable(bool enabled);
+
+	void on_playback_volume_changed(int value);
+	void on_playback_speed_changed(int value);
+
 	void on_dialog_close();
 	
 	void on_midi_file_loaded(const QString &s);
@@ -74,7 +85,9 @@ private:
 	func_ptr_void_void_t close_event_callback_ptr;
 	
 	void start_update_timer(int interval);
-	
+
+	void display_channel_utilization(midi_file_meta_data_t &meta_data);
+
 	QPoint last_position;
 };
 
