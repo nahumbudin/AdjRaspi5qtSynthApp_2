@@ -2681,7 +2681,6 @@ void Dialog_AnalogSynth_1900x1000::control_box_ui_update_callback(int evnt, uint
 		}
 		else if (current_frame_index == 2)
 		{
-			// Equalizer (controls 1-8)
 			if (evnt == _I2C_CONTROL_ENCODER_3)
 			{
 				// Gray Blue combobox - Equalizer preset control

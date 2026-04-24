@@ -272,7 +272,7 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	result = init_filters_gui();
 	result = init_distortion_gui();
 	result = init_amps_gui();
-	result = init_reverb_gui();
+	//result = init_reverb_gui();  // Now in the reverb instrument dialog
 	result = init_equalizer_gui();
 	result = init_adsrs_gui();
 	result = init_lfos_gui();
@@ -509,6 +509,8 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	connect(GuiNavigator::get_instance(), &GuiNavigator::frame_changed,
 			this, &Dialog_AnalogSynth_1900x1000::on_frame_changed);
 
+	sketch_selected(0); // Default to sketch 1
+
 	MainWindow::get_instance()->register_active_dialog(this);
 
 	// GUI Update timer start
@@ -557,6 +559,26 @@ void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 
 void Dialog_AnalogSynth_1900x1000::set_analog_synth_general_signals_connections()
 {
+	connect(ui->pushButton_AnalogSynth_Sketch_1,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_sketch1_selected()));
+
+	connect(ui->pushButton_AnalogSynth_Sketch_2,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_sketch2_selected()));
+
+	connect(ui->pushButton_AnalogSynth_Sketch_3,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_sketch3_selected()));
+
+	connect(ui->pushButton_Panic,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_panic_cliked()));
+	
 	connect(ui->tabWidget_AnalogSynth,
 			SIGNAL(currentChanged(int)),
 			this,
@@ -1192,17 +1214,20 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_1->setChecked(true);
-		ui->pushButton_AnalogSynth_Sketch_1->setText("[Sketch 1]");
+		//ui->pushButton_AnalogSynth_Sketch_1->setText("[Sketch 1]");
+		ui->pushButton_AnalogSynth_Sketch_1->setTextColor(QColor(_CONTROL_COLOR_GREEN));
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(false);
 
 		ui->pushButton_AnalogSynth_Sketch_2->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_2->setChecked(false);
-		ui->pushButton_AnalogSynth_Sketch_2->setText("Sketch 2");
+		//ui->pushButton_AnalogSynth_Sketch_2->setText("Sketch 2");
+		ui->pushButton_AnalogSynth_Sketch_2->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_2->blockSignals(false);
 
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_3->setChecked(false);
-		ui->pushButton_AnalogSynth_Sketch_3->setText("Sketch 3");
+		//ui->pushButton_AnalogSynth_Sketch_3->setText("Sketch 3");
+		ui->pushButton_AnalogSynth_Sketch_3->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(false);
 
 		mod_synth_set_active_sketch(_SKETCH_PROGRAM_1);
@@ -1221,17 +1246,20 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_1->setChecked(false);
-		ui->pushButton_AnalogSynth_Sketch_1->setText("Sketch 1");
+		//ui->pushButton_AnalogSynth_Sketch_1->setText("Sketch 1");
+		ui->pushButton_AnalogSynth_Sketch_1->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(false);
 
 		ui->pushButton_AnalogSynth_Sketch_2->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_2->setChecked(true);
-		ui->pushButton_AnalogSynth_Sketch_2->setText("[Sketch 2]");
+		//ui->pushButton_AnalogSynth_Sketch_2->setText("[Sketch 2]");
+		ui->pushButton_AnalogSynth_Sketch_2->setTextColor(QColor(_CONTROL_COLOR_GREEN));
 		ui->pushButton_AnalogSynth_Sketch_2->blockSignals(false);
 
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_3->setChecked(false);
-		ui->pushButton_AnalogSynth_Sketch_3->setText("Sketch 3");
+		//ui->pushButton_AnalogSynth_Sketch_3->setText("Sketch 3");
+		ui->pushButton_AnalogSynth_Sketch_3->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(false);
 
 		mod_synth_set_active_sketch(_SKETCH_PROGRAM_2);
@@ -1250,17 +1278,20 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_1->setChecked(false);
-		ui->pushButton_AnalogSynth_Sketch_1->setText("Sketch 1");
+		//ui->pushButton_AnalogSynth_Sketch_1->setText("Sketch 1");
+		ui->pushButton_AnalogSynth_Sketch_1->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(false);
 
 		ui->pushButton_AnalogSynth_Sketch_2->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_2->setChecked(false);
-		ui->pushButton_AnalogSynth_Sketch_2->setText("Sketch 2");
+		//ui->pushButton_AnalogSynth_Sketch_2->setText("Sketch 2");
+		ui->pushButton_AnalogSynth_Sketch_2->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_2->blockSignals(false);
 
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_3->setChecked(true);
-		ui->pushButton_AnalogSynth_Sketch_3->setText("[Sketch 3]");
+		//ui->pushButton_AnalogSynth_Sketch_3->setText("[Sketch 3]");
+		ui->pushButton_AnalogSynth_Sketch_3->setTextColor(QColor(_CONTROL_COLOR_GREEN));
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(false);
 
 		mod_synth_set_active_sketch(_SKETCH_PROGRAM_3);
@@ -1371,19 +1402,19 @@ void Dialog_AnalogSynth_1900x1000::on_tab_selected(int tab)
 	ui->frame_LFO->hide();
 }
 
-void Dialog_AnalogSynth_1900x1000::on_sketch1_selected(bool val)
+void Dialog_AnalogSynth_1900x1000::on_sketch1_selected()
 {
-	sketch_selected(0, val);
+	sketch_selected(0);
 }
 
-void Dialog_AnalogSynth_1900x1000::on_sketch2_selected(bool val)
+void Dialog_AnalogSynth_1900x1000::on_sketch2_selected()
 {
-	sketch_selected(1, val);
+	sketch_selected(1);
 }
 
-void Dialog_AnalogSynth_1900x1000::on_sketch3_selected(bool val)
+void Dialog_AnalogSynth_1900x1000::on_sketch3_selected()
 {
-	sketch_selected(2, val);
+	sketch_selected(2);
 }
 
 

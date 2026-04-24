@@ -18,7 +18,7 @@
 
 class CustomFrame : public QFrame
 {
-	Q_OBJECT
+	//Q_OBJECT
 
   public:
 	explicit CustomFrame(QWidget *parent = nullptr);

@@ -24,11 +24,13 @@
 #include <QStyle>
 #include <QPainter>
 
+
 #include "MainWindow.h"
 #include "Dialog_MidiPlayer.h"
 #include "ui_Dialog_MidiPlayer.h"
 #include "midi.h"
 #include "utils.h"
+#include "CustomFileDialog.h"
 
 QString midi_file_name;
 OpenFileThread *open_file_thread;
@@ -554,35 +556,48 @@ void Dialog_MidiPlayer::on_midi_file_loaded(const QString &s)
 
 void Dialog_MidiPlayer::on_open_file_clicked()
 {
-	
-	QFileDialog dialog;
-	// dialog.setOptions(QFileDialog::DontUseNativeDialog);
-	midi_file_name = QFileDialog::getOpenFileName(this,
-		tr("Open MIDI File "),
-		QString(_MIDI_PLAYBACK_FILES_DEFAULT_DIR),
-		tr("Presets (*.mid *.MID);;All Files (*)"));
+	QString startDir = last_midi_directory.isEmpty() ? QString(_MIDI_PLAYBACK_FILES_DEFAULT_DIR) : last_midi_directory;
 
-	if (!midi_file_name.isEmpty())
+	CustomFileDialog dialog(this,
+							tr("Open MIDI File"),
+							startDir,
+							tr("Presets (*.mid *.MID);;All Files (*)"),
+							Qt::black); // Background color set here)
+
+
+	// If we have a last file, select it and scroll to it
+	if (!last_midi_file.isEmpty())
 	{
-		std::string file_name;
-		
-		file_name = std::string("Now Loading: ");
-		file_name += std::filesystem::path(midi_file_name.toStdString()).stem();
-	
-		ui->lineEdit_MidiPlayeFileName->setText(QString::fromStdString(file_name));
-		
-		//mod_synth_open_midi_file(midi_file_name.toStdString());
-		open_file_thread = new OpenFileThread();
-		connect(open_file_thread,
-			&OpenFileThread::finished, open_file_thread, &QObject::deleteLater);
-		connect(open_file_thread, &OpenFileThread::resultReady, this, &Dialog_MidiPlayer::on_midi_file_loaded);
-		open_file_thread->start();
-		
-		ui->pushButton_MidiPlayerPlay->setEnabled(false);
-		ui->pushButton_MidiPlayerPause->setEnabled(false);
-		ui->pushButton_MidiPlayerStop->setEnabled(false);
+		dialog.selectFile(last_midi_file);
 	}
-	
+
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		midi_file_name = dialog.selectedFile();
+
+		if (!midi_file_name.isEmpty())
+		{
+			// Remember the directory and file for next time
+			last_midi_directory = QFileInfo(midi_file_name).absolutePath();
+			last_midi_file = midi_file_name;
+
+			std::string file_name;
+			file_name = std::string("Now Loading: ");
+			file_name += std::filesystem::path(midi_file_name.toStdString()).stem();
+
+			ui->lineEdit_MidiPlayeFileName->setText(QString::fromStdString(file_name));
+
+			open_file_thread = new OpenFileThread();
+			connect(open_file_thread,
+					&OpenFileThread::finished, open_file_thread, &QObject::deleteLater);
+			connect(open_file_thread, &OpenFileThread::resultReady, this, &Dialog_MidiPlayer::on_midi_file_loaded);
+			open_file_thread->start();
+
+			ui->pushButton_MidiPlayerPlay->setEnabled(false);
+			ui->pushButton_MidiPlayerPause->setEnabled(false);
+			ui->pushButton_MidiPlayerStop->setEnabled(false);
+		}
+	}
 }
 
 void Dialog_MidiPlayer::on_play_clicked()

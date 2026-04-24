@@ -51,7 +51,7 @@ class Dialog_AnalogSynth_1900x1000 : public QDialog
 	// Handle frame navigation
 	void on_frame_changed(const QString &frame_name, int frame_index);
 
-	void sketch_selected(int sketch, bool val);
+	void sketch_selected(int sketch, bool val = false);
 
 	void osc1_set_unison_mode(int mode);
 
@@ -74,9 +74,9 @@ protected slots:
 
 	void on_tab_selected(int tab);
 
-	void on_sketch1_selected(bool val);
-	void on_sketch2_selected(bool val);
-	void on_sketch3_selected(bool val);
+	void on_sketch1_selected();
+	void on_sketch2_selected();
+	void on_sketch3_selected();
 
 	// ADSR and LFO flying frames
 	void on_modulator_combo_box_mouse_entered(int val);

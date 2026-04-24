@@ -4,15 +4,16 @@
 
 #include "types.h"
 
-#define _FLUID_DEFAULT_SOUNDFONT_FILE "/home/pi/AdjHeartModSynth_2/SoundFonts/FluidR3_GM.sf2"
-#define _FLUID_DEFAULT_SOUNDFONT_DIR "/home/pi/AdjHeartModSynth_2/SoundFonts"
+#define _FLUID_DEFAULT_SOUNDFONT_FILE "/home/pi/AdjRaspiSynth5qtApp_2/SoundFonts/FluidR3_GM.sf2"
+#define _FLUID_DEFAULT_SOUNDFONT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/SoundFonts"
 
-#define _FLUID_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjHeartModSynth_2/Settings/Fluid"
+#define _FLUID_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Settings/Fluid"
 
-#define _PATCHES_FILES_DEFAULT_DIR "/home/pi/AdjHeartModSynth_2/Patches"
+#define _PATCHES_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Patches"
 
-#define _MIDI_PLAYBACK_FILES_DEFAULT_DIR "/home/pi/AdjHeartModSynth_2/MidiFiles/Playback"
+#define _MIDI_PLAYBACK_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/MidiFiles/Playback"
 
+#define _HAMMOND_ORGAN_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Settings/HammondOrgan"
 
 #define _MIDI_MIXER_CHANNELS_1_8	0
 #define _MIDI_MIXER_CHANNELS_9_16	1

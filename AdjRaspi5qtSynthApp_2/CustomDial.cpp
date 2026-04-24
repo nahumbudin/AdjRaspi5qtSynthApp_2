@@ -83,7 +83,8 @@ void CustomDial::paintEvent(QPaintEvent *event)
 
 	// 5. Draw border circle around the knob
 	int thickness = 5;
-	QColor borderColor = isEnabled() ? circle_color.darker(150) : QColor(80, 80, 80);
+	//QColor borderColor = isEnabled() ? circle_color.darker(150) : QColor(80, 80, 80);
+	QColor borderColor = isEnabled() ? circle_color : QColor(80, 80, 80);
 	
 	QPen borderPen(borderColor, thickness);
 	painter.setPen(borderPen);

@@ -24,6 +24,9 @@
 #include "Dialog_MidiMapper.h"
 #include "Dialog_MidiMixer.h"
 #include "Dialog_MidiPlayer.h"
+#include "Dialog_AnalogReverb.h"
+#include "Dialog_AnalogEqualizer.h"
+#include "Dialog_HammondOrgan.h"
 #include "MainWindow.h"
 #include "ui_InstrumentPannel.h"
 
@@ -52,6 +55,9 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 	dialog_adj_midi_player = nullptr;
 	dialog_midi_mixer = nullptr;
 	dialog_midi_mapper = nullptr;
+	dialog_analog_reverb = nullptr;
+	dialog_analog_equalizer = nullptr;
+	dialog_hammond_organ = nullptr;
 
 	// Connect signals
 	connect(ui->pushButton_InstrumentExit,
@@ -214,6 +220,18 @@ void InstrumentPannel::on_instrument_open_clicked()
 	{
 		open_midi_mapper_dialog();
 	}
+	else if (instrument_name == _INSTRUMENT_NAME_REVERB_STR_KEY)
+	{
+		open_analog_reverb_dialog();
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY)
+	{
+		open_analog_equalizer_dialog();
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY)
+	{
+		open_hammond_organ_dialog();
+	}
 }
 
 void InstrumentPannel::open_fluid_synth_dialog()
@@ -305,6 +323,57 @@ void InstrumentPannel::open_midi_mapper_dialog()
 	dialog_midi_mapper->show();
 	dialog_midi_mapper->raise();
 	dialog_midi_mapper->activateWindow();
+}
+
+void InstrumentPannel::open_analog_reverb_dialog()
+{
+	if (dialog_analog_reverb == nullptr)
+	{
+		dialog_analog_reverb = Dialog_AnalogReverb::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_analog_reverb, "Analog Reverb");
+
+		connect(dialog_analog_reverb, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_analog_reverb);
+		});
+	}
+
+	dialog_analog_reverb->show();
+	dialog_analog_reverb->raise();
+	dialog_analog_reverb->activateWindow();
+}
+
+void InstrumentPannel::open_analog_equalizer_dialog()
+{
+	if (dialog_analog_equalizer == nullptr)
+	{
+		dialog_analog_equalizer = Dialog_AnalogEqualizer::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_analog_equalizer, "Analog Equalizer");
+
+		connect(dialog_analog_equalizer, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_analog_equalizer);
+		});
+	}
+
+	dialog_analog_equalizer->show();
+	dialog_analog_equalizer->raise();
+	dialog_analog_equalizer->activateWindow();
+}
+
+void InstrumentPannel::open_hammond_organ_dialog()
+{
+	if (dialog_hammond_organ == nullptr)
+	{
+		dialog_hammond_organ = Dialog_HammondOrgan::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_hammond_organ, "Hammond Organ");
+
+		connect(dialog_hammond_organ, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_hammond_organ);
+		});
+	}
+
+	dialog_hammond_organ->show();
+	dialog_hammond_organ->raise();
+	dialog_hammond_organ->activateWindow();
 }
 
 void InstrumentPannel::on_instrument_connections_clicked()

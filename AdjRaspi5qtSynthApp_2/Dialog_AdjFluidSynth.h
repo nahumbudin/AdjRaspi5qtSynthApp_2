@@ -43,9 +43,13 @@ public :
 	void get_active_settings_values();
 	void set_default_settings_values(bool update_flag=true);
 	void update();
+
+  protected:
+	void timerEvent(QTimerEvent *event);
 	
 public slots:
 	void closeEvent(QCloseEvent *event);
+	virtual void update_gui(); // Called by a Timer
 
 protected slots :	
 	void fluid_gain_changed(int vol);
@@ -84,6 +88,8 @@ protected slots :
 private:
 	
 	explicit Dialog_AdjFluidSynth(QWidget *parent = 0);
+
+	void start_update_timer(int interval);
 	
 	Ui::Dialog_AdjFluidSynth *ui;
 	

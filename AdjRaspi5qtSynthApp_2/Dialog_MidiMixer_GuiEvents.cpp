@@ -2567,22 +2567,27 @@ void Dialog_MidiMixer::on_selected_lfo_rate_dial_changed(int val)
 	{
 		char text[64];
 
-		Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1]->blockSignals(true); // 1..6 -> 0..5
-		Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1]->setValue(val);
-		Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1]->blockSignals(false);
+		if (Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1])
+		{
+			// Not initiated yet - nothing to do. Initated if Dialog_AnalogSynth_1900x1000 is opened at least once.
+			Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1]->blockSignals(true); // 1..6 -> 0..5
+			Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1]->setValue(val);
+			Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1]->blockSignals(false);
 
-		sprintf(text, "%.2fHz",
-				mod_synth_log_scale_100_float(mod_synth_get_lfo_min_frequency(),
-											  mod_synth_get_lfo_max_frequency(), 10.0,
-											  val));
+			sprintf(text, "%.2fHz",
+					mod_synth_log_scale_100_float(mod_synth_get_lfo_min_frequency(),
+												  mod_synth_get_lfo_max_frequency(), 10.0,
+												  val));
 
-		Dialog_AnalogSynth_1900x1000::lineedit_lfo_rate[active_lfo - 1]->setText(QString(text));
-		ui->lineEdit_LFOrate->setText(QString(text));
+			Dialog_AnalogSynth_1900x1000::lineedit_lfo_rate[active_lfo - 1]->setText(QString(text));
+			ui->lineEdit_LFOrate->setText(QString(text));
 
-		mod_synth_modulator_event_int(_LFO_1_EVENT + active_lfo - 1, _MOD_LFO_RATE, val);
+			mod_synth_modulator_event_int(_LFO_1_EVENT + active_lfo - 1, _MOD_LFO_RATE, val);
+		}
 
 		active_lfo_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
 		active_lfo_widget_showing = true;
+		
 	}
 }
 
@@ -2592,15 +2597,19 @@ void Dialog_MidiMixer::on_selected_lfo_symmetry_dial_changed(int val)
 	{
 		char text[64];
 
-		Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[active_lfo - 1]->blockSignals(true); // 1..6 -> 0..5
-		Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[active_lfo - 1]->setValue(val);
-		Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[active_lfo - 1]->blockSignals(false);
+		if (Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1])
+		{
+			// Not initiated yet - nothing to do. Initated if Dialog_AnalogSynth_1900x1000 is opened at least once.
+			Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[active_lfo - 1]->blockSignals(true); // 1..6 -> 0..5
+			Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[active_lfo - 1]->setValue(val);
+			Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[active_lfo - 1]->blockSignals(false);
 
-		sprintf(text, "%i%c", val, '%');
-		Dialog_AnalogSynth_1900x1000::lineedit_lfo_symmetry[active_lfo - 1]->setText(QString(text));
-		ui->lineEdit_LFOsymmetry->setText(QString(text));
+			sprintf(text, "%i%c", val, '%');
+			Dialog_AnalogSynth_1900x1000::lineedit_lfo_symmetry[active_lfo - 1]->setText(QString(text));
+			ui->lineEdit_LFOsymmetry->setText(QString(text));
 
-		mod_synth_modulator_event_int(_LFO_1_EVENT + active_lfo - 1, _MOD_LFO_SYMMETRY, val);
+			mod_synth_modulator_event_int(_LFO_1_EVENT + active_lfo - 1, _MOD_LFO_SYMMETRY, val);
+		}
 
 		active_lfo_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
 		active_lfo_widget_showing = true;
@@ -2609,11 +2618,15 @@ void Dialog_MidiMixer::on_selected_lfo_symmetry_dial_changed(int val)
 
 void Dialog_MidiMixer::on_selected_lfo_waveform_combo_changed(int val)
 {
-	Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[active_lfo - 1]->blockSignals(true);
-	Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[active_lfo - 1]->setCurrentIndex(val);
-	Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[active_lfo - 1]->blockSignals(false);
+	if (Dialog_AnalogSynth_1900x1000::dial_lfo_rate[active_lfo - 1])
+	{
+		// Not initiated yet - nothing to do. Initated if Dialog_AnalogSynth_1900x1000 is opened at least once.
+		Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[active_lfo - 1]->blockSignals(true);
+		Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[active_lfo - 1]->setCurrentIndex(val);
+		Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[active_lfo - 1]->blockSignals(false);
 
-	mod_synth_modulator_event_int(_LFO_1_EVENT, _MOD_LFO_WAVEFORM, val);
+		mod_synth_modulator_event_int(_LFO_1_EVENT, _MOD_LFO_WAVEFORM, val);
+	}
 
 	active_lfo_frame_no_activity_counter = _MODULATOR_FRAME_NO_ACTIVITY_TIMOUT_COUNT;
 	active_lfo_widget_showing = true;

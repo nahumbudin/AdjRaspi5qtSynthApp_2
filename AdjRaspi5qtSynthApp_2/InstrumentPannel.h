@@ -28,6 +28,9 @@ class Dialog_AnalogSynth_1900x1000;
 class Dialog_MidiPlayer;
 class Dialog_MidiMixer;
 class Dialog_MidiMapper;
+class Dialog_AnalogReverb;
+class Dialog_AnalogEqualizer;
+class Dialog_HammondOrgan;
 class MainWindow;
 
 namespace Ui
@@ -93,6 +96,9 @@ class InstrumentPannel : public QFrame
 	void open_midi_player_dialog();
 	void open_midi_mixer_dialog();
 	void open_midi_mapper_dialog();
+	void open_analog_reverb_dialog();
+	void open_analog_equalizer_dialog();
+	void open_hammond_organ_dialog();
 
 	PannelState current_state;
 
@@ -101,9 +107,14 @@ class InstrumentPannel : public QFrame
 	Dialog_InstrumentConnections *connections_dialog;
 	Dialog_AdjFluidSynth *dialog_adj_fluid_synth;
 	Dialog_AnalogSynth_1900x1000 *dialog_analog_synth_1900x1000;
+	Dialog_HammondOrgan *dialog_hammond_organ;
 	Dialog_MidiPlayer *dialog_adj_midi_player;
 	Dialog_MidiMixer *dialog_midi_mixer;
 	Dialog_MidiMapper *dialog_midi_mapper;
+
+	Dialog_AnalogReverb *dialog_analog_reverb;
+	Dialog_AnalogEqualizer *dialog_analog_equalizer;
+	
 
 	QWidget *widget_parent;
 };

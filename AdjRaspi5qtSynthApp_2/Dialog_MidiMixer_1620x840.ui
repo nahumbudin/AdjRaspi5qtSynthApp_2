@@ -2291,7 +2291,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>1400</x>
-     <y>300</y>
+     <y>100</y>
      <width>215</width>
      <height>210</height>
     </rect>
@@ -4542,30 +4542,6 @@ color: rgb(255, 255, 255);</string>
    <property name="midLineWidth">
     <number>1</number>
    </property>
-   <widget class="QLabel" name="label_139">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_140">
     <property name="geometry">
      <rect>
@@ -4586,30 +4562,6 @@ color: rgb(255, 255, 255);</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_141">
-    <property name="geometry">
-     <rect>
-      <x>65</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -4720,54 +4672,6 @@ color: rgb(255, 255, 255);</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_156">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_157">
-    <property name="geometry">
-     <rect>
-      <x>165</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_158">
     <property name="geometry">
      <rect>
@@ -4828,54 +4732,6 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="value">
      <number>0</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_159">
-    <property name="geometry">
-     <rect>
-      <x>265</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_160">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBox_MixerChPanModLevel_3">
@@ -4974,54 +4830,6 @@ Modulation</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_162">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_163">
-    <property name="geometry">
-     <rect>
-      <x>365</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QSpinBox" name="spinBox_MixerChPanModLevel_4">
     <property name="geometry">
      <rect>
@@ -5113,54 +4921,6 @@ color: rgb(255, 255, 255);</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_183">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_184">
-    <property name="geometry">
-     <rect>
-      <x>405</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -5358,54 +5118,6 @@ Modulation</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_187">
-    <property name="geometry">
-     <rect>
-      <x>505</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_188">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="CustomDial" name="dial_MixerChPanModLevel_7">
     <property name="geometry">
      <rect>
@@ -5440,30 +5152,6 @@ Modulation</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_189">
-    <property name="geometry">
-     <rect>
-      <x>665</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_190">
     <property name="geometry">
      <rect>
@@ -5484,30 +5172,6 @@ Modulation</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_191">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -5587,30 +5251,6 @@ color: rgb(255, 255, 255);</string>
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_192">
-    <property name="geometry">
-     <rect>
-      <x>705</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="CustomDial" name="dial_MixerChPanModLevel_8">
     <property name="geometry">
      <rect>
@@ -5665,30 +5305,6 @@ color: rgb(255, 255, 255);</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_194">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -8423,30 +8039,6 @@ color: rgb(255, 255, 255);</string>
    <property name="midLineWidth">
     <number>1</number>
    </property>
-   <widget class="QLabel" name="label_245">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_246">
     <property name="geometry">
      <rect>
@@ -8467,30 +8059,6 @@ color: rgb(255, 255, 255);</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_247">
-    <property name="geometry">
-     <rect>
-      <x>65</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -8601,54 +8169,6 @@ color: rgb(255, 255, 255);</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_248">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_249">
-    <property name="geometry">
-     <rect>
-      <x>165</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_250">
     <property name="geometry">
      <rect>
@@ -8709,54 +8229,6 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="value">
      <number>0</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_251">
-    <property name="geometry">
-     <rect>
-      <x>265</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_252">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBox_MixerChPanModLevel_11">
@@ -8855,54 +8327,6 @@ Modulation</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_254">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_255">
-    <property name="geometry">
-     <rect>
-      <x>365</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QSpinBox" name="spinBox_MixerChPanModLevel_12">
     <property name="geometry">
      <rect>
@@ -8994,54 +8418,6 @@ color: rgb(255, 255, 255);</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_257">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_258">
-    <property name="geometry">
-     <rect>
-      <x>405</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -9239,54 +8615,6 @@ Modulation</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_261">
-    <property name="geometry">
-     <rect>
-      <x>505</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_262">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="CustomDial" name="dial_MixerChPanModLevel_15">
     <property name="geometry">
      <rect>
@@ -9321,30 +8649,6 @@ Modulation</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_263">
-    <property name="geometry">
-     <rect>
-      <x>665</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_264">
     <property name="geometry">
      <rect>
@@ -9365,30 +8669,6 @@ Modulation</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_265">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -9468,30 +8748,6 @@ color: rgb(255, 255, 255);</string>
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_266">
-    <property name="geometry">
-     <rect>
-      <x>705</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="CustomDial" name="dial_MixerChPanModLevel_16">
     <property name="geometry">
      <rect>
@@ -9546,30 +8802,6 @@ color: rgb(255, 255, 255);</string>
     <property name="text">
      <string>Pan
 Modulation</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_268">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>75</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>R</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

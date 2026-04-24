@@ -89,6 +89,9 @@ private:
 	void display_channel_utilization(midi_file_meta_data_t &meta_data);
 
 	QPoint last_position;
+
+	QString last_midi_directory; // Store last used directory
+	QString last_midi_file;		 // Store last selected file
 };
 
 class OpenFileThread : public QThread

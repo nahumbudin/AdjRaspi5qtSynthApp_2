@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1900</width>
-    <height>970</height>
+    <height>1000</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -12984,6 +12984,9 @@ color: rgb(255, 255, 255);</string>
      </property>
     </widget>
     <widget class="CustomCheckBox" name="checkBox_Reverbration3_Active">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>540</x>
@@ -13012,6 +13015,9 @@ color: rgb(0,0,0);</string>
      </property>
     </widget>
     <widget class="CustomFrame" name="frame_FreeVerb">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>540</x>
@@ -13617,6 +13623,9 @@ color: rgb(255, 255, 255);</string>
      </widget>
     </widget>
     <widget class="CustomFrame" name="frame_freeVerb3">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>540</x>
@@ -13718,6 +13727,9 @@ background-color: rgb(170, 255, 0);
      </widget>
     </widget>
     <widget class="CustomCheckBox" name="checkBox_Reverbration_Active">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>540</x>

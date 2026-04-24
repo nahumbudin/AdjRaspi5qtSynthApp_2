@@ -56,8 +56,10 @@ public :
 	void channels_levels_update_callback(int chan, int vol);
 	void channels_pans_update_callback(int chan, int vol);
 
-	void channels_pan_lfo_mod_level_update_callback(int chan, int lvl);
-	void channels_pan_lfo_update_callback(int chan, int lfo);
+	void channels_sends_update_callback(int chan, int send);
+
+	void channels_pan_mod_lfo_level_update_callback(int chan, int lvl);
+	void channels_pan_mod_lfo_update_callback(int chan, int lfo);
 
 	void channels_static_levels_update_callback(int chan, bool state);
 	void channels_program_update_callback(int chan, int prog);
@@ -314,6 +316,7 @@ private:
 
 	bool levels_updated = true;
 	bool pans_updated = true;
+	bool sends_updated = true;
 	bool pan_mod_levels_updated = true;
 	bool pan_mod_lfos_updated = true;
 	bool send_levels_updated = true;

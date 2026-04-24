@@ -81,7 +81,7 @@ background-color: rgb(5, 5, 5);</string>
 background-color: rgb(5, 5, 5);</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_Channels_1_8">
      <attribute name="title">

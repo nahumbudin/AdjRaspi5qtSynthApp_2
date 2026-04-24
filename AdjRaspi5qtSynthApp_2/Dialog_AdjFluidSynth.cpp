@@ -1,27 +1,32 @@
 /**
-* @file		Dialog_AdjFluidSynth.cpp
-*	@author		Nahum Budin
-*	@date		14-Dec-2025
-*	@version	2.0
-*					1. Use new control box event defines.
-*
-*	@brief		Adj FluidSynth control dialog
-*	
-*	History:\n
-*			Ver. 1.0 13-Jul-2024	Initial version AdjRaspi5qtSynthApp_1
-*
-*/
+ * @file		Dialog_AdjFluidSynth.cpp
+ *	@author		Nahum Budin
+ *	@date		14-Dec-2025
+ *	@version	2.0
+ *					1. Use new control box event defines.
+ *					2. Use custom gui widgets.
+ *					3. Set timer to update the GUI every 100 ms.
+ *
+ *	@brief		Adj FluidSynth control dialog
+ *
+ *	History:\n
+ *			Ver. 1.0 13-Jul-2024	Initial version AdjRaspi5qtSynthApp_1
+ *
+ */
 
 #include <string>
 
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QTimer>
 
 #include "utils.h"
 
 #include "MainWindow.h"
 #include "Dialog_AdjFluidSynth.h"
 #include "ui_Dialog_AdjFluidSynth.h"
+
+#define _UPDATE_TIMER_PERIOD_MS 250
 
 Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::dialog_adj_fluid_synth_instance = NULL;
 
@@ -53,6 +58,79 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 	set_default_settings_values(false);
 
 	close_event_callback_ptr = NULL;
+
+	ui->verticalSlider_adjFluidSynth_Gain->setFrameColor(_CONTROLS_COLOR_PURPLE);
+	ui->verticalSlider_adjFluidSynth_Gain->setProgressColor(_CONTROLS_COLOR_PURPLE);
+	ui->verticalSlider_adjFluidSynth_Gain->setHandleColor(_CONTROLS_COLOR_PURPLE);
+
+	ui->dial_adjFluidSynth_Reverb_Room->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Reverb_Room->setCircleColor(_CONTROLS_COLOR_GRAY);
+	
+	ui->dial_adjFluidSynth_Reverb_Damp->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Reverb_Damp->setCircleColor(_CONTROLS_COLOR_PURPLE);
+
+	ui->dial_adjFluidSynth_Reverb_Width->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Reverb_Width->setCircleColor(_CONTROLS_COLOR_BLUE);
+
+	ui->dial_adjFluidSynth_Reverb_Level->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Reverb_Level->setCircleColor(_CONTROLS_COLOR_GREEN);
+	
+
+	ui->dial_adjFluidSynth_Chorus_N->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Chorus_N->setCircleColor(_CONTROLS_COLOR_WHITE);
+	
+	ui->dial_adjFluidSynth_Chorus_Level->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Chorus_Level->setCircleColor(_CONTROLS_COLOR_YELLOW);
+	
+	ui->dial_adjFluidSynth_Chorus_Speed->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Chorus_Speed->setCircleColor(_CONTROLS_COLOR_RED);
+	
+	ui->dial_adjFluidSynth_Chorus_Depth->setKnobColor(_KNOBS_COLOR);
+	ui->dial_adjFluidSynth_Chorus_Depth->setCircleColor(_CONTROLS_COLOR_BLACK);
+
+	ui->comboBox_adjFluidSynth_Chorus_Type->setBackgroundColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->comboBox_adjFluidSynth_Chorus_Type->setFrameColor(_CONTROLS_COLOR_GREEN);
+	ui->comboBox_adjFluidSynth_Chorus_Type->setFrameWidth(2);
+
+	ui->pushButton_adjFluidSynth_Channels->setFrameColor(_CONTROLS_COLOR_GRAY);
+	ui->pushButton_adjFluidSynth_Channels->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->pushButton_adjFluidSynth_Default_settings->setFrameColor(_CONTROLS_COLOR_PURPLE);
+	ui->pushButton_adjFluidSynth_Default_settings->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->pushButton_adjFluidSynth_Load_preset->setFrameColor(_CONTROLS_COLOR_BLUE);
+	ui->pushButton_adjFluidSynth_Load_preset->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->pushButton_adjFluidSynth_Save_preset->setFrameColor(_CONTROLS_COLOR_GREEN);
+	ui->pushButton_adjFluidSynth_Save_preset->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->radioButton_Preset_1->setFrameColor(_CONTROLS_COLOR_YELLOW);
+	ui->radioButton_Preset_1->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->radioButton_Preset_2->setFrameColor(_CONTROLS_COLOR_RED);
+	ui->radioButton_Preset_2->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->radioButton_Preset_3->setFrameColor(_CONTROLS_COLOR_BLACK);
+	ui->radioButton_Preset_3->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
+	ui->checkBox_adjFluidSynth_Reverb_Active->setLedStyle(true);
+	ui->checkBox_adjFluidSynth_Reverb_Active->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_adjFluidSynth_Reverb_Active->setFrameColor(_CONTROLS_COLOR_PURPLE);
+	ui->checkBox_adjFluidSynth_Reverb_Active->setBackgroundColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_adjFluidSynth_Reverb_Active->setCheckBoxSize(16);
+	ui->checkBox_adjFluidSynth_Reverb_Active->setFrameWidth(2);
+
+	ui->checkBox_adjFluidSynth_Chorus_Active->setLedStyle(true);
+	ui->checkBox_adjFluidSynth_Chorus_Active->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_adjFluidSynth_Chorus_Active->setFrameColor(_CONTROLS_COLOR_BLUE);
+	ui->checkBox_adjFluidSynth_Chorus_Active->setBackgroundColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_adjFluidSynth_Chorus_Active->setCheckBoxSize(16);
+	ui->checkBox_adjFluidSynth_Chorus_Active->setFrameWidth(2);
+
+	ui->frame_1->setBorderColor(_CONTROLS_COLOR_WHITE);
+	ui->frame_1->setBorderWidth(3);
+	ui->frame_2->setBorderColor(_CONTROLS_COLOR_WHITE);
+	ui->frame_2->setBorderWidth(3);
 
 	preset_radio_buttons[0] = ui->radioButton_Preset_1;
 	preset_radio_buttons[1] = ui->radioButton_Preset_2;
@@ -158,11 +236,6 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 			this,
 			SLOT(chorus_waveform_changed(int)));
 
-	connect(ui->pushButton_adjFluidSynth_Close,
-			SIGNAL(clicked()),
-			this,
-			SLOT(on_dialog_close()));
-
 	connect(ui->pushButton_adjFluidSynth_Channels,
 			SIGNAL(clicked()),
 			this,
@@ -208,6 +281,9 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 
 	// Also register with MainWindow for compatibility
 	MainWindow::get_instance()->register_active_dialog(this);
+
+	// GUI Update timer start
+	start_update_timer(_UPDATE_TIMER_PERIOD_MS);
 }
 
 Dialog_AdjFluidSynth::~Dialog_AdjFluidSynth()
@@ -259,10 +335,193 @@ void Dialog_AdjFluidSynth::control_box_ui_update_callback(int evnt, uint16_t val
 
 	if (evnt == _I2C_CONTROL_ENCODER_1)
 	{
-		/* En/Dis Reverb */
-		if (val == 0x1000)
+		// Dial Gray Gray
+		if (val == 0x2000)
 		{
+			// Dial Pushbutton Gray - Open Channels
+			// Only when pressed
+			on_module_channels_clicked();
+		}
+		else
+		{
+			// Dial Gray Gray - Reverb Room size
+			if (reverb_activation)
+			{
+				reverb_room_size = update_rotary_encoder_value(reverb_room_size,
+															   val,
+															   &prev_knob_reverb_room_size_val,
+															   reverb_room_size_min,
+															   reverb_room_size_max,
+															   4);
+
+				reverb_room_size_changed(reverb_room_size);
+			}
+		}
+	}
+
+	if (evnt == _I2C_CONTROL_ENCODER_2)
+	{
+		// Dial Gray Purple - En/Dis Reverb
+		if (val == 0x2000)
+		{
+			// Dial Pushbutton Purple - DEfaulrt settings
+			// Only when pressed
+			on_default_settings_clicked();
+		}
+		else
+		{
+			// Dial Gray Purple - Reverb Damp
+			/* Reverb Damp */
+			if (reverb_activation)
+			{
+				reverb_damp = update_rotary_encoder_value(reverb_damp,
+														  val,
+														  &prev_knob_reverb_damp_val,
+														  reverb_damp_min,
+														  reverb_damp_max,
+														  4);
+
+				reverb_damp_changed(reverb_damp);
+			}
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_3)
+	{
+		// Dial Gray Blue
+		/* Encoder Pushbutton - Load */
+		if (val == 0x2000)
+		{
+			// Dial  Gray Blue Pushbutton - Load preset
 			/* Only when pressed */
+			on_load_presets_clicked();
+		}
+		else
+		{
+			/* Dial Gray Blue - Reverb Width */
+			if (reverb_activation)
+			{
+				reverb_width = update_rotary_encoder_value(reverb_width,
+														   val,
+														   &prev_knob_reverb_width_val,
+														   reverb_width_min,
+														   reverb_width_max,
+														   4);
+
+				reverb_width_changed(reverb_width);
+			}
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_4)
+	{
+		// Dial Gray Green - Reverb Level
+		/* Encoder Pushbutton - Save */
+		if (val == 0x2000)
+		{
+			// Dial  Gray Blue Pushbutton - Save preset
+			/* Only when pressed */
+			on_save_presets_clicked();
+		}
+		else if (reverb_activation)
+		{
+			reverb_level = update_rotary_encoder_value(reverb_level,
+													   val,
+													   &prev_knob_reverb_level_val,
+													   reverb_level_min,
+													   reverb_level_max,
+													   4);
+
+			reverb_level_changed(reverb_level);
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_5)
+	{
+		// Dial Gray White - Chorus N
+		if (chorus_activation)
+		{
+			chorus_number = update_rotary_encoder_value(chorus_number,
+														val,
+														&prev_knob_chorus_number_val,
+														chorus_number_min,
+														chorus_number_max,
+														4);
+
+			chorus_number_changed(chorus_number);
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_6)
+	{
+		// Dial Gray Yellow - Chorus Level
+		// Encoder Radio button - Preset 1
+		if (val == 0x2000)
+		{
+			// Dial  Gray Yellow Radio button - Preset 1
+			/* Only when pressed */
+			on_preset_1_selected(true);
+		}
+		else if (chorus_activation)
+		{
+			chorus_level = update_rotary_encoder_value(chorus_level,
+													   val,
+													   &prev_knob_chorus_level_val,
+													   chorus_level_min,
+													   chorus_level_max,
+													   4);
+
+			chorus_level_changed(chorus_level);
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_7)
+	{
+		// Dial Gray Red - Chorus Speed
+		// Encoder Radio button - Preset 1
+		if (val == 0x2000)
+		{
+			// Dial  Gray Red Radio button - Preset 2
+			/* Only when pressed */
+			on_preset_2_selected(true);
+		}
+		else if (chorus_activation)
+		{
+			chorus_speed = update_rotary_encoder_value(chorus_speed,
+													   val,
+													   &prev_knob_chorus_speed_val,
+													   chorus_speed_min,
+													   chorus_speed_max,
+													   10);
+
+			chorus_speed_changed(chorus_speed);
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_8)
+	{
+		// Dial Gray Black - Chorus Depth
+		/* Chorus Depth */
+		// Encoder Radio button - Preset 1
+		if (val == 0x2000)
+		{
+			// Dial  Gray Black Radio button - Preset 1
+			/* Only when pressed */
+			on_preset_3_selected(true);
+		}
+		else if (chorus_activation)
+		{
+			chorus_depth = update_rotary_encoder_value(chorus_depth,
+													   val,
+													   &prev_knob_chorus_depth_val,
+													   chorus_depth_min,
+													   chorus_depth_max,
+													   10);
+
+			chorus_depth_changed(chorus_depth);
+		}
+	}
+	else if (evnt == _I2C_CONTROL_ENCODER_10)
+	{
+		// Dial White Purple - En/Dis Reverb
+		if (val == 0x2000)
+		{
+			// Dial Pushbutton Whit Purple - En/Dis Reverb
+			// Only when pressed
 			Qt::CheckState selected = ui->checkBox_adjFluidSynth_Reverb_Active->checkState();
 			if (selected == Qt::CheckState::Checked)
 			{
@@ -277,124 +536,13 @@ void Dialog_AdjFluidSynth::control_box_ui_update_callback(int evnt, uint16_t val
 			}
 		}
 	}
-	else if (evnt == _I2C_CONTROL_ENCODER_2)
+	else if (evnt == _I2C_CONTROL_ENCODER_11)
 	{
-		/* Defaule Settings */
-		if (val == 0x1000)
+		// Dial White Blue - En/Dis Reverb
+		if (val == 0x2000)
 		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Reverb Room */
-			if (reverb_activation)
-			{
-				reverb_room_size = update_rotary_encoder_value(reverb_room_size,
-					val,
-					&prev_knob_reverb_room_size_val,
-					reverb_room_size_min,
-					reverb_room_size_max,
-					4);			
-			
-				reverb_room_size_changed(reverb_room_size);
-			}		
-		}
-	}
-	else if (evnt == _I2C_CONTROL_ENCODER_14)
-	{
-		/* Save */
-		if (val == 0x1000)
-		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Chorus Type Scroll */
-			if (chorus_activation)
-			{
-				chorus_waveform = update_rotary_encoder_value(chorus_waveform,
-					val,
-					&prev_knob_chorus_waveform_val,
-					chorus_waveform_min,
-					chorus_waveform_max,
-					1);
-			
-				chorus_waveform_select_changed(chorus_waveform);			
-			}		
-		}
-	}
-	else if (evnt == _I2C_CONTROL_ENCODER_13)
-	{
-		/* Load */
-		if (val == 0x1000)
-		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Chorus Depth */
-			if (chorus_activation)
-			{
-				chorus_depth = update_rotary_encoder_value(chorus_depth,
-					val,
-					&prev_knob_chorus_depth_val,
-					chorus_depth_min,
-					chorus_depth_max,
-					10);
-			
-				chorus_depth_changed(chorus_depth);
-			}
-		}
-	}
-	else if (evnt == _I2C_CONTROL_ENCODER_5)
-	{
-		
-		/* Reverb Level */
-		if (reverb_activation)
-		{
-			reverb_level = update_rotary_encoder_value(reverb_level,
-				val,
-				&prev_knob_reverb_level_val,
-				reverb_level_min,
-				reverb_level_max,
-				4);
-		
-			reverb_level_changed(reverb_level);
-		}		
-	}
-	else if (evnt == _I2C_CONTROL_ENCODER_3)
-	{
-		/* Close */
-		if (val == 0x1000)
-		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Reverb Damp */
-			if (reverb_activation)
-			{
-				reverb_damp = update_rotary_encoder_value(reverb_damp,
-					val,
-					&prev_knob_reverb_damp_val,
-					reverb_damp_min,
-					reverb_damp_max,
-					4);
-			
-				reverb_damp_changed(reverb_damp);
-			}		
-		}
-	}
-	else if (evnt == _I2C_CONTROL_ENCODER_9)
-	{
-		/* En/Dis Chorus */
-		if (val == 0x1000)
-		{
-			/* Only when pressed */
+			// Dial Pushbutton White Blue - En/Dis Chorus
+			// Only when pressed
 			Qt::CheckState selected = ui->checkBox_adjFluidSynth_Chorus_Active->checkState();
 			if (selected == Qt::CheckState::Checked)
 			{
@@ -409,141 +557,148 @@ void Dialog_AdjFluidSynth::control_box_ui_update_callback(int evnt, uint16_t val
 			}
 		}
 	}
-	else if (evnt == _I2C_CONTROL_ENCODER_11)
-	{
-		/* Preset 2 */
-		if (val == 0x1000)
-		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Chorus Level */
-			if (chorus_activation)
-			{
-				chorus_level = update_rotary_encoder_value(chorus_level,
-					val,
-					&prev_knob_chorus_level_val,
-					chorus_level_min,
-					chorus_level_max,
-					4);
-			
-				chorus_level_changed(chorus_level);
-			}
-		}
-	}
 	else if (evnt == _I2C_CONTROL_ENCODER_12)
 	{
-		/* Preset 3 */
-		if (val == 0x1000)
+		// Dial White Green - Chorus Waveform
+		// Chorus Type Scroll
+		if (chorus_activation)
 		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Chorus Speed */
-			if (chorus_activation)
-			{
-				chorus_speed = update_rotary_encoder_value(chorus_speed,
-					val,
-					&prev_knob_chorus_speed_val,
-					chorus_speed_min,
-					chorus_speed_max,
-					10);
-			
-				chorus_speed_changed(chorus_speed);
-			}
+			chorus_waveform = update_rotary_encoder_value(chorus_waveform,
+														  val,
+														  &prev_knob_chorus_waveform_val,
+														  chorus_waveform_min,
+														  chorus_waveform_max,
+														  1);
+
+			chorus_waveform_select_changed(chorus_waveform);
 		}
 	}
-	else if (evnt == _I2C_CONTROL_ENCODER_10)
+	else if (evnt == _I2C_CONTROL_SLIDER_2)
 	{
-		/* Preset 1 */
-		if (val == 0x1000)
+		int slider_level_gap;
+		
+		// Fray  Purple - Fluid Synth Gain
+		// Get new volume value from slider and calculate gap from current UI value
+		fluid_gain = normalize_slider_value(val / 37, fluid_gain_max, fluid_gain_min);						  // 0-3700
+		slider_level_gap = fluid_gain - ui->verticalSlider_adjFluidSynth_Gain->value(); // 0-200
+
+		// Change slider value only when it matches the UI slider position.
+		if (abs((float)slider_level_gap) < ((fluid_gain_max - fluid_gain_min) / 5.0))
 		{
-			/* Only when pressed */
-			
-		}
-		else
-		{
-			/* Chorus N */
-			if (chorus_activation)
-			{
-				chorus_number = update_rotary_encoder_value(chorus_number,
-					val,
-					&prev_knob_chorus_number_val,
-					chorus_number_min,
-					chorus_number_max,
-					4);
-			
-				chorus_number_changed(chorus_number);
-			}
+			// Emits value changed signal.
+			ui->verticalSlider_adjFluidSynth_Gain->setValue(fluid_gain);
 		}
 	}
-	else if(evnt == _I2C_CONTROL_ENCODER_15)
-	{
-		/* Select chorus waveform */
-		chorus_waveform_select_changed(val);	
-	}
-	else if (evnt == _I2C_CONTROL_ENCODER_4)
-	{
-		/* Channels */
-		if (val == 0x1000)
-		{
-			/* Only when pressed */
-			ui->pushButton_adjFluidSynth_Channels->clicked();
-		}
-		else
-		{		
-			/* Reverb Width */
-			if (reverb_activation)
-			{
-				reverb_width = update_rotary_encoder_value(reverb_width,
-					val,
-					&prev_knob_reverb_width_val,
-					reverb_width_min,
-					reverb_width_max,
-					4);
-				
-				reverb_width_changed(reverb_width);
-			}
-		}
-	}
-	else if (evnt == _I2C_CONTROL_SLIDER_1)
-	{
-		/* FluidSynth Gain */
-		norm_gain = normalize_slider_value(val/37, fluid_gain_max, fluid_gain_min); // ~(0-3700)/40: 0-100 -> 0-200
-		/* Change slider value only when it matches the UI slider position */
-		gain_slider_gap = fluid_gain - norm_gain;
-			
-		if (abs((float)gain_slider_gap) < ((fluid_gain_max - fluid_gain_min) / 5.0))
-		{
-			fluid_gain_changed(norm_gain);	
-		}		
-	}	
 }
 
+// Get active settings values from the synth and update the GUI accordingly - 
+// Called by a timer.
 void Dialog_AdjFluidSynth::get_active_settings_values()
 {
-	fluid_gain = mod_synth_get_active_fluid_synth_volume();
-	
-	reverb_room_size = mod_synth_get_active_fluid_synth_reverb_room_size();
-	reverb_damp = mod_synth_get_active_fluid_synth_reverb_damp();
-	reverb_width = mod_synth_get_active_fluid_synth_reverb_width();	
-	reverb_level = mod_synth_get_active_fluid_synth_reverb_level();	
-	reverb_activation = mod_synth_get_active_fluid_synth_reverb_activation_state();
+	int new_fluid_gain = mod_synth_get_active_fluid_synth_volume();
+	int new_reverb_room_size = mod_synth_get_active_fluid_synth_reverb_room_size();
+	int new_reverb_damp = mod_synth_get_active_fluid_synth_reverb_damp();
+	int new_reverb_width = mod_synth_get_active_fluid_synth_reverb_width();
+	int new_reverb_level = mod_synth_get_active_fluid_synth_reverb_level();
+	bool new_reverb_activation = mod_synth_get_active_fluid_synth_reverb_activation_state();
+	int new_chorus_number = mod_synth_get_active_fluid_synth_chorus_number();
+	int new_chorus_level = mod_synth_get_active_fluid_synth_chorus_level();
+	int new_chorus_speed = mod_synth_get_active_fluid_synth_chorus_speed();
+	int new_chorus_depth = mod_synth_get_active_fluid_synth_chorus_depth();
+	int new_chorus_waveform = mod_synth_get_active_fluid_synth_chorus_waveform();
+	bool new_chorus_activation = mod_synth_get_active_fluid_synth_chorus_activation_state();
+	int new_active_preset = mod_synth_fluid_synth_get_active_preset();
 
-	chorus_number = mod_synth_get_active_fluid_synth_chorus_number();
-	chorus_level = mod_synth_get_active_fluid_synth_chorus_level();
-	chorus_speed = mod_synth_get_active_fluid_synth_chorus_speed();
-	chorus_depth = mod_synth_get_active_fluid_synth_chorus_depth();
-	chorus_waveform = mod_synth_get_active_fluid_synth_chorus_waveform();
-	chorus_activation = mod_synth_get_active_fluid_synth_chorus_activation_state();
 	
-	active_preset = mod_synth_fluid_synth_get_active_preset();
+	if (new_fluid_gain != fluid_gain)
+	{
+		fluid_gain = new_fluid_gain;
+		fluid_gain_changed(fluid_gain);
+	}
 	
-	update();
+	if (new_reverb_room_size != reverb_room_size)
+	{
+		reverb_room_size = new_reverb_room_size;
+		reverb_room_size_changed(reverb_room_size);
+	}
+	
+	if (new_reverb_damp != reverb_damp)
+	{
+		reverb_damp = new_reverb_damp;
+		reverb_damp_changed(reverb_damp);
+	}
+	
+	if (new_reverb_width != reverb_width)
+	{
+		reverb_width = new_reverb_width;
+		reverb_width_changed(reverb_width);
+	}
+	
+	if (new_reverb_level != reverb_level)
+	{
+		reverb_level = new_reverb_level;
+		reverb_level_changed(reverb_level);
+	}
+	
+	if (new_reverb_activation != reverb_activation)
+	{
+		reverb_activation = new_reverb_activation;
+		reverb_activation_changed(reverb_activation);
+	}
+	
+	if (new_chorus_number != chorus_number)
+	{
+		chorus_number = new_chorus_number;
+		chorus_number_changed(chorus_number);
+	}
+	
+	if (new_chorus_level != chorus_level)
+	{
+		chorus_level = new_chorus_level;
+		chorus_level_changed(chorus_level);
+	}
+	
+	if (new_chorus_speed != chorus_speed)
+	{
+		chorus_speed = new_chorus_speed;
+		chorus_speed_changed(chorus_speed);
+	}	
+	
+	if (new_chorus_depth != chorus_depth)
+	{
+		chorus_depth = new_chorus_depth;
+		chorus_depth_changed(chorus_depth);
+	}	
+	
+	if (new_chorus_waveform != chorus_waveform)
+	{
+		chorus_waveform = new_chorus_waveform;
+		chorus_waveform_changed(chorus_waveform);
+	}
+	
+	if (new_chorus_activation != chorus_activation)
+	{
+		chorus_activation = new_chorus_activation;
+		chorus_activation_changed(chorus_activation);
+	}
+
+	if (new_active_preset != active_preset)
+	{
+		active_preset = new_active_preset;
+		
+		switch (active_preset)
+		{
+			case 0:
+				on_preset_1_selected(true);
+				break;
+			case 1:
+				on_preset_2_selected(true);
+				break;
+			case 2:
+				on_preset_3_selected(true);
+				break;
+		}
+	}
 }
 
 void Dialog_AdjFluidSynth::set_default_settings_values(bool update_flag)
@@ -568,7 +723,7 @@ void Dialog_AdjFluidSynth::set_default_settings_values(bool update_flag)
 	reverb_level_max = 100;
 	reverb_level_min = 0;
 	
-	reverb_activation = _AFS_REVERB_ENABLED;
+	reverb_activation = _AFS_REVERB_DISABLED;
 
 	chorus_number = 3;
 	chorus_number_max = 99;
@@ -634,7 +789,24 @@ void Dialog_AdjFluidSynth::update()
 	}
 }
 
+void Dialog_AdjFluidSynth::start_update_timer(int interval)
+{
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(update_gui()));
+	timer->start(interval);
+}
 
+void Dialog_AdjFluidSynth::timerEvent(QTimerEvent *event)
+{
+	killTimer(event->timerId());
+	start_update_timer(_UPDATE_TIMER_PERIOD_MS);
+}
+
+// This function is called by a timer to update the GUI with the active settings values.
+void Dialog_AdjFluidSynth::update_gui()
+{
+	get_active_settings_values();
+}
 
 void Dialog_AdjFluidSynth::fluid_gain_changed(int vol)
 {

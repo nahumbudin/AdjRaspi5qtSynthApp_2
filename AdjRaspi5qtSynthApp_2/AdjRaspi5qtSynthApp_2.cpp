@@ -28,7 +28,10 @@ void exit_handler(void)
 	//	int err;
 
 	printf("Program terminated! Press any key to exit.");
-	
+
+	// Terminate BT, audio and MIDI services, and deinit fluid synth
+	mod_synth_on_exit();
+
 	// Disable screen saver
 	system("xset s blank");
 	system("xset s on");
@@ -62,7 +65,7 @@ int main(int argc, char *argv[])
 	nice(20);
 
 	setbuf(stderr, NULL);
-	atexit(exit_handler);
+	//atexit(exit_handler);
 	
 	// Debuger
 //	FILELog::ReportingLevel() = FILELog::FromString("DEBUG4");
@@ -81,6 +84,20 @@ int main(int argc, char *argv[])
 	
 	
 	QApplication app(argc, argv);
+
+	// Connect to Qt's aboutToQuit signal**
+	QObject::connect(&app, &QApplication::aboutToQuit, []() {
+		printf("Qt application is quitting - running cleanup...\n");
+		mod_synth_on_exit();
+
+		system("xset s blank");
+		system("xset s on");
+		system("xset -dpms");
+		system("pactl unload-module module-jack-sink");
+		system("pactl unload-module module-jack-source");
+		system("cpu.gov -g ondemand");
+	});	
+	
 	// Force Fusion style for consistency across platforms
 	app.setStyle(QStyleFactory::create("Fusion"));
 	

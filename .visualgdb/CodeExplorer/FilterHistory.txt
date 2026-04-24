@@ -6,3 +6,10 @@ load
 reverb
 chorus
 font
+ske
+sketch
+pan
+sketc
+panic
+ga
+voice

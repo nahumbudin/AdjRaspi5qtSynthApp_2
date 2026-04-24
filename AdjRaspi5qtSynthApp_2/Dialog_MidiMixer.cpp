@@ -57,6 +57,33 @@ void midi_mixer_update_channels_pans_ui_update_callback_wrapper(int chan, int pa
 	}
 }
 
+void midi_mixer_update_channels_pans_mod_lfo_ui_update_callback_wrapper(int chan, int lfo)
+{
+	Dialog_MidiMixer *instance = Dialog_MidiMixer::get_instance();
+	if (instance != NULL)
+	{
+		QMetaObject::invokeMethod(instance, [instance, chan, lfo]() { instance->channels_pan_mod_lfo_update_callback(chan, lfo); }, Qt::QueuedConnection);
+	}
+}
+
+void midi_mixer_update_channels_pans_mod_lfo_level_ui_update_callback_wrapper(int chan, int lvl)
+{
+	Dialog_MidiMixer *instance = Dialog_MidiMixer::get_instance();
+	if (instance != NULL)
+	{
+		QMetaObject::invokeMethod(instance, [instance, chan, lvl]() { instance->channels_pan_mod_lfo_level_update_callback(chan, lvl); }, Qt::QueuedConnection);
+	}
+}
+
+void midi_mixer_update_channels_sends_ui_update_callback_wrapper(int chan, int pan)
+{
+	Dialog_MidiMixer *instance = Dialog_MidiMixer::get_instance();
+	if (instance != NULL)
+	{
+		QMetaObject::invokeMethod(instance, [instance, chan, pan]() { instance->channels_sends_update_callback(chan, pan); }, Qt::QueuedConnection);
+	}
+}
+
 void midi_mixer_update_channels_static_levels_ui_update_callback_wrapper(int chan, bool state)
 {
 	Dialog_MidiMixer *instance = Dialog_MidiMixer::get_instance();
@@ -93,17 +120,17 @@ void midi_mixer_update_channels_pan_lfo_mod_level_ui_update_callback_wrapper(int
 	if (instance != NULL)
 	{
 		QMetaObject::invokeMethod(instance, [instance, chan, lvl]() { 
-					instance->channels_pan_lfo_mod_level_update_callback(chan, lvl); }, Qt::QueuedConnection);
+					instance->channels_pan_mod_lfo_level_update_callback(chan, lvl); }, Qt::QueuedConnection);
 	}
 }
 
-void midi_mixer_update_channels_pan_lfo_ui_update_callback_wrapper(int chan, int lfo)
+void midi_mixer_update_channels_pan_mod_lfo_ui_update_callback_wrapper(int chan, int lfo)
 {
 	Dialog_MidiMixer *instance = Dialog_MidiMixer::get_instance();
 	if (instance != NULL)
 	{
 		QMetaObject::invokeMethod(instance, [instance, chan, lfo]() { 
-					instance->channels_pan_lfo_update_callback(chan, lfo); }, Qt::QueuedConnection);
+					instance->channels_pan_mod_lfo_update_callback(chan, lfo); }, Qt::QueuedConnection);
 	}
 }
 
@@ -555,21 +582,36 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	close_event_callback_ptr = NULL;
 
 	set_midi_mixer_signals_connections();
-	update_gui();
+	//update_gui(); // See below
 
 	this->setFocus(Qt::ActiveWindowFocusReason);
 	
 	active_channels_tab = _MIDI_MIXER_CHANNELS_1_8;
-	
+
 	mod_synth_register_callback_control_box_event_update_ui(
 		&midi_mixer_control_box_event_update_ui_callback_wrapper);
-	
+
+	// Level update callback for MIDI mixer channels
 	mod_synth_register_midi_mixer_channel_volume_update_callback(
 			&midi_mixer_update_channels_levels_ui_update_callback_wrapper);
-	
+
+	// Send update callback for MIDI mixer channels
+	mod_synth_register_midi_mixer_channel_send_update_callback(
+		&midi_mixer_update_channels_sends_ui_update_callback_wrapper);
+
+	// Pan update callback for MIDI mixer channels
 	mod_synth_register_midi_mixer_channel_pan_update_callback(
 			&midi_mixer_update_channels_pans_ui_update_callback_wrapper);
-	
+
+	// Pan modulation LFO update callback for MIDI mixer channels
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_update_callback(
+		&midi_mixer_update_channels_pans_mod_lfo_ui_update_callback_wrapper);
+
+	// Pan modulation LFO level update callback for MIDI mixer channels
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_level_update_callback(
+		&midi_mixer_update_channels_pans_mod_lfo_level_ui_update_callback_wrapper);
+
+	// Static level update callback for MIDI mixer channels
 	mod_synth_register_midi_mixer_channel_static_volume_update_callback(
 			&midi_mixer_update_channels_static_levels_ui_update_callback_wrapper);
 	
@@ -585,8 +627,44 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	mod_synth_register_midi_channel_active_indication_update_callback(
 		&midi_mixer_channels_activity_update_callback_wrapper);
 
+	mod_synth_midi_mixer_update_gui();
+
 	set_midi_mixer_signals_connections();
+
 	
+	// Update the GUI
+	for (int ch = 0; ch < 16; ch++)
+	{
+		channels_levels[ch] = mod_synth_get_active_midi_mixer_setting_param(_MIXER_CHAN_1_LEVEL + ch);
+		channels_pan[ch] = mod_synth_get_active_midi_mixer_setting_param(_MIXER_CHAN_1_PAN + ch);
+		channels_pan_mod_lfo_selection[ch] = mod_synth_get_active_midi_mixer_setting_param(_MIXER_CHAN_1_PAN_MOD_LFO + ch);
+		channels_pan_mod_levels[ch] = mod_synth_get_active_midi_mixer_setting_param(_MIXER_CHAN_1_PAN_MOD_LFO_LEVEL + ch);
+		channels_send_levels[ch] = mod_synth_get_active_midi_mixer_setting_param(_MIXER_CHAN_1_SEND + ch);
+		//bool static_vol = mod_synth_midi_mixer_get_channel_static_volume(ch);
+
+		sliders_levels[ch]->blockSignals(true);
+		sliders_levels[ch]->setValue(channels_levels[ch]);
+		sliders_levels[ch]->blockSignals(false);
+
+		dials_pan[ch]->blockSignals(true);
+		dials_pan[ch]->setValue(channels_pan[ch]);
+		dials_pan[ch]->blockSignals(false);
+
+		comboboxes_pan_lfo_mod[ch]->blockSignals(true);
+		comboboxes_pan_lfo_mod[ch]->setCurrentIndex(channels_pan_mod_lfo_selection[ch]);
+		comboboxes_pan_lfo_mod[ch]->blockSignals(false);
+
+		dials_pan_lfo_mod_level[ch]->blockSignals(true);
+		dials_pan_lfo_mod_level[ch]->setValue(channels_pan_mod_levels[ch]);
+		dials_pan_lfo_mod_level[ch]->blockSignals(false);
+
+		dials_send[ch]->blockSignals(true);
+		dials_send[ch]->setValue(channels_send_levels[ch]);
+		dials_send[ch]->blockSignals(false);
+		
+		//checkboxes_static_levels[ch]->setChecked(static_vol);
+	}
+
 
 	MainWindow::get_instance()->register_active_dialog(this);
 
@@ -677,8 +755,8 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 Dialog_MidiMixer::~Dialog_MidiMixer()
 {
 	// Set breakpoint here when debugging
-	int breakpoint_here = 0; // <-- BREAKPOINT
-	(void)breakpoint_here;
+	//int breakpoint_here = 0; // <-- BREAKPOINT
+	//(void)breakpoint_here;
 }
 
 Dialog_MidiMixer *Dialog_MidiMixer::get_instance(QWidget *parent)
@@ -941,6 +1019,81 @@ void Dialog_MidiMixer::channels_pans_update_callback(int chan, int pan)
 	}
 }
 
+void Dialog_MidiMixer::channels_sends_update_callback(int chan, int send)
+{
+	sends_updated = true;
+
+	if (chan == 0)
+	{
+		on_send_dial_changed_ch_1(send);
+	}
+	else if (chan == 1)
+	{
+		on_send_dial_changed_ch_2(send);
+	}
+	else if (chan == 2)
+	{
+		on_send_dial_changed_ch_3(send);
+	}
+	else if (chan == 3)
+	{
+		on_send_dial_changed_ch_4(send);
+	}
+	else if (chan == 4)
+	{
+		on_send_dial_changed_ch_5(send);
+	}
+	else if (chan == 5)
+	{
+		on_send_dial_changed_ch_6(send);
+	}
+	else if (chan == 6)
+	{
+		on_send_dial_changed_ch_7(send);
+	}
+	else if (chan == 7)
+	{
+		on_send_dial_changed_ch_8(send);
+	}
+	else if (chan == 8)
+	{
+		on_send_dial_changed_ch_9(send);
+	}
+	else if (chan == 9)
+	{
+		on_send_dial_changed_ch_10(send);
+	}
+	else if (chan == 10)
+	{
+		on_send_dial_changed_ch_11(send);
+	}
+	else if (chan == 11)
+	{
+		on_send_dial_changed_ch_12(send);
+	}
+	else if (chan == 12)
+	{
+		on_send_dial_changed_ch_13(send);
+	}
+	else if (chan == 13)
+	{
+		on_send_dial_changed_ch_14(send);
+	}
+	else if (chan == 14)
+	{
+		on_send_dial_changed_ch_15(send);
+	}
+	else if (chan == 15)
+	{
+		on_send_dial_changed_ch_16(send);
+	}
+	else
+	{
+		// Invalid channel
+		sends_updated = false;
+	}
+}
+
 void Dialog_MidiMixer::channels_static_levels_update_callback(int chan, bool state)
 {
 	static_levels_updated = true;
@@ -1016,7 +1169,7 @@ void Dialog_MidiMixer::channels_static_levels_update_callback(int chan, bool sta
 	}
 }
 
-void Dialog_MidiMixer::channels_pan_lfo_mod_level_update_callback(int chan, int lvl)
+void Dialog_MidiMixer::channels_pan_mod_lfo_level_update_callback(int chan, int lvl)
 {
 	pan_mod_levels_updated = true;
 
@@ -1091,9 +1244,79 @@ void Dialog_MidiMixer::channels_pan_lfo_mod_level_update_callback(int chan, int 
 	}
 }
 
-void Dialog_MidiMixer::channels_pan_lfo_update_callback(int chan, int lfo)
+void Dialog_MidiMixer::channels_pan_mod_lfo_update_callback(int chan, int lfo)
 {
-	
+	pan_mod_lfos_updated = true;
+
+	if (chan == 0)
+	{
+		on_pan_lfo_mod_combo_changed_ch_1(lfo);
+	}
+	else if (chan == 1)
+	{
+		on_pan_lfo_mod_combo_changed_ch_2(lfo);
+	}
+	else if (chan == 2)
+	{
+		on_pan_lfo_mod_combo_changed_ch_3(lfo);
+	}
+	else if (chan == 3)
+	{
+		on_pan_lfo_mod_combo_changed_ch_4(lfo);
+	}
+	else if (chan == 4)
+	{
+		on_pan_lfo_mod_combo_changed_ch_5(lfo);
+	}
+	else if (chan == 5)
+	{
+		on_pan_lfo_mod_combo_changed_ch_6(lfo);
+	}
+	else if (chan == 6)
+	{
+		on_pan_lfo_mod_combo_changed_ch_7(lfo);
+	}
+	else if (chan == 7)
+	{
+		on_pan_lfo_mod_combo_changed_ch_8(lfo);
+	}
+	else if (chan == 8)
+	{
+		on_pan_lfo_mod_combo_changed_ch_9(lfo);
+	}
+	else if (chan == 9)
+	{
+		on_pan_lfo_mod_combo_changed_ch_10(lfo);
+	}
+	else if (chan == 10)
+	{
+		on_pan_lfo_mod_combo_changed_ch_11(lfo);
+	}
+	else if (chan == 11)
+	{
+		on_pan_lfo_mod_combo_changed_ch_12(lfo);
+	}
+	else if (chan == 12)
+	{
+		on_pan_lfo_mod_combo_changed_ch_13(lfo);
+	}
+	else if (chan == 13)
+	{
+		on_pan_lfo_mod_combo_changed_ch_14(lfo);
+	}
+	else if (chan == 14)
+	{
+		on_pan_lfo_mod_combo_changed_ch_15(lfo);
+	}
+	else if (chan == 15)
+	{
+		on_pan_lfo_mod_combo_changed_ch_16(lfo);
+	}
+	else
+	{
+		// Invalid channel
+		pan_mod_levels_updated = false;
+	}
 }
 
 void Dialog_MidiMixer::channels_activity_update_callback(int chan, bool state)

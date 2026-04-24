@@ -39,6 +39,8 @@ void Dialog_MidiMixer::update_gui()
 	{
 		if (levels_updated)
 		{
+			on_level_changed(ch, channels_levels[ch]);
+
 			sliders_levels[ch]->blockSignals(true);
 			sliders_levels[ch]->setValue(channels_levels[ch]);
 			sliders_levels[ch]->blockSignals(false);
@@ -48,8 +50,23 @@ void Dialog_MidiMixer::update_gui()
 			spinboxes_levels[ch]->blockSignals(false);
 		}
 
+		if (sends_updated)
+		{
+			on_send_level_changed(ch, channels_send_levels[ch]);
+			
+			dials_send[ch]->blockSignals(true);
+			dials_send[ch]->setValue(channels_send_levels[ch]);
+			dials_send[ch]->blockSignals(false);
+
+			spinboxes_send[ch]->blockSignals(true);
+			spinboxes_send[ch]->setValue(channels_send_levels[ch]);
+			spinboxes_send[ch]->blockSignals(false);
+		}
+
 		if (pans_updated)
 		{
+			on_pan_changed(ch, channels_pan[ch]);
+
 			dials_pan[ch]->blockSignals(true);
 			dials_pan[ch]->setValue(channels_pan[ch]);
 			dials_pan[ch]->blockSignals(false);
@@ -61,6 +78,8 @@ void Dialog_MidiMixer::update_gui()
 
 		if (pan_mod_levels_updated)
 		{
+			on_pan_mod_level_changed(ch, channels_pan_mod_levels[ch]);
+
 			dials_pan_lfo_mod_level[ch]->blockSignals(true);
 			dials_pan_lfo_mod_level[ch]->setValue(channels_pan_mod_levels[ch]);
 			dials_pan_lfo_mod_level[ch]->blockSignals(false);
@@ -72,6 +91,8 @@ void Dialog_MidiMixer::update_gui()
 
 		if (pan_mod_lfos_updated)
 		{
+			on_pan_mod_lfo_changed(ch, channels_pan_mod_lfo_selection[ch]);
+			
 			comboboxes_pan_lfo_mod[ch]->blockSignals(true);
 			comboboxes_pan_lfo_mod[ch]->setCurrentIndex(channels_pan_mod_lfo_selection[ch]);
 			comboboxes_pan_lfo_mod[ch]->blockSignals(false);
@@ -79,6 +100,8 @@ void Dialog_MidiMixer::update_gui()
 
 		if (send_levels_updated)
 		{
+			on_send_level_changed(ch, channels_send_levels[ch]);
+
 			dials_send[ch]->blockSignals(true);
 			dials_send[ch]->setValue(channels_send_levels[ch]);
 			dials_send[ch]->blockSignals(false);
@@ -117,6 +140,7 @@ void Dialog_MidiMixer::update_gui()
 
 	levels_updated = false;
 	pans_updated = false;
+	sends_updated = false;
 	pan_mod_levels_updated = false;
 	pan_mod_lfos_updated = false;
 	send_levels_updated = false;

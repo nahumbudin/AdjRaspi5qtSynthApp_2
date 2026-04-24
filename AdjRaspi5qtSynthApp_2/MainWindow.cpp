@@ -5,6 +5,7 @@
  *	@version	1.1
  *					1. Code refactoring and comments
  *					2. Added support for GUI Navigator and Windows Manager
+ *					3. Update cleanup code
  *					
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
@@ -176,7 +177,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	// Add cleanup here
+	printf("MainWindow destructor - running cleanup...\n");
+	//mod_synth_on_exit(); // Already done on exit handler.
+
+	system("xset s blank");
+	system("xset s on");
+	system("xset -dpms");
+	system("pactl unload-module module-jack-sink");
+	system("pactl unload-module module-jack-source");
+	system("cpu.gov -g ondemand");
+	
+	delete ui;
 }
 
 MainWindow *MainWindow::get_instance() {
