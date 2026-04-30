@@ -1566,7 +1566,7 @@ void Dialog_AnalogSynth_1900x1000::on_osc1_unison_level_9_slider_changed(int val
 
 		osc1_unison_levels[8] = val;
 
-		mod_synth_vco_event_int(_OSC_1_EVENT, _OSC_UNISON_LEVEL_1, val);
+		mod_synth_vco_event_int(_OSC_1_EVENT, _OSC_UNISON_LEVEL_9, val);
 	}
 	else if (mod_synth_get_active_osc1_unison_mode() == _OSC_UNISON_MODE_HAMMOND)
 	{

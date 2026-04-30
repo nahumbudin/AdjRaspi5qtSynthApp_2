@@ -180,25 +180,25 @@ void Dialog_HammondOrgan::init_gui_elements()
 	bar_level_sliders[0]->setGripLineColor(_CONTROLS_COLOR_GRAY);
 	bar_level_sliders[1]->setGripLineColor(_CONTROLS_COLOR_PURPLE);
 	
-	bar_level_sliders[2]->setTipColor(QColor(128, 128, 128));
+	bar_level_sliders[2]->setTipColor(QColor(220, 220, 220));
 	bar_level_sliders[2]->setGripLineColor(_CONTROLS_COLOR_BLUE);
 	
-	bar_level_sliders[3]->setTipColor(QColor(128, 128, 128));
+	bar_level_sliders[3]->setTipColor(QColor(220, 220, 220));
 	bar_level_sliders[3]->setGripLineColor(_CONTROLS_COLOR_GREEN);
 	
-	bar_level_sliders[4]->setTipColor(QColor(50, 50, 50));
+	bar_level_sliders[4]->setTipColor(QColor(30, 30, 30));
 	bar_level_sliders[4]->setGripLineColor(_CONTROLS_COLOR_WHITE);
 	
-	bar_level_sliders[5]->setTipColor(QColor(128, 128, 128));
+	bar_level_sliders[5]->setTipColor(QColor(220, 220, 220));
 	bar_level_sliders[5]->setGripLineColor(_CONTROLS_COLOR_YELLOW);
 	
-	bar_level_sliders[6]->setTipColor(QColor(50, 50, 50));
+	bar_level_sliders[6]->setTipColor(QColor(30, 30, 30));
 	bar_level_sliders[6]->setGripLineColor(_CONTROLS_COLOR_GRAY);
 	
-	bar_level_sliders[7]->setTipColor(QColor(50, 50, 50));
+	bar_level_sliders[7]->setTipColor(QColor(30, 30, 30));
 	bar_level_sliders[7]->setGripLineColor(_CONTROLS_COLOR_PURPLE);
 	
-	bar_level_sliders[8]->setTipColor(QColor(128, 128, 128));
+	bar_level_sliders[8]->setTipColor(QColor(220, 220, 220));
 	bar_level_sliders[8]->setGripLineColor(_CONTROLS_COLOR_BLUE);
 	
 	ui->dial_HammondSendFilter1->setKnobColor(_KNOBS_COLOR);

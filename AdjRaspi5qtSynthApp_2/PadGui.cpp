@@ -201,7 +201,7 @@ void Dialog_AnalogSynth_1900x1000::set_pad_signals_connections()
 	connect(ui->comboBox_PadTuneSemitones,
 			SIGNAL(currentIndexChanged(int)),
 			this,
-			SLOT(on_pad_detune_seminotes_combobox_changed(int)));
+			SLOT(on_pad_detune_semitones_combobox_changed(int)));
 
 	connect(ui->comboBox_PadTuneCents,
 			SIGNAL(currentIndexChanged(int)),

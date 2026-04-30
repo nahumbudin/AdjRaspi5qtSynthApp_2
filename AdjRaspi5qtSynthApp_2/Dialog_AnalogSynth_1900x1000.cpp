@@ -1212,6 +1212,8 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 		sketch3_active = false;
 		active_sketch = 0;
 
+		mod_synth_set_active_sketch(_SKETCH_PROGRAM_1);
+
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_1->setChecked(true);
 		//ui->pushButton_AnalogSynth_Sketch_1->setText("[Sketch 1]");
@@ -1230,10 +1232,12 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 		ui->pushButton_AnalogSynth_Sketch_3->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(false);
 
-		mod_synth_set_active_sketch(_SKETCH_PROGRAM_1);
+		//mod_synth_set_active_sketch(_SKETCH_PROGRAM_1);
 		update_all();
 		// All notes off
 		mod_synth_panic_action();
+
+		update_profile_plot = true;
 
 		break;
 
@@ -1243,6 +1247,8 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 		sketch2_active = true;
 		sketch3_active = false;
 		active_sketch = 1;
+
+		mod_synth_set_active_sketch(_SKETCH_PROGRAM_2);
 
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_1->setChecked(false);
@@ -1262,10 +1268,12 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 		ui->pushButton_AnalogSynth_Sketch_3->setTextColor(QColor(_CONTROL_COLOR_WHITE));
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(false);
 
-		mod_synth_set_active_sketch(_SKETCH_PROGRAM_2);
+		//mod_synth_set_active_sketch(_SKETCH_PROGRAM_2);
 		update_all();
 		// All notes off
 		mod_synth_panic_action();
+
+		update_profile_plot = true;
 
 		break;
 
@@ -1275,6 +1283,8 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 		sketch2_active = false;
 		sketch3_active = true;
 		active_sketch = 2;
+
+		mod_synth_set_active_sketch(_SKETCH_PROGRAM_3);
 
 		ui->pushButton_AnalogSynth_Sketch_1->blockSignals(true);
 		ui->pushButton_AnalogSynth_Sketch_1->setChecked(false);
@@ -1294,10 +1304,12 @@ void Dialog_AnalogSynth_1900x1000::sketch_selected(int sketch, bool val)
 		ui->pushButton_AnalogSynth_Sketch_3->setTextColor(QColor(_CONTROL_COLOR_GREEN));
 		ui->pushButton_AnalogSynth_Sketch_3->blockSignals(false);
 
-		mod_synth_set_active_sketch(_SKETCH_PROGRAM_3);
+		//mod_synth_set_active_sketch(_SKETCH_PROGRAM_3);
 		update_all();
 		// All notes off
 		mod_synth_panic_action();
+
+		update_profile_plot = true;
 
 		break;
 	}

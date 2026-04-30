@@ -19,6 +19,7 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QMutex>
 
 class Dialog_WindowManager : public QDialog
 {
@@ -94,6 +95,8 @@ class Dialog_WindowManager : public QDialog
 	QPushButton *close_button;
 
 	QList<DialogInfo> dialog_list;
+
+	QMutex dialog_list_mutex;
 
 	static Dialog_WindowManager *dialog_manager;
 };

@@ -51,6 +51,9 @@
 #define _BACKGROUND_PANEL_COLOR_DARK_GRAY	"background-color: rgb(100, 100, 120);"
 #define _BACKGROUND_PANEL_COLOR_WHITE		"background-color: rgb(240, 240, 240);"
 
+#define _INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER QColor(50, 90, 230) // Blue
+#define _INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT QColor(0, 255, 255) // Cyan
+#define _INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL QColor(245, 65, 20) // Red
 
 #define _SEND_FILTER_MAX			100
 #define _SEND_FILTER_MIN			0

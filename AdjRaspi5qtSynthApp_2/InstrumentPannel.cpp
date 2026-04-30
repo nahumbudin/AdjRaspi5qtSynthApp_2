@@ -90,7 +90,7 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 	setMouseTracking(true);
 
 	// Set initial visual state
-	update_visual_state();
+	//update_visual_state();
 }
 
 InstrumentPannel::~InstrumentPannel()
@@ -126,35 +126,91 @@ void InstrumentPannel::set_selected(bool selected)
 
 void InstrumentPannel::update_visual_state()
 {
+	int r = frame_color.red();
+	int g = frame_color.green();
+	int b = frame_color.blue();
+	int a = frame_color.alpha();
+
 	QString styleSheet;
 
 	switch (current_state)
 	{
 	case STATE_IDLE:
-		styleSheet =
-			"QFrame {"
-			"    background-color: rgba(20, 20, 20, 220);"
-			"    border: 1px solid rgba(40, 40, 40, 180);"
-			"    border-radius: 4px;"
-			"}";
+		styleSheet = QString(
+						 "QFrame {"
+						 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+						 "        stop:0 rgba(60, 60, 60, 200),"
+						 "        stop:1 rgba(40, 40, 40, 200));"
+						 "    border: 2px solid rgba(%1, %2, %3, %4);"
+						 "    border-top: 2px solid rgba(%5, %6, %7, %8);"		 // Lighter top
+						 "    border-left: 2px solid rgba(%5, %6, %7, %8);"		 // Lighter left
+						 "    border-bottom: 3px solid rgba(%9, %10, %11, %12);" // Darker bottom
+						 "    border-right: 3px solid rgba(%9, %10, %11, %12);"	 // Darker right
+						 "    border-radius: 6px;"
+						 "}")
+						 .arg(r)
+						 .arg(g)
+						 .arg(b)
+						 .arg(a) // Base border
+						 .arg(qMin(r + 60, 255))
+						 .arg(qMin(g + 60, 255))
+						 .arg(qMin(b + 60, 255))
+						 .arg(a) // Light edge
+						 .arg(qMax(r - 30, 0))
+						 .arg(qMax(g - 30, 0))
+						 .arg(qMax(b - 30, 0))
+						 .arg(a); // Dark edge
 		break;
 
 	case STATE_HOVER:
-		styleSheet =
-			"QFrame {"
-			"    background-color: rgba(35, 35, 35, 230);"
-			"    border: 1px solid rgba(60, 60, 60, 200);"
-			"    border-radius: 4px;"
-			"}";
+		styleSheet = QString(
+						 "QFrame {"
+						 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+						 "        stop:0 rgba(70, 70, 70, 220),"
+						 "        stop:1 rgba(50, 50, 50, 220));"
+						 "    border: 3px solid rgba(%1, %2, %3, %4);"
+						 "    border-top: 3px solid rgba(%5, %6, %7, %8);"
+						 "    border-left: 3px solid rgba(%5, %6, %7, %8);"
+						 "    border-bottom: 4px solid rgba(%9, %10, %11, %12);"
+						 "    border-right: 4px solid rgba(%9, %10, %11, %12);"
+						 "    border-radius: 6px;"
+						 "}")
+						 .arg(qMin(r + 40, 255))
+						 .arg(qMin(g + 40, 255))
+						 .arg(qMin(b + 40, 255))
+						 .arg(qMin(a + 20, 255))
+						 .arg(qMin(r + 80, 255))
+						 .arg(qMin(g + 80, 255))
+						 .arg(qMin(b + 80, 255))
+						 .arg(qMin(a + 20, 255))
+						 .arg(qMax(r - 20, 0))
+						 .arg(qMax(g - 20, 0))
+						 .arg(qMax(b - 20, 0))
+						 .arg(qMin(a + 20, 255));
 		break;
 
 	case STATE_SELECTED:
-		styleSheet =
-			"QFrame {"
-			"    background-color: rgba(50, 50, 50, 240);"
-			"    border: 2px solid rgba(90, 140, 200, 255);"
-			"    border-radius: 4px;"
-			"}";
+		styleSheet = QString(
+						 "QFrame {"
+						 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+						 "        stop:0 rgba(80, 80, 80, 240),"
+						 "        stop:1 rgba(60, 60, 60, 240));"
+						 "    border: 4px solid rgba(%1, %2, %3, 255);"
+						 "    border-top: 4px solid rgba(%4, %5, %6, 255);"
+						 "    border-left: 4px solid rgba(%4, %5, %6, 255);"
+						 "    border-bottom: 5px solid rgba(%7, %8, %9, 255);"
+						 "    border-right: 5px solid rgba(%7, %8, %9, 255);"
+						 "    border-radius: 6px;"
+						 "}")
+						 .arg(qMin(r + 70, 255))
+						 .arg(qMin(g + 70, 255))
+						 .arg(qMin(b + 70, 255))
+						 .arg(qMin(r + 100, 255))
+						 .arg(qMin(g + 100, 255))
+						 .arg(qMin(b + 100, 255))
+						 .arg(qMax(r - 10, 0))
+						 .arg(qMax(g - 10, 0))
+						 .arg(qMax(b - 10, 0));
 		break;
 	}
 
@@ -189,6 +245,19 @@ void InstrumentPannel::hide_checkBox_InstrumentMIDIin()
 {
 	ui->checkBox_InstrumentMIDIin->hide();
 }
+
+void InstrumentPannel::set_frame_color(const QColor &color)
+{
+	frame_color = color;
+	update_visual_state();
+}
+
+void InstrumentPannel::set_frame_color(int r, int g, int b, int a)
+{
+	frame_color = QColor(r, g, b, a);
+	update_visual_state();
+}
+
 
 void InstrumentPannel::on_instrument_exit_clicked()
 {

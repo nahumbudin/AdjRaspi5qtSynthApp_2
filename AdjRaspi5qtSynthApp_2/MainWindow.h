@@ -62,6 +62,9 @@ public:
 	void on_patch_file_loaded(const QString &s);
 	
 	void copy_sketch(int src, int dest);
+
+	bool is_auto_arrange_enabled() const { return auto_arrange_enabled; }
+	void set_auto_arrange(bool enabled);
 	
 	vector<string> pending_open_instruments_list;
 	
@@ -104,6 +107,8 @@ private slots :
 	void on_copy_sketch3_to_sketch2();
 
 	void on_open_master_volume_dialog();
+
+	void on_auto_arrange_toggled(bool checked);
 	
 protected:
 //	void timerEvent(QTimerEvent *event);
@@ -118,9 +123,14 @@ private:
 	int is_instrument_openned(en_instruments_ids_t instId);
 	
 	int update_layout_geometry();
+
+	bool auto_arrange_enabled = false;
 	
 	void create_actions();
 	void create_menus();
+
+	void arrange_instrument_panels();
+	int get_panel_type_order(const QString &instrument_name);
 	
 	void start_update_timer(int interval);
 	
@@ -157,7 +167,7 @@ private:
 	QAction *add_adj_midi_mapper_act;
 	QAction *add_adj_external_midi_interface_control_act;
 	QAction *add_adj_keyboard_control_act;
-
+	
 	QMenu *controls_menu;
 	QAction *open_master_volume_act;
 	
@@ -172,6 +182,9 @@ private:
 	QAction *copy_sketch2_to_sketch3_act;
 	QAction *copy_sketch3_to_sketch1_act;
 	QAction *copy_sketch3_to_sketch2_act;
+
+	QMenu *view_menu;
+	QAction *auto_arrange_act;
 
 	bool control_box_left_key_pressed = false;
 	bool control_box_right_key_pressed = false;

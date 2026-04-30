@@ -13,3 +13,10 @@ sketc
 panic
 ga
 voice
+ope
+cr
+up
+add
+au
+ar
+arr

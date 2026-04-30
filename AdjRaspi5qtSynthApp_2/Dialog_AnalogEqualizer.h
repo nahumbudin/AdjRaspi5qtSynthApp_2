@@ -2,7 +2,7 @@
  * @file		Dialog_AnalogEqualizer.h
  *	@author		Nahum Budin
  *	@date		9-Apr-2026
- *	@version	1.0
+ *	@version	1.1
  *
  *	@brief		Analog Synthesizer Band Equalizer control dialog
  *

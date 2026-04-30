@@ -68,6 +68,9 @@ class InstrumentPannel : public QFrame
 	void set_selected(bool selected);
 	bool is_selected() const { return current_state == STATE_SELECTED; }
 
+	void set_frame_color(const QColor &color);
+	void set_frame_color(int r, int g, int b, int a = 220);
+
 	// Instrument info getters
 	QString get_instrument_name() const { return instrument_name; }
 
@@ -117,4 +120,6 @@ class InstrumentPannel : public QFrame
 	
 
 	QWidget *widget_parent;
+
+	QColor frame_color = QColor(20, 20, 20, 220); // Default color
 };

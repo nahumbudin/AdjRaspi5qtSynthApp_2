@@ -1,16 +1,20 @@
 /**
  *	@file		MainWindow.cpp
  *	@author		Nahum Budin
- *	@date		22-Sep-2025
- *	@version	1.1
- *					1. Code refactoring and comments
- *					2. Added support for GUI Navigator and Windows Manager
- *					3. Update cleanup code
- *					
+ *	@date		30-Apr-2026
+ *	@version	2.0
+ *					1. Add auto-arrangement of open instrument panels in the main window.
+ *					2.
+ *
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
  *
- *	History:	version 1.0		8-May-2024  initial
+ *	History:	version 1.1	22-Sep-2025
+ *					1.Code refactoring and comments
+ *					2. Added support for GUI Navigator and Windows Manager
+ *					3. Update cleanup code
+ *
+ *				version 1.0		8-May-2024  initial
  */
 
 #include <QVBoxLayout>
@@ -105,8 +109,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	mwind = this;
 	mwind->move(100, 50);
 
-	ui->centralwidget->setLayout(new QVBoxLayout);
-	layout = qobject_cast<QVBoxLayout *>(ui->centralwidget->layout());
+	// Use QGridLayout instead of QVBoxLayout for flexible arrangement
+	QGridLayout *gridLayout = new QGridLayout;
+	gridLayout->setSpacing(10);
+	gridLayout->setContentsMargins(10, 10, 10, 10);
+	ui->centralwidget->setLayout(gridLayout);
+	layout = nullptr; // We'll use gridLayout directly
+
+	// ui->centralwidget->setLayout(new QVBoxLayout);
+	// layout = qobject_cast<QVBoxLayout *>(ui->centralwidget->layout());
+	layout = nullptr; // Not using VBoxLayout anymore
 
 	// Create tools bar menus actions
 	create_actions();
@@ -374,7 +386,7 @@ void MainWindow::copy_sketch(int src, int dest)
 		if (msgBox.exec() == QMessageBox::Yes) 
 		{
 			mod_synth_copy_sketch(_SKETCH_PROGRAM_1 + src, _SKETCH_PROGRAM_1 + dest);
-			Dialog_AnalogSynth_1900x1000::get_instance()->update_all();
+			//Dialog_AnalogSynth_1900x1000::get_instance()->update_all(); // No update. Sketch only copied not changed yet!
 		}
 		else 
 		{
@@ -523,7 +535,12 @@ void MainWindow::create_actions()
 	open_master_volume_act = new QAction(tr("&Master Volume"), this);
 	open_master_volume_act->setStatusTip(tr("Open Master Volume Control"));
 	connect(open_master_volume_act, SIGNAL(triggered()), this, SLOT(on_open_master_volume_dialog()));
-	
+
+	auto_arrange_act = new QAction(tr("&Auto Arrange"), this);
+	auto_arrange_act->setStatusTip(tr("Enable/Disable automatic window arrangement"));
+	auto_arrange_act->setCheckable(true); // Make it checkable
+	auto_arrange_act->setChecked(false);  // Initial state
+	connect(auto_arrange_act, SIGNAL(toggled(bool)), this, SLOT(on_auto_arrange_toggled(bool)));
 	
 	//add_modules_group = new QActionGroup(this);
 	//add_modules_group->addAction(add_fluid_synth_act);
@@ -544,6 +561,9 @@ void MainWindow::create_menus()
 
 	controls_menu = ui->menubar->addMenu(tr("&Controls"));
 	controls_menu->addAction(open_master_volume_act);
+
+	view_menu = ui->menubar->addMenu(tr("&View"));
+	view_menu->addAction(auto_arrange_act);
 
 	add_module_menu = ui->menubar->addMenu(tr("&Add Instrument"));
 	add_module_menu->addAction(add_fluid_synth_act);
@@ -601,11 +621,10 @@ void MainWindow::create_menus()
 
 InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_string)
 {
-	QPoint last_position = QPoint(this->x(), this->y());
+	//QPoint last_position = QPoint(this->x(), this->y());
 
 	if (instruments_ids_map.find(instrument_name_string.toStdString()) == instruments_ids_map.end())
 	{
-		// No such instrument name
 		return nullptr;
 	}
 
@@ -620,7 +639,31 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 														instrument_name_string,
 														&wrapper_close_instrument_pannel_id,
 														instrument_id);
-	layout->addWidget(new_pannel);
+
+	// Set frame color based on type
+	if (instrument_name_string == _INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY)
+	{
+		new_pannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+	}
+	else if (instrument_name_string == _INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_MIDI_MIXER_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY)
+	{
+		new_pannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+	}
+	else if (instrument_name_string == _INSTRUMENT_NAME_REVERB_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_DISTORTION_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY)
+	{
+		new_pannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+	}
 
 	active_instrument_data_t new_instrument;
 	new_instrument.instrument_id = instrument_id;
@@ -629,24 +672,32 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 	new_instrument.pending_close_event = false;
 	active_instruments_list.push_back(new_instrument);
 
-	update_layout_geometry();
+	// Rearrange all panels
+	arrange_instrument_panels();
 
-	move(last_position);
+	//move(last_position);
 
 	return new_pannel;
 }
 
 int MainWindow::remove_instrument_pannel(InstrumentPannel *instrument)
 {
-	if ((instrument == nullptr) || (layout == nullptr))
+	if (instrument == nullptr)
 	{
 		return -1;
 	}
 
-	layout->removeWidget(instrument);
-	instrument->hide();
+	QGridLayout *gridLayout = qobject_cast<QGridLayout *>(ui->centralwidget->layout());
+	if (gridLayout)
+	{
+		gridLayout->removeWidget(instrument);
+	}
 
-	update_layout_geometry();
+	instrument->hide();
+	instrument->deleteLater();
+
+	// Rearrange remaining panels
+	arrange_instrument_panels();
 
 	return 0;
 }
@@ -667,20 +718,89 @@ int MainWindow::is_instrument_openned(en_instruments_ids_t instId)
 	return -1;
 }
 
-
 int MainWindow::update_layout_geometry()
 {
-	if (layout == Q_NULLPTR)
+	QGridLayout *gridLayout = qobject_cast<QGridLayout *>(ui->centralwidget->layout());
+	if (!gridLayout)
 	{
 		return -1;
 	}
+
+	int panel_count = active_instruments_list.size();
+
+	if (panel_count == 0)
+	{
+		return 0;
+	}
+
+	int rows = panel_count;
+	int cols = 1;
+
+	// When auto-arrange is disabled, always single column
+	if (!auto_arrange_enabled)
+	{
+		rows = panel_count;
+		cols = 1;
+	}
+	// When auto-arrange is enabled, use multiple columns
 	else
 	{
-		QRect layoutSize = QRect(20, 20, 800 + 20, 120 * active_instruments_list.size() + 60);
-	
-		this->setGeometry(layoutSize);
+		if (panel_count <= 5)
+		{
+			rows = panel_count;
+			cols = 1;
+		}
+		else if (panel_count <= 10)
+		{
+			rows = (panel_count + 1) / 2;
+			cols = 2;
+		}
+		else
+		{
+			rows = (panel_count + 2) / 3;
+			cols = 3;
+		}
 	}
-	
+
+	// Get actual panel dimensions from the first panel
+	int panel_width = 280;	// Default width
+	int panel_height = 120; // Default height
+
+	if (!active_instruments_list.empty() &&
+		active_instruments_list[0].instrument_pannel_object)
+	{
+		QSize panelSize = active_instruments_list[0].instrument_pannel_object->sizeHint();
+		if (panelSize.isValid())
+		{
+			panel_width = panelSize.width();
+			panel_height = panelSize.height();
+		}
+	}
+
+	int spacing = 10;
+	int margin = 20;
+	int menubar_height = ui->menubar->height();
+
+	int window_width = (cols * panel_width) + ((cols - 1) * spacing) + (2 * margin);
+	int window_height = (rows * panel_height) + ((rows - 1) * spacing) + (2 * margin) + menubar_height;
+
+	// Keep the current position, only resize
+	QRect currentGeom = this->geometry();
+	QRect newGeom = QRect(currentGeom.x(), currentGeom.y(), window_width, window_height);
+
+	// Ensure window stays on screen
+	QRect screenGeom = QApplication::desktop()->availableGeometry(this);
+	if (newGeom.y() < screenGeom.y())
+	{
+		newGeom.moveTop(screenGeom.y());
+	}
+	if (newGeom.x() < screenGeom.x())
+	{
+		newGeom.moveLeft(screenGeom.x());
+	}
+
+	this->setGeometry(newGeom);
+
 	return 0;
 }
 
@@ -837,6 +957,7 @@ void MainWindow::on_add_fluid_synth_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 }
 
@@ -850,6 +971,7 @@ void MainWindow::on_add_hammond_organ_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 }
 
@@ -863,6 +985,7 @@ void MainWindow::on_add_adj_analog_synth_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 	
 	
@@ -878,6 +1001,7 @@ void MainWindow::on_add_adj_karplus_strong_strings_synth_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 }
 
@@ -891,6 +1015,7 @@ void MainWindow::on_add_adj_morphed_sin_synth_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 }
 
@@ -904,6 +1029,7 @@ void MainWindow::on_add_adj_pad_synth_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 }
 
@@ -917,6 +1043,7 @@ void MainWindow::on_add_adj_midi_player_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
 	}
 }
 
@@ -930,6 +1057,7 @@ void MainWindow::on_add_adj_reverb_effect_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_REVERB_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
 	}
 }
 
@@ -943,6 +1071,7 @@ void MainWindow::on_add_adj_distortion_effect_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_DISTORTION_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
 	}
 }
 
@@ -956,6 +1085,7 @@ void MainWindow::on_add_adj_graphic_equilizer_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
 	}
 }
 
@@ -969,6 +1099,7 @@ void MainWindow::on_add_midi_mixer_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_MIXER_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
 	}
 }
 
@@ -982,6 +1113,7 @@ void MainWindow::on_add_adj_midi_mapper_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
 	}
 }
 
@@ -997,6 +1129,7 @@ void MainWindow::on_add_adj_external_midi_interface_control_instrument()
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY);
 
 		newPannel->hide_checkBox_InstrumentMIDIin();
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
 	}
 }
 
@@ -1010,6 +1143,7 @@ void MainWindow::on_add_adj_keyboard_control_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
 	}
 }
 
@@ -1161,6 +1295,161 @@ void MainWindow::on_open_master_volume_dialog()
 	master_volume_dialog->activateWindow();
 	master_volume_dialog->setFocus(Qt::ActiveWindowFocusReason);
 }
+
+void MainWindow::on_auto_arrange_toggled(bool checked)
+{
+	auto_arrange_enabled = checked;
+
+	// Rearrange panels immediately when toggled
+	arrange_instrument_panels();
+
+	if (checked)
+	{
+		qDebug() << "Auto Arrange: ENABLED - Panels grouped by type";
+	}
+	else
+	{
+		qDebug() << "Auto Arrange: DISABLED - Panels in original order";
+	}
+}
+
+void MainWindow::set_auto_arrange(bool enabled)
+{
+	auto_arrange_enabled = enabled;
+	auto_arrange_act->setChecked(enabled); // Update menu checkbox
+}
+
+/**
+ * @brief Get the type order for sorting panels (PLAYER=0, EFFECT=1, CONTROL=2)
+ */
+int MainWindow::get_panel_type_order(const QString &instrument_name)
+{
+	// PLAYER instruments
+	if (instrument_name == _INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY)
+	{
+		return 0; // PLAYER
+	}
+	// EFFECT instruments
+	else if (instrument_name == _INSTRUMENT_NAME_REVERB_STR_KEY ||
+			 instrument_name == _INSTRUMENT_NAME_DISTORTION_STR_KEY ||
+			 instrument_name == _INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY)
+	{
+		return 1; // EFFECT
+	}
+	// CONTROL instruments
+	else
+	{
+		return 2; // CONTROL
+	}
+}
+
+/**
+ * @brief Arrange all instrument panels according to auto_arrange setting
+ */
+void MainWindow::arrange_instrument_panels()
+{
+	QGridLayout *gridLayout = qobject_cast<QGridLayout *>(ui->centralwidget->layout());
+	if (!gridLayout)
+	{
+		return;
+	}
+
+	// Clear current layout
+	while (QLayoutItem *item = gridLayout->takeAt(0))
+	{
+		item->widget()->setParent(nullptr);
+		delete item;
+	}
+
+	// Clear any existing row/column stretches
+	for (int i = 0; i < 10; i++)
+	{
+		gridLayout->setRowStretch(i, 0);
+		gridLayout->setColumnStretch(i, 0);
+	}
+
+	// Get working copy of panels
+	std::vector<active_instrument_data_t> panels_to_arrange = active_instruments_list;
+
+	int panel_count = panels_to_arrange.size();
+
+	if (panel_count == 0)
+	{
+		return;
+	}
+
+	int row = 0;
+	int col = 0;
+
+	// AUTO-ARRANGE DISABLED: Single column, original order
+	if (!auto_arrange_enabled)
+	{
+		// Always single column when auto-arrange is disabled
+		for (int i = 0; i < panel_count; i++)
+		{
+			gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, i, 0);
+		}
+	}
+	// AUTO-ARRANGE ENABLED: Multiple columns, sorted by type
+	else
+	{
+		// Sort by type first, then by original order
+		std::stable_sort(panels_to_arrange.begin(), panels_to_arrange.end(),
+						 [this](const active_instrument_data_t &a, const active_instrument_data_t &b) {
+							 return get_panel_type_order(a.instrument_name) <
+									get_panel_type_order(b.instrument_name);
+						 });
+
+		// Determine layout based on panel count - ARRANGED IN COLUMNS
+		if (panel_count <= 5)
+		{
+			// Single column
+			for (int i = 0; i < panel_count; i++)
+			{
+				gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, i, 0);
+			}
+		}
+		else if (panel_count <= 10)
+		{
+			// 2 columns of up to 5 each, alternating
+			for (int i = 0; i < panel_count; i++)
+			{
+				col = i % 2; // Alternate between column 0 and 1
+				row = i / 2; // Row increments every 2 panels
+				gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, row, col);
+			}
+		}
+		else
+		{
+			// 3 columns, alternating
+			for (int i = 0; i < panel_count; i++)
+			{
+				col = i % 3; // Alternate between columns 0, 1, 2
+				row = i / 3; // Row increments every 3 panels
+				gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, row, col);
+			}
+		}
+	}
+
+	// Set equal column widths (no stretching, use fixed size)
+	gridLayout->setSizeConstraint(QLayout::SetFixedSize);
+
+	// Re-parent widgets back to centralwidget
+	for (auto &panel_data : panels_to_arrange)
+	{
+		panel_data.instrument_pannel_object->setParent(ui->centralwidget);
+		panel_data.instrument_pannel_object->show();
+	}
+
+	// Update window geometry
+	update_layout_geometry();
+}
+
 
 
 	

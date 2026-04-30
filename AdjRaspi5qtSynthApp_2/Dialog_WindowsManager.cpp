@@ -124,6 +124,8 @@ void Dialog_WindowManager::register_dialog(QWidget *window, const QString &windo
 		return;
 	}
 
+	QMutexLocker locker(&dialog_list_mutex);
+
 	// Check if dialog already registered
 	for (const auto &info : dialog_list)
 	{
@@ -150,9 +152,11 @@ void Dialog_WindowManager::register_dialog(QWidget *window, const QString &windo
 
 void Dialog_WindowManager::unregister_dialog(QWidget *window)
 {
+	QMutexLocker locker(&dialog_list_mutex);
+	
 	for (int i = 0; i < dialog_list.size(); ++i)
 	{
-		if (dialog_list[i].widget == window)
+		if (dialog_list.at(i).widget == window)
 		{
 			qDebug() << "Dialog_WindowManager: Unregistered dialog:" << dialog_list[i].title;
 			dialog_list.removeAt(i);
@@ -169,6 +173,8 @@ void Dialog_WindowManager::unregister_dialog(QWidget *window)
 
 void Dialog_WindowManager::clear_all_dialogs()
 {
+	QMutexLocker locker(&dialog_list_mutex);
+	
 	dialog_list.clear();
 	qDebug() << "Dialog_WindowManager: Cleared all dialogs";
 }
@@ -194,6 +200,8 @@ void Dialog_WindowManager::rebuild_dialog_list()
 	// Update count label
 	int validCount = 0;
 
+	QMutexLocker locker(&dialog_list_mutex);
+	
 	// Create buttons for each registered dialog
 	for (const auto &info : dialog_list)
 	{
