@@ -38,8 +38,8 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(182, 182, 182);
-background-color: qlineargradient(spread:pad, x1:0.403, y1:0.664773, x2:0.767, y2:0.249273, stop:0 rgba(204, 204, 204, 255), stop:1 rgba(255, 255, 255, 255));</string>
+    <string notr="true">background-color: rgb(5, 5, 5);
+color: rgb(255, 255, 255);</string>
    </property>
    <widget class="QFrame" name="frame_MIDI">
     <property name="geometry">
@@ -72,7 +72,8 @@ background-color: qlineargradient(spread:pad, x1:0.403, y1:0.664773, x2:0.767, y
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(0, 255, 255);</string>
+      <string notr="true">background-color: rgb(40,40,40);
+color: rgb(255, 255, 255);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -80,7 +81,7 @@ background-color: qlineargradient(spread:pad, x1:0.403, y1:0.664773, x2:0.767, y
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QCheckBox" name="checkBox_source_6">
+     <widget class="CustomCheckBox" name="checkBox_source_6">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -107,7 +108,7 @@ background-color: qlineargradient(spread:pad, x1:0.403, y1:0.664773, x2:0.767, y
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_2">
+     <widget class="CustomCheckBox" name="checkBox_source_2">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -134,7 +135,7 @@ background-color: qlineargradient(spread:pad, x1:0.403, y1:0.664773, x2:0.767, y
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_1">
+     <widget class="CustomCheckBox" name="checkBox_source_1">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -334,7 +335,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_4">
+     <widget class="CustomCheckBox" name="checkBox_source_4">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -361,7 +362,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_5">
+     <widget class="CustomCheckBox" name="checkBox_source_5">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -388,7 +389,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_3">
+     <widget class="CustomCheckBox" name="checkBox_source_3">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -453,7 +454,8 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 85, 0);</string>
+      <string notr="true">background-color: rgb(40,40,40);
+color: rgb(255, 255, 255);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -461,7 +463,7 @@ color: rgb(255, 255, 255);</string>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QCheckBox" name="checkBox_source_12">
+     <widget class="CustomCheckBox" name="checkBox_source_12">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -488,7 +490,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_8">
+     <widget class="CustomCheckBox" name="checkBox_source_8">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -515,7 +517,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_7">
+     <widget class="CustomCheckBox" name="checkBox_source_7">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -543,7 +545,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_9">
+     <widget class="CustomCheckBox" name="checkBox_source_9">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -570,7 +572,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_10">
+     <widget class="CustomCheckBox" name="checkBox_source_10">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -597,7 +599,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_source_11">
+     <widget class="CustomCheckBox" name="checkBox_source_11">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -700,7 +702,8 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(0, 255, 255);</string>
+      <string notr="true">background-color: rgb(40,40,40);
+color: rgb(255, 255, 255);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -708,7 +711,7 @@ color: rgb(255, 255, 255);</string>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QCheckBox" name="checkBox_JackOut_1">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_1">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -736,7 +739,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_2">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_2">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -763,7 +766,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_4">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_4">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -790,7 +793,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_6">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_6">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -817,7 +820,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_5">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_5">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -844,7 +847,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_3">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_3">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -898,7 +901,8 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 85, 0);</string>
+      <string notr="true">background-color: rgb(40,40,40);
+color: rgb(255, 255, 255);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -906,7 +910,7 @@ color: rgb(255, 255, 255);</string>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QCheckBox" name="checkBox_JackOut_7">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_7">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -934,7 +938,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_8">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_8">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -961,7 +965,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_10">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_10">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -988,7 +992,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_12">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_12">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1015,7 +1019,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_11">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_11">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1042,7 +1046,7 @@ color: rgb(255, 255, 255);</string>
        </size>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_JackOut_9">
+     <widget class="CustomCheckBox" name="checkBox_JackOut_9">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1159,7 +1163,7 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(173, 173, 173);</string>
+      <string notr="true">background-color: rgb(40,40,40);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -1167,7 +1171,7 @@ color: rgb(255, 255, 255);</string>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QCheckBox" name="checkBox_ch_1">
+     <widget class="CustomCheckBox" name="checkBox_ch_1">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1178,7 +1182,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1191,7 +1195,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_2">
+     <widget class="CustomCheckBox" name="checkBox_ch_2">
       <property name="geometry">
        <rect>
         <x>100</x>
@@ -1202,7 +1206,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1215,7 +1219,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_3">
+     <widget class="CustomCheckBox" name="checkBox_ch_3">
       <property name="geometry">
        <rect>
         <x>180</x>
@@ -1226,7 +1230,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1239,7 +1243,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_4">
+     <widget class="CustomCheckBox" name="checkBox_ch_4">
       <property name="geometry">
        <rect>
         <x>270</x>
@@ -1250,7 +1254,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1263,7 +1267,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_5">
+     <widget class="CustomCheckBox" name="checkBox_ch_5">
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -1274,7 +1278,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1287,7 +1291,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_6">
+     <widget class="CustomCheckBox" name="checkBox_ch_6">
       <property name="geometry">
        <rect>
         <x>440</x>
@@ -1298,7 +1302,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1311,7 +1315,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_7">
+     <widget class="CustomCheckBox" name="checkBox_ch_7">
       <property name="geometry">
        <rect>
         <x>530</x>
@@ -1322,7 +1326,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1335,7 +1339,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_8">
+     <widget class="CustomCheckBox" name="checkBox_ch_8">
       <property name="geometry">
        <rect>
         <x>620</x>
@@ -1346,7 +1350,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1370,7 +1374,7 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(173, 173, 173);</string>
+      <string notr="true">background-color: rgb(40,40,40);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -1378,7 +1382,7 @@ color: rgb(255, 255, 255);</string>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QCheckBox" name="checkBox_ch_9">
+     <widget class="CustomCheckBox" name="checkBox_ch_9">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1389,7 +1393,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1402,7 +1406,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_10">
+     <widget class="CustomCheckBox" name="checkBox_ch_10">
       <property name="geometry">
        <rect>
         <x>100</x>
@@ -1413,7 +1417,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
         <italic>true</italic>
        </font>
       </property>
@@ -1427,7 +1431,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_11">
+     <widget class="CustomCheckBox" name="checkBox_ch_11">
       <property name="geometry">
        <rect>
         <x>180</x>
@@ -1438,7 +1442,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1451,7 +1455,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_14">
+     <widget class="CustomCheckBox" name="checkBox_ch_14">
       <property name="geometry">
        <rect>
         <x>440</x>
@@ -1462,7 +1466,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1475,7 +1479,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_15">
+     <widget class="CustomCheckBox" name="checkBox_ch_15">
       <property name="geometry">
        <rect>
         <x>530</x>
@@ -1486,7 +1490,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1499,7 +1503,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_12">
+     <widget class="CustomCheckBox" name="checkBox_ch_12">
       <property name="geometry">
        <rect>
         <x>270</x>
@@ -1510,7 +1514,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1523,7 +1527,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_16">
+     <widget class="CustomCheckBox" name="checkBox_ch_16">
       <property name="geometry">
        <rect>
         <x>620</x>
@@ -1534,7 +1538,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1547,7 +1551,7 @@ color: rgb(255, 255, 255);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_ch_13">
+     <widget class="CustomCheckBox" name="checkBox_ch_13">
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -1558,7 +1562,7 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>8</pointsize>
        </font>
       </property>
       <property name="styleSheet">
@@ -1707,6 +1711,13 @@ color: rgb(255, 255, 255);</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header location="global">customcheckbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

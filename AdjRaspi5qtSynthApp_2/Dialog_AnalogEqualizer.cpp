@@ -43,6 +43,9 @@ Dialog_AnalogEqualizer::Dialog_AnalogEqualizer(QWidget *parent)
 	ui->setupUi(this);
 	dialog_analog_equalizer_instance = this;
 
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	close_event_callback_ptr = NULL;
 
 	init_equalizer_gui();
@@ -66,8 +69,7 @@ Dialog_AnalogEqualizer::Dialog_AnalogEqualizer(QWidget *parent)
 
 Dialog_AnalogEqualizer::~Dialog_AnalogEqualizer()
 {
-	static int eqalizer_band[10] = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
-	static int prev_eqalizer_band[10] = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
+	
 }
 
 Dialog_AnalogEqualizer *Dialog_AnalogEqualizer::get_instance(QWidget *parent)
@@ -577,6 +579,9 @@ void Dialog_AnalogEqualizer::closeEvent(QCloseEvent *event)
 
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
+
+	// Hide instead of accept (which could trigger deletion)
+	event->ignore(); // Don't accept the close event
 
 	hide();
 }

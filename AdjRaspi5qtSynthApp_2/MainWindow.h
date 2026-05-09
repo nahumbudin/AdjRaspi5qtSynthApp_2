@@ -95,7 +95,8 @@ private slots :
 	void on_add_adj_midi_mapper_instrument();
 	void on_add_adj_external_midi_interface_control_instrument();
 	void on_add_adj_keyboard_control_instrument();
-	
+	void on_add_adj_keyboard_mapper_instrument();
+
 	void on_save_patch_file();
 	void on_load_patch_file();
 	
@@ -167,7 +168,8 @@ private:
 	QAction *add_adj_midi_mapper_act;
 	QAction *add_adj_external_midi_interface_control_act;
 	QAction *add_adj_keyboard_control_act;
-	
+	QAction *add_adj_keyboard_mapper_act;
+
 	QMenu *controls_menu;
 	QAction *open_master_volume_act;
 	

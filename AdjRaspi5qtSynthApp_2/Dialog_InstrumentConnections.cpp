@@ -104,6 +104,246 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	mod_synth_register_callback_control_box_event_update_ui(
 		&connections_control_box_event_update_ui_callback_wrapper);
 
+	ui->checkBox_source_1->setReadOnly(false);
+	ui->checkBox_source_1->setLedStyle(true);
+	ui->checkBox_source_1->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_1->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_1->setFrameColor(_CONTROLS_COLOR_GRAY);
+
+	ui->checkBox_source_2->setReadOnly(false);
+	ui->checkBox_source_2->setLedStyle(true);
+	ui->checkBox_source_2->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_2->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_2->setFrameColor(_CONTROLS_COLOR_PURPLE);
+
+	ui->checkBox_source_3->setReadOnly(false);
+	ui->checkBox_source_3->setLedStyle(true);
+	ui->checkBox_source_3->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_3->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_3->setFrameColor(_CONTROLS_COLOR_BLUE);
+
+	ui->checkBox_source_4->setReadOnly(false);
+	ui->checkBox_source_4->setLedStyle(true);
+	ui->checkBox_source_4->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_4->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_4->setFrameColor(_CONTROLS_COLOR_GREEN);
+
+	ui->checkBox_source_5->setReadOnly(false);
+	ui->checkBox_source_5->setLedStyle(true);
+	ui->checkBox_source_5->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_5->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_5->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_source_6->setReadOnly(false);
+	ui->checkBox_source_6->setLedStyle(true);
+	ui->checkBox_source_6->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_6->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_6->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_source_7->setReadOnly(false);
+	ui->checkBox_source_7->setLedStyle(true);
+	ui->checkBox_source_7->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_7->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_7->setFrameColor(_CONTROLS_COLOR_WHITE);
+
+	ui->checkBox_source_8->setReadOnly(false);
+	ui->checkBox_source_8->setLedStyle(true);
+	ui->checkBox_source_8->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_8->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_8->setFrameColor(_CONTROLS_COLOR_YELLOW);
+
+	ui->checkBox_source_9->setReadOnly(false);
+	ui->checkBox_source_9->setLedStyle(true);
+	ui->checkBox_source_9->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_9->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_9->setFrameColor(_CONTROLS_COLOR_RED);
+
+	ui->checkBox_source_10->setReadOnly(false);
+	ui->checkBox_source_10->setLedStyle(true);
+	ui->checkBox_source_10->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_10->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_10->setFrameColor(_CONTROLS_COLOR_BLACK);
+
+	ui->checkBox_source_11->setReadOnly(false);
+	ui->checkBox_source_11->setLedStyle(true);
+	ui->checkBox_source_11->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_11->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_11->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_source_12->setReadOnly(false);
+	ui->checkBox_source_12->setLedStyle(true);
+	ui->checkBox_source_12->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_12->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_12->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_JackOut_1->setReadOnly(false);
+	ui->checkBox_JackOut_1->setLedStyle(true);
+	ui->checkBox_JackOut_1->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_1->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_1->setFrameColor(_CONTROLS_COLOR_GRAY);
+
+	ui->checkBox_JackOut_2->setReadOnly(false);
+	ui->checkBox_JackOut_2->setLedStyle(true);
+	ui->checkBox_JackOut_2->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_2->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_2->setFrameColor(_CONTROLS_COLOR_PURPLE);
+
+	ui->checkBox_JackOut_3->setReadOnly(false);
+	ui->checkBox_JackOut_3->setLedStyle(true);
+	ui->checkBox_JackOut_3->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_3->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_3->setFrameColor(_CONTROLS_COLOR_BLUE);
+
+	ui->checkBox_JackOut_4->setReadOnly(false);
+	ui->checkBox_JackOut_4->setLedStyle(true);
+	ui->checkBox_JackOut_4->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_4->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_4->setFrameColor(_CONTROLS_COLOR_GREEN);
+
+	ui->checkBox_JackOut_5->setReadOnly(false);
+	ui->checkBox_JackOut_5->setLedStyle(true);
+	ui->checkBox_JackOut_5->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_5->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_5->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_JackOut_6->setReadOnly(false);
+	ui->checkBox_JackOut_6->setLedStyle(true);
+	ui->checkBox_JackOut_6->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_6->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_6->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_JackOut_7->setReadOnly(false);
+	ui->checkBox_JackOut_7->setLedStyle(true);
+	ui->checkBox_JackOut_7->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_7->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_7->setFrameColor(_CONTROLS_COLOR_WHITE);
+
+	ui->checkBox_JackOut_8->setReadOnly(false);
+	ui->checkBox_JackOut_8->setLedStyle(true);
+	ui->checkBox_JackOut_8->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_8->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_8->setFrameColor(_CONTROLS_COLOR_YELLOW);
+
+	ui->checkBox_JackOut_9->setReadOnly(false);
+	ui->checkBox_JackOut_9->setLedStyle(true);
+	ui->checkBox_JackOut_9->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_9->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_9->setFrameColor(_CONTROLS_COLOR_RED);
+
+	ui->checkBox_JackOut_10->setReadOnly(false);
+	ui->checkBox_JackOut_10->setLedStyle(true);
+	ui->checkBox_JackOut_10->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_10->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_10->setFrameColor(_CONTROLS_COLOR_BLACK);
+
+	ui->checkBox_JackOut_11->setReadOnly(false);
+	ui->checkBox_JackOut_11->setLedStyle(true);
+	ui->checkBox_JackOut_11->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_11->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_11->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_JackOut_12->setReadOnly(false);
+	ui->checkBox_JackOut_12->setLedStyle(true);
+	ui->checkBox_JackOut_12->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_12->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_12->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_1->setReadOnly(false);
+	ui->checkBox_ch_1->setLedStyle(true);
+	ui->checkBox_ch_1->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_1->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_1->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_2->setReadOnly(false);
+	ui->checkBox_ch_2->setLedStyle(true);
+	ui->checkBox_ch_2->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_2->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_2->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_3->setReadOnly(false);
+	ui->checkBox_ch_3->setLedStyle(true);
+	ui->checkBox_ch_3->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_3->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_3->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_4->setReadOnly(false);
+	ui->checkBox_ch_4->setLedStyle(true);
+	ui->checkBox_ch_4->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_4->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_4->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_5->setReadOnly(false);
+	ui->checkBox_ch_5->setLedStyle(true);
+	ui->checkBox_ch_5->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_5->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_5->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_6->setReadOnly(false);
+	ui->checkBox_ch_6->setLedStyle(true);
+	ui->checkBox_ch_6->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_6->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_6->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_7->setReadOnly(false);
+	ui->checkBox_ch_7->setLedStyle(true);
+	ui->checkBox_ch_7->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_7->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_7->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_8->setReadOnly(false);
+	ui->checkBox_ch_8->setLedStyle(true);
+	ui->checkBox_ch_8->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_8->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_8->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_9->setReadOnly(false);
+	ui->checkBox_ch_9->setLedStyle(true);
+	ui->checkBox_ch_9->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_9->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_9->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_10->setReadOnly(false);
+	ui->checkBox_ch_10->setLedStyle(true);
+	ui->checkBox_ch_10->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_10->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_10->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_11->setReadOnly(false);
+	ui->checkBox_ch_11->setLedStyle(true);
+	ui->checkBox_ch_11->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_11->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_11->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_12->setReadOnly(false);
+	ui->checkBox_ch_12->setLedStyle(true);
+	ui->checkBox_ch_12->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_12->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_12->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_13->setReadOnly(false);
+	ui->checkBox_ch_13->setLedStyle(true);
+	ui->checkBox_ch_13->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_13->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_13->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_14->setReadOnly(false);
+	ui->checkBox_ch_14->setLedStyle(true);
+	ui->checkBox_ch_14->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_14->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_14->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_15->setReadOnly(false);
+	ui->checkBox_ch_15->setLedStyle(true);
+	ui->checkBox_ch_15->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_15->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_15->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_ch_16->setReadOnly(false);
+	ui->checkBox_ch_16->setLedStyle(true);
+	ui->checkBox_ch_16->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_ch_16->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_ch_16->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
 	update();
 	
 	connect(ui->pushButton_Ok,
@@ -356,6 +596,10 @@ void Dialog_InstrumentConnections::closeEvent(QCloseEvent *event)
 
 void Dialog_InstrumentConnections::control_box_ui_update_callback(int evnt, uint16_t val)
 {
+	// Currently ignore.
+	
+	return;
+
 	int pb_num;
 	int selected;
 	

@@ -29,43 +29,51 @@ class CustomFileDialog : public QDialog
 	Q_OBJECT
 
   public:
+	enum Mode
+	{
+		OpenMode,
+		SaveMode
+	};
+
 	explicit CustomFileDialog(QWidget *parent = nullptr,
 							  const QString &caption = QString(),
 							  const QString &directory = QString(),
 							  const QString &filter = QString(),
-							  const QColor &backgroundColor = QColor(50, 50, 50));
+							  const QColor &backgroundColor = Qt::black,
+							  Mode mode = OpenMode); // Add mode parameter
 
 	QString selectedFile() const;
 	void selectFile(const QString &filename);
 	void setBackgroundColor(const QColor &color);
 
-  protected:
-	void showEvent(QShowEvent *event) override;
-
   private slots:
-	void onFileDoubleClicked(const QModelIndex &index);
 	void onFileClicked(const QModelIndex &index);
+	void onFileDoubleClicked(const QModelIndex &index);
 	void onTreeClicked(const QModelIndex &index);
+	void onPathEditingFinished();
 	void onOkClicked();
 	void onCancelClicked();
 	void onFilterChanged(int index);
-	void onPathEditingFinished();
+	void onFileNameEditChanged(const QString &text); // Add this
 
   private:
-	void applyFilter(const QString &filterText);
-	void navigateToDirectory(const QString &path);
 	void applyColorScheme(const QColor &color);
+	void navigateToDirectory(const QString &path);
+	void applyFilter(const QString &filterText);
+	void showEvent(QShowEvent *event) override;
 
 	QFileSystemModel *model;
 	QTreeView *treeView;
 	QListView *listView;
-	QLineEdit *pathEdit;
 	QLineEdit *fileNameEdit;
+	QLineEdit *pathEdit;
 	QComboBox *filterCombo;
-	QString selectedFilePath;
+
 	QString currentDirectory;
+	QString selectedFilePath;
 	QStringList filterList;
-	QString pendingFileSelection; // Add this member variable
+	QString pendingFileSelection;
+	Mode dialogMode; // Add this
 };
 
 

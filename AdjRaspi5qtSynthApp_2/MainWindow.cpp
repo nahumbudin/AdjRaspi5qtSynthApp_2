@@ -4,7 +4,7 @@
  *	@date		30-Apr-2026
  *	@version	2.0
  *					1. Add auto-arrangement of open instrument panels in the main window.
- *					2.
+ *					2. Added instruments.
  *
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
@@ -182,6 +182,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 		en_instruments_ids_t::adj_ext_midi_interface;
 	instruments_ids_map[_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY] =
 		en_instruments_ids_t::adj_keyboard_control;
+	instruments_ids_map[_INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY] =
+		en_instruments_ids_t::adj_keyboard_mapper;
 
 	// Start the periodic gui update timer
 	start_update_timer(200);
@@ -495,6 +497,10 @@ void MainWindow::create_actions()
 	add_adj_external_midi_interface_control_act->setStatusTip(tr("Open AdjHeart External MIDI Interface Control"));
 	connect(add_adj_external_midi_interface_control_act, SIGNAL(triggered()), this, 
 									SLOT(on_add_adj_external_midi_interface_control_instrument()));
+
+	add_adj_keyboard_mapper_act = new QAction(tr("&Keyboard Mapper"), this);
+	add_adj_keyboard_mapper_act->setStatusTip(tr("Open AdjHeart Keyboard Mapper"));
+	connect(add_adj_keyboard_mapper_act, SIGNAL(triggered()), this, SLOT(on_add_adj_keyboard_mapper_instrument()));
 	
 	add_adj_keyboard_control_act = new QAction(tr("&Keyboard Control"), this);
 	add_adj_keyboard_control_act->setStatusTip(tr("Open AdjHeart Keyboard Control"));
@@ -576,14 +582,16 @@ void MainWindow::create_menus()
 	add_module_menu->addAction(add_adj_midi_player_act);
 	add_module_menu->addSeparator();
 	add_module_menu->addAction(add_adj_reverb_effect_act);
-	add_module_menu->addAction(add_adj_distortion_effect_act);
+	//d_module_menu->addAction(add_adj_distortion_effect_act);
 	add_module_menu->addAction(add_adj_graphic_equilizer_act);
 	add_module_menu->addSeparator();
 	add_module_menu->addAction(add_midi_mixer_act);
-	add_module_menu->addSeparator();
 	add_module_menu->addAction(add_adj_midi_mapper_act);
-	add_module_menu->addAction(add_adj_external_midi_interface_control_act);
+	add_module_menu->addSeparator();
+	add_module_menu->addAction(add_adj_keyboard_mapper_act);
 	add_module_menu->addAction(add_adj_keyboard_control_act);
+
+	add_module_menu->addAction(add_adj_external_midi_interface_control_act);
 
 	sketches_menu = ui->menubar->addMenu(tr("&Sketches"));
 	sketches_menu->addAction(copy_sketch1_to_sketch2_act);
@@ -654,6 +662,7 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 			 instrument_name_string == _INSTRUMENT_NAME_MIDI_MIXER_STR_KEY ||
 			 instrument_name_string == _INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY ||
 			 instrument_name_string == _INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY ||
+			 instrument_name_string == _INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY ||
 			 instrument_name_string == _INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY)
 	{
 		new_pannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
@@ -1143,6 +1152,20 @@ void MainWindow::on_add_adj_keyboard_control_instrument()
 		// instrument is not already oppened
 
 		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY);
+		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+	}
+}
+
+void MainWindow::on_add_adj_keyboard_mapper_instrument()
+{
+	InstrumentPannel *newPannel;
+
+	if ((is_instrument_openned(en_instruments_ids_t::adj_keyboard_mapper) < 0) &&
+		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
+	{
+		// instrument is not already oppened
+
+		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY);
 		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
 	}
 }

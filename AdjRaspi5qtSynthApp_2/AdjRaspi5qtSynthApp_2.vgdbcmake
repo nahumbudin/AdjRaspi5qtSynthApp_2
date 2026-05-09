@@ -8,7 +8,7 @@
     </CustomSourceDirectories>
     <AutoProgramSPIFFSPartition>true</AutoProgramSPIFFSPartition>
     <DeploymentHost>
-      <HostName>192.168.3.20</HostName>
+      <HostName>192.168.0.40</HostName>
       <Transport>SSH</Transport>
       <UserName>pi</UserName>
     </DeploymentHost>
@@ -96,7 +96,123 @@
         <BuildAllTargetsInSubdir>false</BuildAllTargetsInSubdir>
         <FoldSingleItemPathLevels>true</FoldSingleItemPathLevels>
       </ProjectItemSettings>
-      <TargetSpecificSettings />
+      <TargetSpecificSettings>
+        <CMakeTargetSpecificSettings>
+          <TargetID>AdjRaspi5qtSynthApp_2</TargetID>
+          <Debug />
+          <Deployment>
+            <Mode>Auto</Mode>
+            <DeployIfNotSpecificallyReferenced>false</DeployIfNotSpecificallyReferenced>
+            <DoNotDeployVersionedBinaries>false</DoNotDeployVersionedBinaries>
+          </Deployment>
+          <RootVirtualSourceFolder>
+            <Subfolders>
+              <VirtualSourceFolder>
+                <Name>Dialogs</Name>
+                <Subfolders />
+                <Files>
+                  <string>Dialog_InstrumentConnections.cpp</string>
+                  <string>Dialog_AdjFluidSynth.cpp</string>
+                  <string>Dialog_MidiMapper.cpp</string>
+                  <string>Dilaog_MidiPlayer.cpp</string>
+                  <string>Dialog_FluidSynthChannels.cpp</string>
+                  <string>Dialog_FluidSynthSelectProgram.cpp</string>
+                  <string>Dialog_AnalogSynth_1900x1000.cpp</string>
+                  <string>Osc1Gui.cpp</string>
+                  <string>Osc2Gui.cpp</string>
+                  <string>NoiseGui.cpp</string>
+                  <string>KpsGui.cpp</string>
+                  <string>MsoGui.cpp</string>
+                  <string>PadGui.cpp</string>
+                  <string>ADSRgui.cpp</string>
+                  <string>LFOgui.cpp</string>
+                  <string>FiltersGui.cpp</string>
+                  <string>AmpsGui.cpp</string>
+                  <string>DistortionGui.cpp</string>
+                  <string>Dialog_MidiMixer.cpp</string>
+                  <string>Dialog_MidiMixer_SignalsConnections.cpp</string>
+                  <string>Dialog_MidiMixer_ControlBox.cpp</string>
+                  <string>Dialog_MidiMixer_GuiEvents.cpp</string>
+                  <string>Dialog_MidiMixer_UpdateGui.cpp</string>
+                  <string>Dialog_MasterVolume.cpp</string>
+                  <string>ReverbGui.cpp</string>
+                  <string>EqualizerGui.cpp</string>
+                  <string>Dialog_WindowsManager.cpp</string>
+                  <string>Dialog_AnalogSynth_ControlBox.cpp</string>
+                  <string>Dialog_AnalogReverb.cpp</string>
+                  <string>Dialog_AnalogEqualizer.cpp</string>
+                  <string>Dialog_HammondOrgan.cpp</string>
+                  <string>Dialog_StringSynthesizer.cpp</string>
+                  <string>Dialog_KeyboardMapper.cpp</string>
+                </Files>
+                <RelatedFilterName>Source Files</RelatedFilterName>
+              </VirtualSourceFolder>
+              <VirtualSourceFolder>
+                <Name>Custom Widgets</Name>
+                <Subfolders />
+                <Files>
+                  <string>CustomButton.cpp</string>
+                  <string>CustomCheckBox.cpp</string>
+                  <string>CustomComboBox.cpp</string>
+                  <string>CustomDial.cpp</string>
+                  <string>CustomHorizontalSlider.cpp</string>
+                  <string>CustomVerticalSlider.cpp</string>
+                  <string>CustomFrame.cpp</string>
+                  <string>ControlWidgetsColorManager.cpp</string>
+                  <string>CustomTabWidget.cpp</string>
+                  <string>CustomSpinBox.cpp</string>
+                  <string>CustomRadioButton.cpp</string>
+                  <string>CustomDrawbar.cpp</string>
+                  <string>CustomFileDialog.cpp</string>
+                </Files>
+                <RelatedFilterName>Source Files</RelatedFilterName>
+              </VirtualSourceFolder>
+              <VirtualSourceFolder>
+                <Name>Dialogs</Name>
+                <Subfolders />
+                <Files>
+                  <string>Dialog_InstrumentConnections.h</string>
+                  <string>Dialog_AdjFluidSynth.h</string>
+                  <string>Dialog_MidiMapper.h</string>
+                  <string>Dialog_MidiMixer.h</string>
+                  <string>Dialog_MidiPlayer.h</string>
+                  <string>Dialog_FluidSynthChannels.h</string>
+                  <string>Dialog_FluidSynthSelectProgram.h</string>
+                  <string>Dialog_AnalogSynth_1900x1000.h</string>
+                  <string>Dialog_MasterVolume.h</string>
+                  <string>Dialog_WindowsManager.h</string>
+                  <string>Dialog_AnalogEqualizer.h</string>
+                  <string>Dialog_HammondOrgan.h</string>
+                  <string>Dialog_StringSynthesizer.h</string>
+                  <string>Dialog_KeyboardMapper.h</string>
+                </Files>
+                <RelatedFilterName>Header Files</RelatedFilterName>
+              </VirtualSourceFolder>
+              <VirtualSourceFolder>
+                <Name>Custom Widgets</Name>
+                <Subfolders />
+                <Files>
+                  <string>CustomButton.h</string>
+                  <string>CustomCheckBox.h</string>
+                  <string>CustomComboBox.h</string>
+                  <string>CustomDial.h</string>
+                  <string>CustomHorizontalSlider.h</string>
+                  <string>CustomVerticalSlider.h</string>
+                  <string>CustomFrame.h</string>
+                  <string>CustomTabWidget.h</string>
+                  <string>CustomSpinBox.h</string>
+                  <string>CustomRadioButton.h</string>
+                  <string>CustomDrawbar.h</string>
+                  <string>CustomFileDialog.h</string>
+                </Files>
+                <RelatedFilterName>Header Files</RelatedFilterName>
+              </VirtualSourceFolder>
+            </Subfolders>
+            <Files />
+          </RootVirtualSourceFolder>
+          <HeaderDiscoveryMode>Default</HeaderDiscoveryMode>
+        </CMakeTargetSpecificSettings>
+      </TargetSpecificSettings>
       <DeploymentDirectory>/home/pi/AdjRaspiSynth5qtApp_2</DeploymentDirectory>
       <SetLDLibraryPathFromDependentArtifacts>true</SetLDLibraryPathFromDependentArtifacts>
       <ProjectGUID>9cdca16f-2b48-4107-8815-d76c95869eb4</ProjectGUID>

@@ -22,11 +22,13 @@
 #include "Dialog_AnalogSynth_1900x1000.h"
 #include "Dialog_InstrumentConnections.h"
 #include "Dialog_MidiMapper.h"
+#include "Dialog_KeyboardMapper.h"
 #include "Dialog_MidiMixer.h"
 #include "Dialog_MidiPlayer.h"
 #include "Dialog_AnalogReverb.h"
 #include "Dialog_AnalogEqualizer.h"
 #include "Dialog_HammondOrgan.h"
+#include "Dialog_StringSynthesizer.h"
 #include "MainWindow.h"
 #include "ui_InstrumentPannel.h"
 
@@ -58,6 +60,8 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 	dialog_analog_reverb = nullptr;
 	dialog_analog_equalizer = nullptr;
 	dialog_hammond_organ = nullptr;
+	dialog_string_synthesizer = nullptr;
+	dialog_keyboard_mapper = nullptr;
 
 	// Connect signals
 	connect(ui->pushButton_InstrumentExit,
@@ -137,10 +141,10 @@ void InstrumentPannel::update_visual_state()
 	{
 	case STATE_IDLE:
 		styleSheet = QString(
-						 "QFrame {"
+						 "InstrumentPannel {"
 						 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-						 "        stop:0 rgba(60, 60, 60, 200),"
-						 "        stop:1 rgba(40, 40, 40, 200));"
+						 "        stop:0 rgba(25, 25, 25, 200),"  // Changed from 60
+						 "        stop:1 rgba(15, 15, 15, 200));" // Changed from 40
 						 "    border: 2px solid rgba(%1, %2, %3, %4);"
 						 "    border-top: 2px solid rgba(%5, %6, %7, %8);"		 // Lighter top
 						 "    border-left: 2px solid rgba(%5, %6, %7, %8);"		 // Lighter left
@@ -164,10 +168,10 @@ void InstrumentPannel::update_visual_state()
 
 	case STATE_HOVER:
 		styleSheet = QString(
-						 "QFrame {"
+						 "InstrumentPannel {"
 						 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-						 "        stop:0 rgba(70, 70, 70, 220),"
-						 "        stop:1 rgba(50, 50, 50, 220));"
+						 "        stop:0 rgba(35, 35, 35, 220),"  // Changed from 70
+						 "        stop:1 rgba(25, 25, 25, 220));" // Changed from 50
 						 "    border: 3px solid rgba(%1, %2, %3, %4);"
 						 "    border-top: 3px solid rgba(%5, %6, %7, %8);"
 						 "    border-left: 3px solid rgba(%5, %6, %7, %8);"
@@ -191,10 +195,10 @@ void InstrumentPannel::update_visual_state()
 
 	case STATE_SELECTED:
 		styleSheet = QString(
-						 "QFrame {"
+						 "InstrumentPannel {"
 						 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-						 "        stop:0 rgba(80, 80, 80, 240),"
-						 "        stop:1 rgba(60, 60, 60, 240));"
+						 "        stop:0 rgba(45, 45, 45, 240),"  // Changed from 80
+						 "        stop:1 rgba(35, 35, 35, 240));" // Changed from 60
 						 "    border: 4px solid rgba(%1, %2, %3, 255);"
 						 "    border-top: 4px solid rgba(%4, %5, %6, 255);"
 						 "    border-left: 4px solid rgba(%4, %5, %6, 255);"
@@ -300,6 +304,14 @@ void InstrumentPannel::on_instrument_open_clicked()
 	else if (instrument_name == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY)
 	{
 		open_hammond_organ_dialog();
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY)
+	{
+		open_string_synthesizer_dialog();
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY)
+	{
+		open_keyboard_mapper_dialog();
 	}
 }
 
@@ -443,6 +455,37 @@ void InstrumentPannel::open_hammond_organ_dialog()
 	dialog_hammond_organ->show();
 	dialog_hammond_organ->raise();
 	dialog_hammond_organ->activateWindow();
+}
+
+void InstrumentPannel::open_string_synthesizer_dialog()
+{
+	if (dialog_string_synthesizer == nullptr)
+	{
+		dialog_string_synthesizer = Dialog_StringSynthesizer::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_string_synthesizer, "String Synthesizer");
+		connect(dialog_string_synthesizer, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_string_synthesizer);
+		});
+	}
+	dialog_string_synthesizer->show();
+	dialog_string_synthesizer->raise();
+	dialog_string_synthesizer->activateWindow();
+}
+
+void InstrumentPannel::open_keyboard_mapper_dialog()
+{
+	if (dialog_keyboard_mapper == nullptr)
+	{
+		dialog_keyboard_mapper = Dialog_KeyboardMapper::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_keyboard_mapper, "Keyboard Mapper");
+		connect(dialog_keyboard_mapper, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_keyboard_mapper);
+		});
+	}
+
+	dialog_keyboard_mapper->show();
+	dialog_keyboard_mapper->raise();
+	dialog_keyboard_mapper->activateWindow();
 }
 
 void InstrumentPannel::on_instrument_connections_clicked()

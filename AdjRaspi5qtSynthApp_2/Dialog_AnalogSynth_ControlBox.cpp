@@ -2162,7 +2162,7 @@ void Dialog_AnalogSynth_1900x1000::control_box_ui_update_callback(int evnt, uint
 				pad_shape_cutoff = update_rotary_encoder_value(
 					pad_shape_cutoff,
 					val,
-					&pad_shape_cutoff,
+					&prev_pad_shape_cutoff,
 					pad_shape_cutoff_min,
 					pad_shape_cutoff_max,
 					1);

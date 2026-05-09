@@ -22,8 +22,9 @@ public:
 	void setColor(QColor color);
 	void setKnobColor(QColor color);
 	void setCircleColor(QColor color);
+	void setIndicatorVisible(bool visible);
 
-protected:
+  protected:
     void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
 
@@ -32,4 +33,5 @@ private:
 	
 	QColor knob_color;
 	QColor circle_color;
+	bool indicator_visible;
 };

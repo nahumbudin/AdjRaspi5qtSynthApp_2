@@ -276,7 +276,7 @@ color: rgb(255, 255, 255);</string>
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>290</y>
+       <y>265</y>
        <width>65</width>
        <height>20</height>
       </rect>
@@ -309,7 +309,7 @@ background-color: rgb(170, 255, 0);
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>175</y>
+       <y>150</y>
        <width>100</width>
        <height>20</height>
       </rect>
@@ -333,7 +333,7 @@ background-color: rgb(170, 255, 0);
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>230</y>
+       <y>210</y>
        <width>50</width>
        <height>20</height>
       </rect>
@@ -366,7 +366,7 @@ background-color: rgb(170, 255, 0);
      <property name="geometry">
       <rect>
        <x>4</x>
-       <y>200</y>
+       <y>180</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -390,7 +390,7 @@ background-color: rgb(170, 255, 0);
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>230</y>
+       <y>210</y>
        <width>50</width>
        <height>20</height>
       </rect>
@@ -423,7 +423,7 @@ background-color: rgb(170, 255, 0);
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>200</y>
+       <y>180</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -447,7 +447,7 @@ background-color: rgb(170, 255, 0);
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>265</y>
+       <y>240</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -678,8 +678,8 @@ color: rgb(255, 255, 255);</string>
     <widget class="CustomButton" name="pushButton_HammondPresetOpen">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>290</y>
+       <x>190</x>
+       <y>250</y>
        <width>75</width>
        <height>30</height>
       </rect>
@@ -696,7 +696,7 @@ color: rgb(0, 0, 0);</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>210</y>
+       <y>180</y>
        <width>141</width>
        <height>51</height>
       </rect>
@@ -724,7 +724,7 @@ color: rgb(0, 0, 0);</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>180</y>
+       <y>150</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -742,6 +742,23 @@ color: rgb(0, 0, 0);</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="CustomButton" name="pushButton_HammondPresetSave">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>300</y>
+       <width>75</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(148, 148, 148);
+color: rgb(0, 0, 0);</string>
+     </property>
+     <property name="text">
+      <string>Save</string>
      </property>
     </widget>
    </widget>

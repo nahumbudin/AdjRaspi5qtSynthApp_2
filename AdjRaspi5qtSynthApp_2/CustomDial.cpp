@@ -15,8 +15,10 @@
 #include <QtMath>
 #include "CustomDial.h"
 
-
-CustomDial::CustomDial(QWidget *parent) : QDial(parent) {}
+CustomDial::CustomDial(QWidget *parent) : QDial(parent)
+{
+	indicator_visible = true;
+}
 
 CustomDial::~CustomDial() {}
 
@@ -59,27 +61,30 @@ void CustomDial::paintEvent(QPaintEvent *event)
 	painter.drawEllipse(center, knobRadius, knobRadius);
 
 	// 4. Draw the knob indicator line
-	qreal valueRange = maximum() - minimum();
-	qreal normalizedValue = (value() - minimum()) / valueRange;
-	
-	// QDial uses a 270-degree range, starting from the bottom-left
-	qreal angleOffset = 225.0;
-	qreal angleRange = 270.0;
-	qreal angle = angleOffset - (normalizedValue * angleRange);
-	qreal angleRad = qDegreesToRadians(angle);
+	if (indicator_visible)
+	{
+		qreal valueRange = maximum() - minimum();
+		qreal normalizedValue = (value() - minimum()) / valueRange;
 
-	// Calculate indicator line end point
-	qreal indicatorLength = knobRadius * 0.7;
-	qreal offset = 1.5; // 3 is the line thickness - see bellow
-	center = center + QPoint(offset, offset); 
-	QPointF lineEnd(
-		center.x() + indicatorLength * qCos(angleRad) + offset, 
-		center.y() - indicatorLength * qSin(angleRad) + offset);
+		// QDial uses a 270-degree range, starting from the bottom-left
+		qreal angleOffset = 225.0;
+		qreal angleRange = 270.0;
+		qreal angle = angleOffset - (normalizedValue * angleRange);
+		qreal angleRad = qDegreesToRadians(angle);
 
-	// Draw indicator line
-	QPen indicatorPen(Qt::white, 3); // White line as indicator
-	painter.setPen(indicatorPen);
-	painter.drawLine(center, lineEnd);
+		// Calculate indicator line end point
+		qreal indicatorLength = knobRadius * 0.7;
+		qreal offset = 1.5; // 3 is the line thickness - see bellow
+		center = center + QPoint(offset, offset);
+		QPointF lineEnd(
+			center.x() + indicatorLength * qCos(angleRad) + offset,
+			center.y() - indicatorLength * qSin(angleRad) + offset);
+
+		// Draw indicator line
+		QPen indicatorPen(Qt::white, 3); // White line as indicator
+		painter.setPen(indicatorPen);
+		painter.drawLine(center, lineEnd);
+	}
 
 	// 5. Draw border circle around the knob
 	int thickness = 5;
@@ -110,3 +115,8 @@ void CustomDial::setCircleColor(QColor color)
 	update(); // Trigger repaint to apply new color
 }
 
+void CustomDial::setIndicatorVisible(bool visible)
+{
+	indicator_visible = visible;
+	update(); // Trigger repaint to show/hide indicator
+}

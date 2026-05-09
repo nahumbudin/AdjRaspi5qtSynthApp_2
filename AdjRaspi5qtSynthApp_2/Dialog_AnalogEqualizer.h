@@ -87,4 +87,6 @@ class Dialog_AnalogEqualizer : public QDialog
 	ControlWidgetsColorManager *control_widgets_color_manager;
 
 	func_ptr_void_void_t close_event_callback_ptr;
+
+
 };

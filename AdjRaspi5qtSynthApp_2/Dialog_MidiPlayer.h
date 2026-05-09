@@ -94,7 +94,7 @@ private:
 	QString last_midi_file;		 // Store last selected file
 };
 
-class OpenFileThread : public QThread
+class OpenMidiPlayerFileThread : public QThread
 {
 	Q_OBJECT	
 	void run();

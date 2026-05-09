@@ -33,7 +33,7 @@
 #include "CustomFileDialog.h"
 
 QString midi_file_name;
-OpenFileThread *open_file_thread;
+OpenMidiPlayerFileThread *open_file_thread;
 
 int playback_progres_percentegas = 0;
 
@@ -64,7 +64,7 @@ void update_ui_progress_percentages(int progress)
 	playback_progres_percentegas = progress;
 }
 
-void OpenFileThread::run() 
+void OpenMidiPlayerFileThread::run() 
 {		
 	QString result = QString("File loaded");
 	mod_synth_open_midi_file(midi_file_name.toStdString());
@@ -587,10 +587,10 @@ void Dialog_MidiPlayer::on_open_file_clicked()
 
 			ui->lineEdit_MidiPlayeFileName->setText(QString::fromStdString(file_name));
 
-			open_file_thread = new OpenFileThread();
+			open_file_thread = new OpenMidiPlayerFileThread();
 			connect(open_file_thread,
-					&OpenFileThread::finished, open_file_thread, &QObject::deleteLater);
-			connect(open_file_thread, &OpenFileThread::resultReady, this, &Dialog_MidiPlayer::on_midi_file_loaded);
+					&OpenMidiPlayerFileThread::finished, open_file_thread, &QObject::deleteLater);
+			connect(open_file_thread, &OpenMidiPlayerFileThread::resultReady, this, &Dialog_MidiPlayer::on_midi_file_loaded);
 			open_file_thread->start();
 
 			ui->pushButton_MidiPlayerPlay->setEnabled(false);

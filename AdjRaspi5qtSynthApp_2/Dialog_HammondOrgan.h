@@ -12,6 +12,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QThread>
 
 #include "libAdjRaspi5SynthAPI.h"
 
@@ -34,7 +35,7 @@ class Dialog_HammondOrgan : public QDialog
 	void control_box_ui_update_callback(int evnt, uint16_t val);
 
   protected:
-	void timerEvent(QTimerEvent *event);
+	//void timerEvent(QTimerEvent *event);
 
   public slots:
 	void closeEvent(QCloseEvent *event);
@@ -68,7 +69,13 @@ class Dialog_HammondOrgan : public QDialog
 
 	void on_percussion_mode_combobox_changed(int val);
 
+	void on_preset_file_loaded(const QString &s);
+	void on_preset_file_saved(const QString &s);
+
+  private slots:
+
 	void on_presets_open_pushbutton_clicked();
+	void on_presets_save_pushbutton_clicked();
 
   private:
 	explicit Dialog_HammondOrgan(QWidget *parent = 0);
@@ -91,6 +98,25 @@ class Dialog_HammondOrgan : public QDialog
 	CustomDrawbar *bar_level_sliders[9];
 	QLabel *bar_level_labels[9];
 
-	QString last_hammond_preset_directory;
-	QString last_hammond_preset_file;
+	QString last_hammond_preset_directory = "";
+	QString last_hammond_preset_load_file = "";
+	QString last_hammond_preset_save_file = "";
+};
+
+class LoadHammondOrganPresetFileThread : public QThread
+{
+	Q_OBJECT
+	void run();
+
+  signals:
+	void loadPresetFileDone(const QString &s);
+};
+
+class SaveHammondOrganPresetFileThread : public QThread
+{
+	Q_OBJECT
+	void run();
+
+  signals:
+	void savePresetFileDone(const QString &s);
 };

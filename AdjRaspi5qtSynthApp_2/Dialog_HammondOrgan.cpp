@@ -11,6 +11,15 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDateTime>
+#include <QDialogButtonBox>
+#include <QTextStream>
+# include <QFileInfo>
+#include <QLabel>
+#include <QTextEdit>
+#include <QVBoxLayout>
+
+#include <filesystem>
 
 #include "Dialog_HammondOrgan.h"
 #include "ui_Dialog_HammondOrgan.h"
@@ -23,18 +32,46 @@
 
 Dialog_HammondOrgan *Dialog_HammondOrgan::dialog_hammond_organ_instance = NULL;
 
+LoadHammondOrganPresetFileThread *load_hammond_organ_preset_file_thread;
+SaveHammondOrganPresetFileThread *save_hammond_organ_preset_file_thread;
+
+QString hammond_organpreset_file_name;
+
 void hammond_organ_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
 	Dialog_HammondOrgan::get_instance()->control_box_ui_update_callback(evnt, val);
 }
+
+void SaveHammondOrganPresetFileThread::run()
+{
+	int res;
+
+	QString result = QString("Preset File Saved");
+	res = mod_synth_save_hammond_preset_file(hammond_organpreset_file_name.toStdString());
+	
+	emit savePresetFileDone(result);
+}
+
+void LoadHammondOrganPresetFileThread::run()
+{
+	int res;
+
+	QString result = QString("Preset File Loaded");
+	res = mod_synth_load_hammond_preset_file(hammond_organpreset_file_name.toStdString());
+
+	emit loadPresetFileDone(result);
+}
+
 
 Dialog_HammondOrgan::Dialog_HammondOrgan(QWidget *parent)
 	: QDialog(parent), ui(new Ui::Dialog_HammondOrgan)
 {
 	ui->setupUi(this);
 	dialog_hammond_organ_instance = this;
-	
-	
+
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	close_event_callback_ptr = NULL;
 
 	// Register control box event callback
@@ -59,6 +96,9 @@ Dialog_HammondOrgan::Dialog_HammondOrgan(QWidget *parent)
 
 Dialog_HammondOrgan::~Dialog_HammondOrgan()
 {
+	// Reset static instance pointer when destroyed
+	dialog_hammond_organ_instance = nullptr;
+	delete ui;
 }
 
 Dialog_HammondOrgan *Dialog_HammondOrgan::get_instance(QWidget *parent)
@@ -228,6 +268,9 @@ void Dialog_HammondOrgan::init_gui_elements()
 	ui->pushButton_HammondPresetOpen->setFrameColor(_CONTROLS_COLOR_PURPLE);
 	ui->pushButton_HammondPresetOpen->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
 
+	ui->pushButton_HammondPresetSave->setFrameColor(_CONTROLS_COLOR_BLUE);
+	ui->pushButton_HammondPresetSave->setBackgroundColor(_CONTROLS_COLOR_VERY_DARK_GRAY);
+
 	ui->comboBox_HammondPercussionMode->setBackgroundColor(_CONTROLS_COLOR_DARK_GRAY);
 	ui->comboBox_HammondPercussionMode->setFrameColor(_CONTROLS_COLOR_BLACK);
 	ui->comboBox_HammondPercussionMode->setFrameWidth(2);
@@ -353,6 +396,11 @@ void Dialog_HammondOrgan::set_signal_slots_connections()
 			SIGNAL(clicked()),
 			this,
 			SLOT(on_presets_open_pushbutton_clicked()));
+
+	connect(ui->pushButton_HammondPresetSave,
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_presets_save_pushbutton_clicked()));
 }
 
 void Dialog_HammondOrgan::closeEvent(QCloseEvent *event)
@@ -364,6 +412,9 @@ void Dialog_HammondOrgan::closeEvent(QCloseEvent *event)
 	
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
+
+	// Hide instead of accept (which could trigger deletion)
+	event->ignore(); // Don't accept the close event
 	
 	hide();
 }
@@ -998,50 +1049,122 @@ void Dialog_HammondOrgan::on_percussion_mode_combobox_changed(int val)
 
 void Dialog_HammondOrgan::on_presets_open_pushbutton_clicked()
 {
-	int ret;
-	QMessageBox msgBox;
-
 	QString startDir = last_hammond_preset_directory.isEmpty() ? QString(_HAMMOND_ORGAN_PRESETS_FILES_DEFAULT_DIR) : last_hammond_preset_directory;
 
-	// Pass black color directly to constructor
 	CustomFileDialog dialog(this,
-							tr("Open Hammond Organ Preset File"),
+							tr("Open Preset File"),
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
-							Qt::black); // Background color set here
+							Qt::black); // Background color set here)
 
 	// If we have a last file, select it and scroll to it
-	if (!last_hammond_preset_file.isEmpty())
+	if (!last_hammond_preset_load_file.isEmpty())
 	{
-		dialog.selectFile(last_hammond_preset_file);
+		dialog.selectFile(last_hammond_preset_load_file);
 	}
 
 	if (dialog.exec() == QDialog::Accepted)
 	{
-		QString fileName = dialog.selectedFile();
+		hammond_organpreset_file_name = dialog.selectedFile();
 
-		if (!fileName.isEmpty())
+		if (!hammond_organpreset_file_name.isEmpty())
 		{
 			// Remember the directory and file for next time
-			last_hammond_preset_directory = QFileInfo(fileName).absolutePath();
-			last_hammond_preset_file = fileName;
+			last_hammond_preset_directory = QFileInfo(hammond_organpreset_file_name).absolutePath();
+			last_hammond_preset_load_file = hammond_organpreset_file_name;
 
-			msgBox.setIcon(QMessageBox::Warning);
-			msgBox.setText("Preset file has been selected.");
-			msgBox.setInformativeText("Are you sure you want to use it and replace current settings?");
-			msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-			msgBox.setDefaultButton(QMessageBox::Cancel);
-			ret = msgBox.exec();
+			std::string file_name;
+			//file_name = std::string("Now Loading: ");
+			file_name = std::filesystem::path(hammond_organpreset_file_name.toStdString()).stem();
 
-			if (ret == QMessageBox::Yes)
-			{
-				char mssg[256];
-				sprintf(mssg, "%s Hammond Organ Preset was loaded.", fileName.toStdString().c_str());
-				printf("%s", mssg);
-				// Add actual preset loading code here
-			}
+			ui->textEdit_HammondPresetText->setText(QString::fromStdString(file_name));
+
+			load_hammond_organ_preset_file_thread = new LoadHammondOrganPresetFileThread();
+			connect(load_hammond_organ_preset_file_thread,
+					&LoadHammondOrganPresetFileThread::finished, load_hammond_organ_preset_file_thread, &QObject::deleteLater);
+			connect(load_hammond_organ_preset_file_thread, &LoadHammondOrganPresetFileThread::loadPresetFileDone,
+					this, &Dialog_HammondOrgan::on_preset_file_loaded);
+			load_hammond_organ_preset_file_thread->start();
 		}
 	}
+}
+
+void Dialog_HammondOrgan::on_presets_save_pushbutton_clicked()
+{
+	QString startDir = last_hammond_preset_directory.isEmpty() ? QString(_HAMMOND_ORGAN_PRESETS_FILES_DEFAULT_DIR) : last_hammond_preset_directory;
+
+	// Use CustomFileDialog in Save mode
+	CustomFileDialog dialog(this,
+							tr("Save Preset File"),
+							startDir,
+							tr("Presets (*.xml *.XML);;All Files (*)"),
+							Qt::black,
+							CustomFileDialog::SaveMode); // Set to Save mode
+
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		hammond_organpreset_file_name = dialog.selectedFile();
+
+		if (!hammond_organpreset_file_name.isEmpty())
+		{
+			// Ensure .xml extension
+			if (!hammond_organpreset_file_name.endsWith(".xml", Qt::CaseInsensitive))
+			{
+				hammond_organpreset_file_name += ".xml";
+			}
+
+			// Check if file exists and ask for confirmation
+			if (QFile::exists(hammond_organpreset_file_name))
+			{
+				QMessageBox msgBox;
+				msgBox.setIcon(QMessageBox::Warning);
+				msgBox.setWindowTitle("Confirm Overwrite");
+				msgBox.setText(QString("File '%1' already exists.")
+								   .arg(QFileInfo(hammond_organpreset_file_name).fileName()));
+				msgBox.setInformativeText("Do you want to overwrite it?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+				msgBox.setDefaultButton(QMessageBox::Cancel);
+
+				if (msgBox.exec() != QMessageBox::Yes)
+				{
+					return;
+				}
+			}
+
+			// Remember the directory and file for next time
+			last_hammond_preset_directory = QFileInfo(hammond_organpreset_file_name).absolutePath();
+			last_hammond_preset_save_file = hammond_organpreset_file_name;
+
+			// Display saving message
+			std::string file_name = std::string("Now Saving: ");
+			file_name += std::filesystem::path(hammond_organpreset_file_name.toStdString()).stem().string();
+			//ui->textEdit_HammondPresetText->setText(QString::fromStdString(file_name));
+
+			// Start the save thread
+			save_hammond_organ_preset_file_thread = new SaveHammondOrganPresetFileThread();
+
+			connect(save_hammond_organ_preset_file_thread,
+					&SaveHammondOrganPresetFileThread::finished,
+					save_hammond_organ_preset_file_thread,
+					&QObject::deleteLater);
+			connect(save_hammond_organ_preset_file_thread,
+					&SaveHammondOrganPresetFileThread::savePresetFileDone,
+					this,
+					&Dialog_HammondOrgan::on_preset_file_saved);
+
+			save_hammond_organ_preset_file_thread->start();
+		}
+	}
+}
+
+void Dialog_HammondOrgan::on_preset_file_loaded(const QString &s)
+{
+	
+}
+
+void Dialog_HammondOrgan::on_preset_file_saved(const QString &s)
+{
+	
 }
 
 void Dialog_HammondOrgan::update_gui()
@@ -1171,6 +1294,27 @@ void Dialog_HammondOrgan::update_gui()
 		prev_square_wave_enable_val = val;
 		ui->checkBox_HammondSquareWave->setChecked(val == 1 ? Qt::Checked : Qt::Unchecked);
 	}
+
+	val = mod_synth_get_hammond_organ_param_value(_HAMMOND_ORGAN_EVENT, _HAMMOND_ORGAN_DETUNE_OCTAVE);
+	if (val != prev_tune_octave_val)
+	{
+		prev_tune_octave_val = val;
+		ui->comboBox_HammondTuneOctave->setCurrentIndex(val - _OSC_DETUNE_MIN_OCTAVE);
+	}
+
+	val = mod_synth_get_hammond_organ_param_value(_HAMMOND_ORGAN_EVENT, _HAMMOND_ORGAN_DETUNE_SEMITONES);
+	if (val != prev_tune_semitones_val)
+	{
+		prev_tune_semitones_val = val;
+		ui->comboBox_HammondTuneSemitones->setCurrentIndex(val - _OSC_DETUNE_MIN_SEMITONES);
+	}
+
+	val = mod_synth_get_hammond_organ_param_value(_HAMMOND_ORGAN_EVENT, _HAMMOND_ORGAN_DETUNE_CENTS);
+	if (val != prev_tune_cents_val)
+	{
+		prev_tune_cents_val = val;
+		ui->comboBox_HammondTuneCents->setCurrentIndex(val - _OSC_DETUNE_MIN_CENTS * 4);
+	}
 }
 
 void Dialog_HammondOrgan::start_update_timer(int interval)
@@ -1180,10 +1324,10 @@ void Dialog_HammondOrgan::start_update_timer(int interval)
 	timer->start(interval);
 }
 
-void Dialog_HammondOrgan::timerEvent(QTimerEvent *event)
-{
-	killTimer(event->timerId());
-	start_update_timer(_UPDATE_TIMER_PERIOD_MS);
-}
+//void Dialog_HammondOrgan::timerEvent(QTimerEvent *event)
+//{
+//	killTimer(event->timerId());
+//	start_update_timer(_UPDATE_TIMER_PERIOD_MS);
+//}
 
 
