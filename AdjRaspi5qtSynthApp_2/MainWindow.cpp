@@ -164,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 		en_instruments_ids_t::adj_karplusstrong_string_synth;
 	instruments_ids_map[_INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_morphed_sin_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY] =
+	instruments_ids_map[_INSTRUMENT_NAME_PAD_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_pad_synth;
 	instruments_ids_map[_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY] =
 		en_instruments_ids_t::adj_midi_player;
@@ -654,7 +654,7 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 		instrument_name_string == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
-		instrument_name_string == _INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY)
+		instrument_name_string == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY)
 	{
 		new_pannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
@@ -1037,7 +1037,7 @@ void MainWindow::on_add_adj_pad_synth_instrument()
 	{
 		// instrument is not already oppened
 
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY);
+		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_PAD_SYNTH_STR_KEY);
 		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
 }
@@ -1353,7 +1353,7 @@ int MainWindow::get_panel_type_order(const QString &instrument_name)
 		instrument_name == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
-		instrument_name == _INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY)
+		instrument_name == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY)
 	{
 		return 0; // PLAYER
 	}

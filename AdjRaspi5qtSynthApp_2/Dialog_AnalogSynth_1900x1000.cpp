@@ -554,6 +554,9 @@ void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
+	// Hide instead of accept (which could trigger deletion)
+	event->ignore(); // Don't accept the close event
+
 	hide();
 }
 

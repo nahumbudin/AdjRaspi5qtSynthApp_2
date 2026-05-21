@@ -20,3 +20,4 @@ add
 au
 ar
 arr
+mod_synth_save

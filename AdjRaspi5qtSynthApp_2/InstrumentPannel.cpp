@@ -29,6 +29,7 @@
 #include "Dialog_AnalogEqualizer.h"
 #include "Dialog_HammondOrgan.h"
 #include "Dialog_StringSynthesizer.h"
+#include "Dialog_PADsynthesizer.h"
 #include "MainWindow.h"
 #include "ui_InstrumentPannel.h"
 
@@ -61,6 +62,7 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 	dialog_analog_equalizer = nullptr;
 	dialog_hammond_organ = nullptr;
 	dialog_string_synthesizer = nullptr;
+	dialog_pad_synthesizer = nullptr;
 	dialog_keyboard_mapper = nullptr;
 
 	// Connect signals
@@ -309,6 +311,10 @@ void InstrumentPannel::on_instrument_open_clicked()
 	{
 		open_string_synthesizer_dialog();
 	}
+	else if (instrument_name == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY)
+	{
+		open_pad_synthesizer_dialog();
+	}
 	else if (instrument_name == _INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY)
 	{
 		open_keyboard_mapper_dialog();
@@ -470,6 +476,21 @@ void InstrumentPannel::open_string_synthesizer_dialog()
 	dialog_string_synthesizer->show();
 	dialog_string_synthesizer->raise();
 	dialog_string_synthesizer->activateWindow();
+}
+
+void InstrumentPannel::open_pad_synthesizer_dialog()
+{
+	if (dialog_pad_synthesizer == nullptr)
+	{
+		dialog_pad_synthesizer = Dialog_PADsynthesizer::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_pad_synthesizer, "PAD Synthesizer");
+		connect(dialog_pad_synthesizer, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_pad_synthesizer);
+		});
+	}
+	dialog_pad_synthesizer->show();
+	dialog_pad_synthesizer->raise();
+	dialog_pad_synthesizer->activateWindow();
 }
 
 void InstrumentPannel::open_keyboard_mapper_dialog()

@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAFgBAAAAAAAAAAAAAG8BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-02-14T17:01:52.538Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

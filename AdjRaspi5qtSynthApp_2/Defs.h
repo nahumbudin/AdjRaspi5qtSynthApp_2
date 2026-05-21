@@ -15,6 +15,7 @@
 
 #define _HAMMOND_ORGAN_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/HammondOrgan"
 #define _STRING_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/StringSynth"
+#define _PAD_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/PADsynth"
 
 
 #define _MIDI_MIXER_CHANNELS_1_8	0

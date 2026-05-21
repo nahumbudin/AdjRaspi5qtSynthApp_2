@@ -8,7 +8,7 @@
     </CustomSourceDirectories>
     <AutoProgramSPIFFSPartition>true</AutoProgramSPIFFSPartition>
     <DeploymentHost>
-      <HostName>192.168.0.40</HostName>
+      <HostName>192.168.3.20</HostName>
       <Transport>SSH</Transport>
       <UserName>pi</UserName>
     </DeploymentHost>
@@ -144,6 +144,7 @@
                   <string>Dialog_HammondOrgan.cpp</string>
                   <string>Dialog_StringSynthesizer.cpp</string>
                   <string>Dialog_KeyboardMapper.cpp</string>
+                  <string>Dialog_PADsynthesizer.cpp</string>
                 </Files>
                 <RelatedFilterName>Source Files</RelatedFilterName>
               </VirtualSourceFolder>
@@ -211,6 +212,7 @@
             <Files />
           </RootVirtualSourceFolder>
           <HeaderDiscoveryMode>Default</HeaderDiscoveryMode>
+          <ResourceDirectories />
         </CMakeTargetSpecificSettings>
       </TargetSpecificSettings>
       <DeploymentDirectory>/home/pi/AdjRaspiSynth5qtApp_2</DeploymentDirectory>

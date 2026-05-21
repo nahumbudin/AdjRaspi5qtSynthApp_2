@@ -1328,12 +1328,12 @@ void Dialog_InstrumentConnections::update()
 	
 	/* Connected to? */
 	std::string client_out_name = "";
-	
+
 	if ((instrument_name.toStdString() == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY) ||
-		(instrument_name.toStdString() == _INSTRUMENT_NAME_PADSYNTH_SYNTH_STR_KEY))
+		(instrument_name.toStdString() == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY))
 	{
 		client_out_name = "AdjHeartSynth_out";
 	}

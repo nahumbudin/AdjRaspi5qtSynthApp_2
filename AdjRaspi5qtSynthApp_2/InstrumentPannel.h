@@ -33,6 +33,7 @@ class Dialog_AnalogReverb;
 class Dialog_AnalogEqualizer;
 class Dialog_HammondOrgan;
 class Dialog_StringSynthesizer;
+class Dialog_PADsynthesizer;
 class MainWindow;
 
 namespace Ui
@@ -105,6 +106,7 @@ class InstrumentPannel : public QFrame
 	void open_analog_equalizer_dialog();
 	void open_hammond_organ_dialog();
 	void open_string_synthesizer_dialog();
+	void open_pad_synthesizer_dialog();
 	void open_keyboard_mapper_dialog();
 
 	PannelState current_state;
@@ -116,6 +118,7 @@ class InstrumentPannel : public QFrame
 	Dialog_AnalogSynth_1900x1000 *dialog_analog_synth_1900x1000;
 	Dialog_HammondOrgan *dialog_hammond_organ;
 	Dialog_StringSynthesizer *dialog_string_synthesizer;
+	Dialog_PADsynthesizer *dialog_pad_synthesizer;
 
 	Dialog_MidiPlayer *dialog_adj_midi_player;
 	Dialog_MidiMixer *dialog_midi_mixer;
