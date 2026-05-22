@@ -28,13 +28,8 @@
 
 void midi_mixer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Marshal to UI thread - this is non-blocking and thread-safe
-	Dialog_MidiMixer *instance = Dialog_MidiMixer::get_instance();
-	if (instance != NULL)
-	{
-		QMetaObject::invokeMethod(instance, [instance, evnt, val]() { 
-					instance->control_box_ui_update_callback(evnt, val); }, Qt::QueuedConnection);
-	}
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_MidiMixer::get_instance()->control_box_event_received(evnt, val);
 }
 
 void midi_mixer_update_channels_levels_ui_update_callback_wrapper(int chan, int vol)
@@ -588,6 +583,12 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	
 	active_channels_tab = _MIDI_MIXER_CHANNELS_1_8;
 
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_MidiMixer::control_box_event_signal,
+			this, &Dialog_MidiMixer::handle_control_box_event,
+			Qt::QueuedConnection);
+
 	mod_synth_register_callback_control_box_event_update_ui(
 		&midi_mixer_control_box_event_update_ui_callback_wrapper);
 
@@ -767,6 +768,13 @@ Dialog_MidiMixer *Dialog_MidiMixer::get_instance(QWidget *parent)
 	}
 	
 	return dialog_midi_mixer_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_MidiMixer::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 Ui::Dialog_MidiMixer_1620x840 *Dialog_MidiMixer::get_ui_instance()

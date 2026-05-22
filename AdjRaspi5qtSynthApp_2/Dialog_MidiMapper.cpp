@@ -42,7 +42,8 @@ bool found;
 
 void midi_mapper_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_MidiMapper::get_instance()->control_box_ui_update_callback(evnt, val);
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_MidiMapper::get_instance()->control_box_event_received(evnt, val);
 }
 
 void update_gui_wrapper()
@@ -84,6 +85,12 @@ Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
 	this->setFocus(Qt::ActiveWindowFocusReason);
 	
 	close_event_callback_ptr = NULL;
+
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_MidiMapper::control_box_event_signal,
+			this, &Dialog_MidiMapper::handle_control_box_event,
+			Qt::QueuedConnection);
 	
 	mod_synth_register_callback_control_box_event_update_ui(
 		&midi_mapper_control_box_event_update_ui_callback_wrapper);
@@ -254,6 +261,13 @@ Dialog_MidiMapper *Dialog_MidiMapper::get_instance(QWidget *parent, bool showit)
 	}
 	
 	return dialog_adj_midi_mapper_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_MidiMapper::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 void Dialog_MidiMapper::closeEvent(QCloseEvent *event)
@@ -592,7 +606,7 @@ void Dialog_MidiMapper::set_all_channels_instrument_changed(int inst)
 	qmutex.unlock();
 }
 
-void Dialog_MidiMapper::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_MidiMapper::handle_control_box_event(int evnt, uint16_t val)
 {	
 	if (!this->hasFocus())
 	{

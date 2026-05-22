@@ -39,7 +39,8 @@ QString hammond_organpreset_file_name;
 
 void hammond_organ_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_HammondOrgan::get_instance()->control_box_ui_update_callback(evnt, val);
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_HammondOrgan::get_instance()->control_box_event_received(evnt, val);
 }
 
 void SaveHammondOrganPresetFileThread::run()
@@ -73,6 +74,12 @@ Dialog_HammondOrgan::Dialog_HammondOrgan(QWidget *parent)
 	setAttribute(Qt::WA_DeleteOnClose, false);
 
 	close_event_callback_ptr = NULL;
+
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_HammondOrgan::control_box_event_signal,
+			this, &Dialog_HammondOrgan::handle_control_box_event,
+			Qt::QueuedConnection);
 
 	// Register control box event callback
 	mod_synth_register_callback_control_box_event_update_ui(
@@ -108,6 +115,13 @@ Dialog_HammondOrgan *Dialog_HammondOrgan::get_instance(QWidget *parent)
 		dialog_hammond_organ_instance = new Dialog_HammondOrgan(parent);
 	}
 	return dialog_hammond_organ_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_HammondOrgan::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 void Dialog_HammondOrgan::init_gui_elements()
@@ -419,7 +433,7 @@ void Dialog_HammondOrgan::closeEvent(QCloseEvent *event)
 	hide();
 }
 
-void Dialog_HammondOrgan::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 {
 	// Only process events if this dialog has focus
 	if (!this->hasFocus())

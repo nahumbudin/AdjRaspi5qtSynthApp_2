@@ -27,7 +27,8 @@ bool Dialog_InstrumentConnections::dialog_is_open;
 
 void connections_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_InstrumentConnections::get_instance()->control_box_ui_update_callback(evnt, val);
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_InstrumentConnections::get_instance()->control_box_event_received(evnt, val);
 }
 
 Dialog_InstrumentConnections *Dialog_InstrumentConnections::dialog_InstrumentConnectionsInstance = NULL;
@@ -88,6 +89,16 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	active_midi_channel_pb[13] = ui->checkBox_ch_14;
 	active_midi_channel_pb[14] = ui->checkBox_ch_15;
 	active_midi_channel_pb[15] = ui->checkBox_ch_16;
+
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_InstrumentConnections::control_box_event_signal,
+			this, &Dialog_InstrumentConnections::handle_control_box_event,
+			Qt::QueuedConnection);
+
+	// Register control box event callback
+	mod_synth_register_callback_control_box_event_update_ui(
+		&connections_control_box_event_update_ui_callback_wrapper);
 	
 	this->ui->label_InstrumentName->setText(instrument_name);
 	
@@ -584,6 +595,13 @@ Dialog_InstrumentConnections *Dialog_InstrumentConnections::get_instance()
 	return dialog_InstrumentConnectionsInstance;
 }
 
+// Thread-safe function called from callback - just emits signal
+void Dialog_InstrumentConnections::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
+}
+
 void Dialog_InstrumentConnections::closeEvent(QCloseEvent *event)
 {
 	//mod_synth_unregister_callback_control_box_event_update_ui(
@@ -594,7 +612,7 @@ void Dialog_InstrumentConnections::closeEvent(QCloseEvent *event)
 	hide();
 }
 
-void Dialog_InstrumentConnections::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_InstrumentConnections::handle_control_box_event(int evnt, uint16_t val)
 {
 	// Currently ignore.
 	
@@ -608,6 +626,7 @@ void Dialog_InstrumentConnections::control_box_ui_update_callback(int evnt, uint
 		return;
 	}
 	
+	// TODO: update to support I2C control box events.
 	if ((evnt >= _CONTROL_PUSHBUTTON_BLUE_BLACK) &&
 		(evnt <= _CONTROL_PUSHBUTTON_ORANGE_YELLOW) &&
 		(val == 0))

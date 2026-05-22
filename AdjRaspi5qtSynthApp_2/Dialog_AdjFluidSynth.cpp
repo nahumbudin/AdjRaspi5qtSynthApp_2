@@ -32,7 +32,7 @@ Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::dialog_adj_fluid_synth_instance = NU
 
 void fluid_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_AdjFluidSynth::get_instance()->control_box_ui_update_callback(evnt, val);
+	Dialog_AdjFluidSynth::get_instance()->control_box_event_received(evnt, val);
 }
 
 void fluid_update_ui_callback_wrapper()
@@ -276,6 +276,12 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 	// Set focus on the Dialog
 	this->setFocus(Qt::ActiveWindowFocusReason);
 
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_AdjFluidSynth::control_box_event_signal,
+			this, &Dialog_AdjFluidSynth::handle_control_box_event,
+			Qt::QueuedConnection);
+
 	// Register with GuiNavigator (no tabs, no frames for FluidSynth)
 	GuiNavigator::get_instance()->register_dialog(this, "FluidSynth");
 
@@ -300,6 +306,13 @@ Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::get_instance(QWidget *parent)
 	return dialog_adj_fluid_synth_instance;
 }
 
+// Thread-safe function called from callback - just emits signal
+void Dialog_AdjFluidSynth::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
+}
+
 void Dialog_AdjFluidSynth::closeEvent(QCloseEvent *event)
 {
 	if (close_event_callback_ptr != NULL)
@@ -313,7 +326,7 @@ void Dialog_AdjFluidSynth::closeEvent(QCloseEvent *event)
 	hide();
 }
 
-void Dialog_AdjFluidSynth::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 {
 	static int prev_knob_reverb_room_size_val = 64;
 	static int prev_knob_reverb_damp_val = 64;

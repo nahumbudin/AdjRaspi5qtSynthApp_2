@@ -33,7 +33,8 @@ QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_symmetry[_NUM_OF_LFOS];
 
 void analog_synth_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_AnalogSynth_1900x1000::get_instance()->control_box_ui_update_callback(evnt, val);
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_AnalogSynth_1900x1000::get_instance()->control_box_event_received(evnt, val);
 }
 
 Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
@@ -297,6 +298,12 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	ui->frame_ADSR->hide();
 	ui->frame_LFO->hide();
 
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_AnalogSynth_1900x1000::control_box_event_signal,
+			this, &Dialog_AnalogSynth_1900x1000::handle_control_box_event,
+			Qt::QueuedConnection);
+
 	mod_synth_register_callback_control_box_event_update_ui(
 		&analog_synth_control_box_event_update_ui_callback_wrapper);
 
@@ -530,6 +537,13 @@ Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::get_instance(QWidget
 		dialog_analog_synth_instance = new Dialog_AnalogSynth_1900x1000(parent);
 	}
 	return dialog_analog_synth_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_AnalogSynth_1900x1000::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 Ui::Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::get_ui_instance()

@@ -33,7 +33,8 @@ QString string_synth_preset_file_name;
 
 void string_synthesizer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_StringSynthesizer::get_instance()->control_box_ui_update_callback(evnt, val);
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_StringSynthesizer::get_instance()->control_box_event_received(evnt, val);
 }
 
 void SaveStringSynthesizerPresetFileThread::run()
@@ -69,6 +70,12 @@ Dialog_StringSynthesizer::Dialog_StringSynthesizer(QWidget *parent)
 	
 	dialog_string_synthesizer_instance = this;
 	close_event_callback_ptr = NULL;
+
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_StringSynthesizer::control_box_event_signal,
+			this, &Dialog_StringSynthesizer::handle_control_box_event,
+			Qt::QueuedConnection);
 
 	// Register control box event callback
 	mod_synth_register_callback_control_box_event_update_ui(
@@ -106,6 +113,13 @@ Dialog_StringSynthesizer *Dialog_StringSynthesizer::get_instance(QWidget *parent
 		dialog_string_synthesizer_instance = new Dialog_StringSynthesizer(parent);
 	}
 	return dialog_string_synthesizer_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_StringSynthesizer::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 void Dialog_StringSynthesizer::init_gui_elements()
@@ -388,7 +402,7 @@ void Dialog_StringSynthesizer::closeEvent(QCloseEvent *event)
 	hide();
 }
 
-void Dialog_StringSynthesizer::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 {
 	// Only process events if this dialog has focus
 	if (!this->hasFocus())

@@ -32,7 +32,8 @@ QString keyboard_mapper_preset_file_name;
 
 void keyboard_mapper_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_KeyboardMapper::get_instance()->control_box_ui_update_callback(evnt, val);
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_KeyboardMapper::get_instance()->control_box_event_received(evnt, val);
 }
 
 void SaveKeyboardMapperPresetFileThread::run()
@@ -76,6 +77,12 @@ Dialog_KeyboardMapper::Dialog_KeyboardMapper(QWidget *parent)
 	dialog_keyboard_mapper_instance = this;
 	close_event_callback_ptr = NULL;
 
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_KeyboardMapper::control_box_event_signal,
+			this, &Dialog_KeyboardMapper::handle_control_box_event,
+			Qt::QueuedConnection);
+
 	// Register control box event callback
 	mod_synth_register_callback_control_box_event_update_ui(
 		&keyboard_mapper_control_box_event_update_ui_callback_wrapper);
@@ -110,6 +117,13 @@ Dialog_KeyboardMapper *Dialog_KeyboardMapper::get_instance(QWidget *parent)
 		dialog_keyboard_mapper_instance = new Dialog_KeyboardMapper(parent);
 	}
 	return dialog_keyboard_mapper_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_KeyboardMapper::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 void Dialog_KeyboardMapper::init_gui_elements()
@@ -231,7 +245,7 @@ void Dialog_KeyboardMapper::closeEvent(QCloseEvent *event)
 	hide();
 }
 
-void Dialog_KeyboardMapper::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)
 {
 	// Only process events if this dialog has focus
 	if (!this->hasFocus())

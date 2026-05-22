@@ -22,7 +22,7 @@
 
 #include "utils.h"
 
-void Dialog_MidiMixer::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_MidiMixer::handle_control_box_event(int evnt, uint16_t val)
 {
 	int channel = -1;
 	int level, level_slider_gap;

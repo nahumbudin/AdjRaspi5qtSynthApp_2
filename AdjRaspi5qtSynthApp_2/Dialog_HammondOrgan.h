@@ -32,10 +32,19 @@ class Dialog_HammondOrgan : public QDialog
 
 	~Dialog_HammondOrgan();
 
-	void control_box_ui_update_callback(int evnt, uint16_t val);
+	// Called from callback - thread-safe, just emits signal
+	void control_box_event_received(int evnt, uint16_t val);
+
+  signals:
+	// Signal emitted when control box event is received (thread-safe)
+	void control_box_event_signal(int evnt, uint16_t val);
 
   protected:
 	//void timerEvent(QTimerEvent *event);
+
+  private slots:
+	// Slot that handles the actual UI update (runs in GUI thread)
+	void handle_control_box_event(int evnt, uint16_t val);
 
   public slots:
 	void closeEvent(QCloseEvent *event);

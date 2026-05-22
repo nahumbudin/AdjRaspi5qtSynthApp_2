@@ -4,7 +4,7 @@
  *	@date		10-May-2026
  *	@version	1.0
  *
- *	@brief		Adj PAD Synthesizer (KPS) control dialog
+ *	@brief		Adj PAD Synthesizer control dialog
  *
  */
 
@@ -31,7 +31,7 @@ QString pad_synth_preset_file_name;
 
 void pad_synthesizer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_PADsynthesizer::get_instance()->control_box_ui_update_callback(evnt, val);
+	Dialog_PADsynthesizer::get_instance()->control_box_event_received(evnt, val);
 }
 
 void SavePADsynthesizerPresetFileThread::run()
@@ -67,6 +67,12 @@ Dialog_PADsynthesizer::Dialog_PADsynthesizer(QWidget *parent)
 
 	dialog_pad_synthesizer_instance = this;
 	close_event_callback_ptr = NULL;
+
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_PADsynthesizer::control_box_event_signal,
+			this, &Dialog_PADsynthesizer::handle_control_box_event,
+			Qt::QueuedConnection);
 
 	// Register control box event callback
 	mod_synth_register_callback_control_box_event_update_ui(
@@ -152,6 +158,13 @@ Dialog_PADsynthesizer *Dialog_PADsynthesizer::get_instance(QWidget *parent)
 		dialog_pad_synthesizer_instance = new Dialog_PADsynthesizer(parent);
 	}
 	return dialog_pad_synthesizer_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_PADsynthesizer::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 void Dialog_PADsynthesizer::init_gui_elements()
@@ -622,7 +635,7 @@ void Dialog_PADsynthesizer::closeEvent(QCloseEvent *event)
 	hide();
 }
 
-void Dialog_PADsynthesizer::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 {
 	// Only process events if this dialog has focus
 	if (!this->hasFocus())

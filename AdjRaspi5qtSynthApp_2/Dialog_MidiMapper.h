@@ -23,9 +23,6 @@
 
 #include "libAdjRaspi5SynthAPI.h"
 
-
-
-
 namespace Ui
 {
 	class Dialog_MidiMapper;
@@ -40,14 +37,23 @@ public :
 	~Dialog_MidiMapper();
 	
 	static Dialog_MidiMapper *get_instance(QWidget *parent = 0, bool showit = false);
-	
-	void control_box_ui_update_callback(int evnt, uint16_t val);
+
+	// Called from callback - thread-safe, just emits signal
+	void control_box_event_received(int evnt, uint16_t val);
 	
 	QPoint get_last_position();
 	
 	virtual void update_gui();
 	
 	Ui::Dialog_MidiMapper *ui;
+
+  signals:
+	// Signal emitted when control box event is received (thread-safe)
+	void control_box_event_signal(int evnt, uint16_t val);
+
+  private slots:
+	// Slot that handles the actual UI update (runs in GUI thread)
+	void handle_control_box_event(int evnt, uint16_t val);
 	
 public slots :
 	

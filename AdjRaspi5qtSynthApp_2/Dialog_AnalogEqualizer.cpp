@@ -28,12 +28,8 @@ Dialog_AnalogEqualizer *Dialog_AnalogEqualizer::dialog_analog_equalizer_instance
 
 void analog_equalizer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Marshal to UI thread - this is non-blocking and thread-safe
-	Dialog_AnalogEqualizer *instance = Dialog_AnalogEqualizer::get_instance();
-	if (instance != NULL)
-	{
-		QMetaObject::invokeMethod(instance, [instance, evnt, val]() { instance->control_box_ui_update_callback(evnt, val); }, Qt::QueuedConnection);
-	}
+	// Just forward to the dialog instance - it will emit a signal
+	Dialog_AnalogEqualizer::get_instance()->control_box_event_received(evnt, val);
 }
 
 Dialog_AnalogEqualizer::Dialog_AnalogEqualizer(QWidget *parent)
@@ -55,6 +51,16 @@ Dialog_AnalogEqualizer::Dialog_AnalogEqualizer(QWidget *parent)
 	GuiNavigator *nav = GuiNavigator::get_instance();
 
 	frames_per_tab[0] << "Analog Equalizer";
+	
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	// This ensures the slot runs in the GUI thread
+	connect(this, &Dialog_AnalogEqualizer::control_box_event_signal,
+			this, &Dialog_AnalogEqualizer::handle_control_box_event,
+			Qt::QueuedConnection);
+
+	// Register control box event callback
+	mod_synth_register_callback_control_box_event_update_ui(
+		&analog_equalizer_control_box_event_update_ui_callback_wrapper);
 
 	// Register dialog WITHOUT a tab widget (nullptr)
 	nav->register_dialog(
@@ -80,6 +86,13 @@ Dialog_AnalogEqualizer *Dialog_AnalogEqualizer::get_instance(QWidget *parent)
 	}
 
 	return dialog_analog_equalizer_instance;
+}
+
+// Thread-safe function called from callback - just emits signal
+void Dialog_AnalogEqualizer::control_box_event_received(int evnt, uint16_t val)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit control_box_event_signal(evnt, val);
 }
 
 int Dialog_AnalogEqualizer::init_equalizer_gui()
@@ -604,7 +617,7 @@ void Dialog_AnalogEqualizer::timerEvent(QTimerEvent *event)
 	start_update_timer(250);
 }
 
-void Dialog_AnalogEqualizer::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_AnalogEqualizer::handle_control_box_event(int evnt, uint16_t val)
 {
 	if (!this->hasFocus())
 	{

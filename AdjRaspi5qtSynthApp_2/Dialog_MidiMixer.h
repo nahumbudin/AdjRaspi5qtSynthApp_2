@@ -52,7 +52,10 @@ public :
 
 	static Ui::Dialog_MidiMixer_1620x840 *get_ui_instance();
 
-	void control_box_ui_update_callback(int evnt, uint16_t val);
+	// Called from callback - thread-safe, just emits signal
+	void control_box_event_received(int evnt, uint16_t val);
+	
+	
 	void channels_levels_update_callback(int chan, int vol);
 	void channels_pans_update_callback(int chan, int vol);
 
@@ -69,194 +72,202 @@ public :
 	// Handle frame navigation
 	void on_frame_changed(const QString &frame_name, int frame_index);
 
+  signals:
+	// Signal emitted when control box event is received (thread-safe)
+	void control_box_event_signal(int evnt, uint16_t val);
+
   public slots:
 	virtual void update_gui(); // Called by a Timer
 	void closeEvent(QCloseEvent *event);
+
+  private slots:
+	// Slot that handles the actual UI update (runs in GUI thread)
+	void handle_control_box_event(int evnt, uint16_t val);
 	
-protected slots :
+	protected slots :
 	
-	void on_dialog_close();
-	
-	void on_level_slider_changed_ch_1(int vol);
-	void on_level_slider_changed_ch_2(int vol);
-	void on_level_slider_changed_ch_3(int vol);
-	void on_level_slider_changed_ch_4(int vol);
-	void on_level_slider_changed_ch_5(int vol);
-	void on_level_slider_changed_ch_6(int vol);
-	void on_level_slider_changed_ch_7(int vol);
-	void on_level_slider_changed_ch_8(int vol);
-	void on_level_slider_changed_ch_9(int vol);
-	void on_level_slider_changed_ch_10(int vol);
-	void on_level_slider_changed_ch_11(int vol);
-	void on_level_slider_changed_ch_12(int vol);
-	void on_level_slider_changed_ch_13(int vol);
-	void on_level_slider_changed_ch_14(int vol);
-	void on_level_slider_changed_ch_15(int vol);
-	void on_level_slider_changed_ch_16(int vol);
-			
-	void on_level_spinbox_changed_ch_1(int vol);
-	void on_level_spinbox_changed_ch_2(int vol);
-	void on_level_spinbox_changed_ch_3(int vol);
-	void on_level_spinbox_changed_ch_4(int vol);
-	void on_level_spinbox_changed_ch_5(int vol);
-	void on_level_spinbox_changed_ch_6(int vol);
-	void on_level_spinbox_changed_ch_7(int vol);
-	void on_level_spinbox_changed_ch_8(int vol);
-	void on_level_spinbox_changed_ch_9(int vol);
-	void on_level_spinbox_changed_ch_10(int vol);
-	void on_level_spinbox_changed_ch_11(int vol);
-	void on_level_spinbox_changed_ch_12(int vol);
-	void on_level_spinbox_changed_ch_13(int vol);
-	void on_level_spinbox_changed_ch_14(int vol);
-	void on_level_spinbox_changed_ch_15(int vol);
-	void on_level_spinbox_changed_ch_16(int vol);
-	
-	void on_pan_dial_changed_ch_1(int pan);
-	void on_pan_dial_changed_ch_2(int pan);
-	void on_pan_dial_changed_ch_3(int pan);
-	void on_pan_dial_changed_ch_4(int pan);
-	void on_pan_dial_changed_ch_5(int pan);
-	void on_pan_dial_changed_ch_6(int pan);
-	void on_pan_dial_changed_ch_7(int pan);
-	void on_pan_dial_changed_ch_8(int pan);
-	void on_pan_dial_changed_ch_9(int pan);
-	void on_pan_dial_changed_ch_10(int pan);
-	void on_pan_dial_changed_ch_11(int pan);
-	void on_pan_dial_changed_ch_12(int pan);
-	void on_pan_dial_changed_ch_13(int pan);
-	void on_pan_dial_changed_ch_14(int pan);
-	void on_pan_dial_changed_ch_15(int pan);
-	void on_pan_dial_changed_ch_16(int pan);
+		void on_dialog_close();
+		
+		void on_level_slider_changed_ch_1(int vol);
+		void on_level_slider_changed_ch_2(int vol);
+		void on_level_slider_changed_ch_3(int vol);
+		void on_level_slider_changed_ch_4(int vol);
+		void on_level_slider_changed_ch_5(int vol);
+		void on_level_slider_changed_ch_6(int vol);
+		void on_level_slider_changed_ch_7(int vol);
+		void on_level_slider_changed_ch_8(int vol);
+		void on_level_slider_changed_ch_9(int vol);
+		void on_level_slider_changed_ch_10(int vol);
+		void on_level_slider_changed_ch_11(int vol);
+		void on_level_slider_changed_ch_12(int vol);
+		void on_level_slider_changed_ch_13(int vol);
+		void on_level_slider_changed_ch_14(int vol);
+		void on_level_slider_changed_ch_15(int vol);
+		void on_level_slider_changed_ch_16(int vol);
+				
+		void on_level_spinbox_changed_ch_1(int vol);
+		void on_level_spinbox_changed_ch_2(int vol);
+		void on_level_spinbox_changed_ch_3(int vol);
+		void on_level_spinbox_changed_ch_4(int vol);
+		void on_level_spinbox_changed_ch_5(int vol);
+		void on_level_spinbox_changed_ch_6(int vol);
+		void on_level_spinbox_changed_ch_7(int vol);
+		void on_level_spinbox_changed_ch_8(int vol);
+		void on_level_spinbox_changed_ch_9(int vol);
+		void on_level_spinbox_changed_ch_10(int vol);
+		void on_level_spinbox_changed_ch_11(int vol);
+		void on_level_spinbox_changed_ch_12(int vol);
+		void on_level_spinbox_changed_ch_13(int vol);
+		void on_level_spinbox_changed_ch_14(int vol);
+		void on_level_spinbox_changed_ch_15(int vol);
+		void on_level_spinbox_changed_ch_16(int vol);
+		
+		void on_pan_dial_changed_ch_1(int pan);
+		void on_pan_dial_changed_ch_2(int pan);
+		void on_pan_dial_changed_ch_3(int pan);
+		void on_pan_dial_changed_ch_4(int pan);
+		void on_pan_dial_changed_ch_5(int pan);
+		void on_pan_dial_changed_ch_6(int pan);
+		void on_pan_dial_changed_ch_7(int pan);
+		void on_pan_dial_changed_ch_8(int pan);
+		void on_pan_dial_changed_ch_9(int pan);
+		void on_pan_dial_changed_ch_10(int pan);
+		void on_pan_dial_changed_ch_11(int pan);
+		void on_pan_dial_changed_ch_12(int pan);
+		void on_pan_dial_changed_ch_13(int pan);
+		void on_pan_dial_changed_ch_14(int pan);
+		void on_pan_dial_changed_ch_15(int pan);
+		void on_pan_dial_changed_ch_16(int pan);
 
-	void on_pan_spinbox_changed_ch_1(int pan);
-	void on_pan_spinbox_changed_ch_2(int pan);
-	void on_pan_spinbox_changed_ch_3(int pan);
-	void on_pan_spinbox_changed_ch_4(int pan);
-	void on_pan_spinbox_changed_ch_5(int pan);
-	void on_pan_spinbox_changed_ch_6(int pan);
-	void on_pan_spinbox_changed_ch_7(int pan);
-	void on_pan_spinbox_changed_ch_8(int pan);
-	void on_pan_spinbox_changed_ch_9(int pan);
-	void on_pan_spinbox_changed_ch_10(int pan);
-	void on_pan_spinbox_changed_ch_11(int pan);
-	void on_pan_spinbox_changed_ch_12(int pan);
-	void on_pan_spinbox_changed_ch_13(int pan);
-	void on_pan_spinbox_changed_ch_14(int pan);
-	void on_pan_spinbox_changed_ch_15(int pan);
-	void on_pan_spinbox_changed_ch_16(int pan);
+		void on_pan_spinbox_changed_ch_1(int pan);
+		void on_pan_spinbox_changed_ch_2(int pan);
+		void on_pan_spinbox_changed_ch_3(int pan);
+		void on_pan_spinbox_changed_ch_4(int pan);
+		void on_pan_spinbox_changed_ch_5(int pan);
+		void on_pan_spinbox_changed_ch_6(int pan);
+		void on_pan_spinbox_changed_ch_7(int pan);
+		void on_pan_spinbox_changed_ch_8(int pan);
+		void on_pan_spinbox_changed_ch_9(int pan);
+		void on_pan_spinbox_changed_ch_10(int pan);
+		void on_pan_spinbox_changed_ch_11(int pan);
+		void on_pan_spinbox_changed_ch_12(int pan);
+		void on_pan_spinbox_changed_ch_13(int pan);
+		void on_pan_spinbox_changed_ch_14(int pan);
+		void on_pan_spinbox_changed_ch_15(int pan);
+		void on_pan_spinbox_changed_ch_16(int pan);
 
-	void on_pan_lfo_mod_level_dial_changed_ch_1(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_2(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_3(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_4(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_5(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_6(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_7(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_8(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_9(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_10(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_11(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_12(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_13(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_14(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_15(int lvl);
-	void on_pan_lfo_mod_level_dial_changed_ch_16(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_1(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_2(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_3(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_4(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_5(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_6(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_7(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_8(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_9(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_10(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_11(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_12(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_13(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_14(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_15(int lvl);
+		void on_pan_lfo_mod_level_dial_changed_ch_16(int lvl);
 
-	void on_pan_lfo_mod_level_spinbox_changed_ch_1(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_2(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_3(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_4(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_5(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_6(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_7(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_8(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_9(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_10(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_11(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_12(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_13(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_14(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_15(int lvl);
-	void on_pan_lfo_mod_level_spinbox_changed_ch_16(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_1(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_2(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_3(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_4(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_5(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_6(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_7(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_8(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_9(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_10(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_11(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_12(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_13(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_14(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_15(int lvl);
+		void on_pan_lfo_mod_level_spinbox_changed_ch_16(int lvl);
 
-	void on_pan_lfo_mod_combo_changed_ch_1(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_2(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_3(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_4(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_5(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_6(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_7(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_8(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_9(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_10(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_11(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_12(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_13(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_14(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_15(int lfo);
-	void on_pan_lfo_mod_combo_changed_ch_16(int lfo);
-	
+		void on_pan_lfo_mod_combo_changed_ch_1(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_2(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_3(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_4(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_5(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_6(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_7(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_8(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_9(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_10(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_11(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_12(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_13(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_14(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_15(int lfo);
+		void on_pan_lfo_mod_combo_changed_ch_16(int lfo);
+		
 
-	void on_send_dial_changed_ch_1(int snd);
-	void on_send_dial_changed_ch_2(int snd);
-	void on_send_dial_changed_ch_3(int snd);
-	void on_send_dial_changed_ch_4(int snd);
-	void on_send_dial_changed_ch_5(int snd);
-	void on_send_dial_changed_ch_6(int snd);
-	void on_send_dial_changed_ch_7(int snd);
-	void on_send_dial_changed_ch_8(int snd);
-	void on_send_dial_changed_ch_9(int snd);
-	void on_send_dial_changed_ch_10(int snd);
-	void on_send_dial_changed_ch_11(int snd);
-	void on_send_dial_changed_ch_12(int snd);
-	void on_send_dial_changed_ch_13(int snd);
-	void on_send_dial_changed_ch_14(int snd);
-	void on_send_dial_changed_ch_15(int snd);
-	void on_send_dial_changed_ch_16(int snd);
+		void on_send_dial_changed_ch_1(int snd);
+		void on_send_dial_changed_ch_2(int snd);
+		void on_send_dial_changed_ch_3(int snd);
+		void on_send_dial_changed_ch_4(int snd);
+		void on_send_dial_changed_ch_5(int snd);
+		void on_send_dial_changed_ch_6(int snd);
+		void on_send_dial_changed_ch_7(int snd);
+		void on_send_dial_changed_ch_8(int snd);
+		void on_send_dial_changed_ch_9(int snd);
+		void on_send_dial_changed_ch_10(int snd);
+		void on_send_dial_changed_ch_11(int snd);
+		void on_send_dial_changed_ch_12(int snd);
+		void on_send_dial_changed_ch_13(int snd);
+		void on_send_dial_changed_ch_14(int snd);
+		void on_send_dial_changed_ch_15(int snd);
+		void on_send_dial_changed_ch_16(int snd);
 
-	void on_send_spinbox_changed_ch_1(int snd);
-	void on_send_spinbox_changed_ch_2(int snd);
-	void on_send_spinbox_changed_ch_3(int snd);
-	void on_send_spinbox_changed_ch_4(int snd);
-	void on_send_spinbox_changed_ch_5(int snd);
-	void on_send_spinbox_changed_ch_6(int snd);
-	void on_send_spinbox_changed_ch_7(int snd);
-	void on_send_spinbox_changed_ch_8(int snd);
-	void on_send_spinbox_changed_ch_9(int snd);
-	void on_send_spinbox_changed_ch_10(int snd);
-	void on_send_spinbox_changed_ch_11(int snd);
-	void on_send_spinbox_changed_ch_12(int snd);
-	void on_send_spinbox_changed_ch_13(int snd);
-	void on_send_spinbox_changed_ch_14(int snd);
-	void on_send_spinbox_changed_ch_15(int snd);
-	void on_send_spinbox_changed_ch_16(int snd);
-	
-	
-	void on_static_level_checkbox_changed_ch_1(bool state);
-	void on_static_level_checkbox_changed_ch_2(bool state);
-	void on_static_level_checkbox_changed_ch_3(bool state);
-	void on_static_level_checkbox_changed_ch_4(bool state);
-	void on_static_level_checkbox_changed_ch_5(bool state);
-	void on_static_level_checkbox_changed_ch_6(bool state);
-	void on_static_level_checkbox_changed_ch_7(bool state);
-	void on_static_level_checkbox_changed_ch_8(bool state);
-	void on_static_level_checkbox_changed_ch_9(bool state);
-	void on_static_level_checkbox_changed_ch_10(bool state);
-	void on_static_level_checkbox_changed_ch_11(bool state);
-	void on_static_level_checkbox_changed_ch_12(bool state);
-	void on_static_level_checkbox_changed_ch_13(bool state);
-	void on_static_level_checkbox_changed_ch_14(bool state);
-	void on_static_level_checkbox_changed_ch_15(bool state);
-	void on_static_level_checkbox_changed_ch_16(bool state);
+		void on_send_spinbox_changed_ch_1(int snd);
+		void on_send_spinbox_changed_ch_2(int snd);
+		void on_send_spinbox_changed_ch_3(int snd);
+		void on_send_spinbox_changed_ch_4(int snd);
+		void on_send_spinbox_changed_ch_5(int snd);
+		void on_send_spinbox_changed_ch_6(int snd);
+		void on_send_spinbox_changed_ch_7(int snd);
+		void on_send_spinbox_changed_ch_8(int snd);
+		void on_send_spinbox_changed_ch_9(int snd);
+		void on_send_spinbox_changed_ch_10(int snd);
+		void on_send_spinbox_changed_ch_11(int snd);
+		void on_send_spinbox_changed_ch_12(int snd);
+		void on_send_spinbox_changed_ch_13(int snd);
+		void on_send_spinbox_changed_ch_14(int snd);
+		void on_send_spinbox_changed_ch_15(int snd);
+		void on_send_spinbox_changed_ch_16(int snd);
+		
+		
+		void on_static_level_checkbox_changed_ch_1(bool state);
+		void on_static_level_checkbox_changed_ch_2(bool state);
+		void on_static_level_checkbox_changed_ch_3(bool state);
+		void on_static_level_checkbox_changed_ch_4(bool state);
+		void on_static_level_checkbox_changed_ch_5(bool state);
+		void on_static_level_checkbox_changed_ch_6(bool state);
+		void on_static_level_checkbox_changed_ch_7(bool state);
+		void on_static_level_checkbox_changed_ch_8(bool state);
+		void on_static_level_checkbox_changed_ch_9(bool state);
+		void on_static_level_checkbox_changed_ch_10(bool state);
+		void on_static_level_checkbox_changed_ch_11(bool state);
+		void on_static_level_checkbox_changed_ch_12(bool state);
+		void on_static_level_checkbox_changed_ch_13(bool state);
+		void on_static_level_checkbox_changed_ch_14(bool state);
+		void on_static_level_checkbox_changed_ch_15(bool state);
+		void on_static_level_checkbox_changed_ch_16(bool state);
 
-	void on_midi_mixer_modulator_combo_box_mouse_entered(int id);
-	void on_midi_mixer_modulator_combo_box_mouse_exited(int id);
+		void on_midi_mixer_modulator_combo_box_mouse_entered(int id);
+		void on_midi_mixer_modulator_combo_box_mouse_exited(int id);
 
-	void on_selected_lfo_rate_dial_changed(int val);
-	void on_selected_lfo_symmetry_dial_changed(int val);
-	void on_selected_lfo_waveform_combo_changed(int val);
+		void on_selected_lfo_rate_dial_changed(int val);
+		void on_selected_lfo_symmetry_dial_changed(int val);
+		void on_selected_lfo_waveform_combo_changed(int val);
 
-	void on_LFO_frame_close_button_clicked();
+		void on_LFO_frame_close_button_clicked();
 	
 protected:
 	void timerEvent(QTimerEvent *event);

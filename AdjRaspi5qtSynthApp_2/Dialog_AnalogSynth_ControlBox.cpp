@@ -16,7 +16,7 @@
 
 #include "utils.h"
 
-void Dialog_AnalogSynth_1900x1000::control_box_ui_update_callback(int evnt, uint16_t val)
+void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t val)
 {
 	if (!this->hasFocus())
 	{
