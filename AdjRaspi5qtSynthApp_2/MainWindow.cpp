@@ -184,6 +184,38 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 		en_instruments_ids_t::adj_keyboard_control;
 	instruments_ids_map[_INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY] =
 		en_instruments_ids_t::adj_keyboard_mapper;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_1;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_2;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_3_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_3;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_4_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_4;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_5_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_5;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_6_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_6;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_7_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_7;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_8_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_8;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_9_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_9;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_10_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_10;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_11_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_11;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_12_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_12;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_13_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_13;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_14_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_14;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_15_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_15;
+	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY] =
+		en_instruments_ids_t::analog_synth_preset_16;
 
 	// Start the periodic gui update timer
 	start_update_timer(200);
@@ -547,6 +579,34 @@ void MainWindow::create_actions()
 	auto_arrange_act->setCheckable(true); // Make it checkable
 	auto_arrange_act->setChecked(false);  // Initial state
 	connect(auto_arrange_act, SIGNAL(toggled(bool)), this, SLOT(on_auto_arrange_toggled(bool)));
+
+	const char *slot_names[] = {
+		SLOT(on_load_synth_patch_preset_1()),
+		SLOT(on_load_synth_patch_preset_2()),
+		SLOT(on_load_synth_patch_preset_3()),
+		SLOT(on_load_synth_patch_preset_4()),
+		SLOT(on_load_synth_patch_preset_5()),
+		SLOT(on_load_synth_patch_preset_6()),
+		SLOT(on_load_synth_patch_preset_7()),
+		SLOT(on_load_synth_patch_preset_8()),
+		SLOT(on_load_synth_patch_preset_9()),
+		SLOT(on_load_synth_patch_preset_10()),
+		SLOT(on_load_synth_patch_preset_11()),
+		SLOT(on_load_synth_patch_preset_12()),
+		SLOT(on_load_synth_patch_preset_13()),
+		SLOT(on_load_synth_patch_preset_14()),
+		SLOT(on_load_synth_patch_preset_15()),
+		SLOT(on_load_synth_patch_preset_16())};
+
+	for (int i = 0; i < 16; i++)
+	{
+		QString preset_name = QString("Preset %1").arg(i + 1);
+		load_preset_actions[i] = new QAction(preset_name, this);
+		load_preset_actions[i]->setStatusTip(QString("Load Synth Patch %1").arg(preset_name));
+		connect(load_preset_actions[i], SIGNAL(triggered()), this, slot_names[i]);
+	}
+	
+	
 	
 	//add_modules_group = new QActionGroup(this);
 	//add_modules_group->addAction(add_fluid_synth_act);
@@ -576,8 +636,17 @@ void MainWindow::create_menus()
 	add_module_menu->addAction(add_hammond_organ_act);
 	add_module_menu->addAction(add_adj_analog_synth_act);
 	add_module_menu->addAction(add_adj_karplus_strong_strings_synth_act);
-	add_module_menu->addAction(add_adj_morphed_sin_synth_act);
+	add_module_menu->addAction(add_adj_morphed_sin_synth_act);	
 	add_module_menu->addAction(add_adj_pad_synth_act);
+
+	// Add Synth Patches submenu
+	add_module_menu->addSeparator();
+	synth_patches_menu = add_module_menu->addMenu(tr("&Synth Patches"));
+	for (int i = 0; i < 16; i++)
+	{
+		synth_patches_menu->addAction(load_preset_actions[i]);
+	}
+	
 	add_module_menu->addSeparator();
 	add_module_menu->addAction(add_adj_midi_player_act);
 	add_module_menu->addSeparator();
@@ -654,7 +723,23 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 		instrument_name_string == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
-		instrument_name_string == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY)
+		instrument_name_string == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_3_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_4_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_5_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_6_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_7_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_8_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_9_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_10_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_11_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_12_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_13_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_14_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_15_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY)
 	{
 		new_pannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
 	}
@@ -687,6 +772,283 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 	//move(last_position);
 
 	return new_pannel;
+}
+
+/**
+ * @brief Update the Add Instrument menu to show which instruments are already open
+ * @param None
+ * @return none
+ */
+void MainWindow::update_add_instrument_menu_status()
+{
+	// Update each instrument action to show if instrument is open
+	if (is_instrument_openned(en_instruments_ids_t::fluid_synth) >= 0)
+	{
+		add_fluid_synth_act->setText(tr("✓ FluidSynth"));
+		add_fluid_synth_act->setEnabled(false);
+	}
+	else
+	{
+		add_fluid_synth_act->setText(tr("&FluidSynth"));
+		add_fluid_synth_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_hammond_organ) >= 0)
+	{
+		add_hammond_organ_act->setText(tr("✓ Hammond Organ"));
+		add_hammond_organ_act->setEnabled(false);
+	}
+	else
+	{
+		add_hammond_organ_act->setText(tr("&Hammond Organ"));
+		add_hammond_organ_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_analog_synth) >= 0)
+	{
+		add_adj_analog_synth_act->setText(tr("✓ Analog Synth"));
+		add_adj_analog_synth_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_analog_synth_act->setText(tr("&Analog Synth"));
+		add_adj_analog_synth_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_karplusstrong_string_synth) >= 0)
+	{
+		add_adj_karplus_strong_strings_synth_act->setText(tr("✓ Karpuls Strong String Synth"));
+		add_adj_karplus_strong_strings_synth_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_karplus_strong_strings_synth_act->setText(tr("&Karpuls Strong String Synth"));
+		add_adj_karplus_strong_strings_synth_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_morphed_sin_synth) >= 0)
+	{
+		add_adj_morphed_sin_synth_act->setText(tr("✓ Morphed Sinus Synth"));
+		add_adj_morphed_sin_synth_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_morphed_sin_synth_act->setText(tr("&Morphed Sinus Synth"));
+		add_adj_morphed_sin_synth_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_pad_synth) >= 0)
+	{
+		add_adj_pad_synth_act->setText(tr("✓ PADsynth"));
+		add_adj_pad_synth_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_pad_synth_act->setText(tr("&PADsynth"));
+		add_adj_pad_synth_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_midi_player) >= 0)
+	{
+		add_adj_midi_player_act->setText(tr("✓ MIDI Player"));
+		add_adj_midi_player_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_midi_player_act->setText(tr("&MIDI Player"));
+		add_adj_midi_player_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_reverb_effect) >= 0)
+	{
+		add_adj_reverb_effect_act->setText(tr("✓ Reverb Effect"));
+		add_adj_reverb_effect_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_reverb_effect_act->setText(tr("&Reverb Effect"));
+		add_adj_reverb_effect_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_graphic_equilizer) >= 0)
+	{
+		add_adj_graphic_equilizer_act->setText(tr("✓ Graphic Equilizer"));
+		add_adj_graphic_equilizer_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_graphic_equilizer_act->setText(tr("&Graphic Equilizer"));
+		add_adj_graphic_equilizer_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::midi_mixer) >= 0)
+	{
+		add_midi_mixer_act->setText(tr("✓ Midi Mixer"));
+		add_midi_mixer_act->setEnabled(false);
+	}
+	else
+	{
+		add_midi_mixer_act->setText(tr("&Midi Mixer"));
+		add_midi_mixer_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_midi_mapper) >= 0)
+	{
+		add_adj_midi_mapper_act->setText(tr("✓ MIDI Mapper"));
+		add_adj_midi_mapper_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_midi_mapper_act->setText(tr("&MIDI Mapper"));
+		add_adj_midi_mapper_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_keyboard_mapper) >= 0)
+	{
+		add_adj_keyboard_mapper_act->setText(tr("✓ Keyboard Mapper"));
+		add_adj_keyboard_mapper_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_keyboard_mapper_act->setText(tr("&Keyboard Mapper"));
+		add_adj_keyboard_mapper_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_keyboard_control) >= 0)
+	{
+		add_adj_keyboard_control_act->setText(tr("✓ Keyboard Control"));
+		add_adj_keyboard_control_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_keyboard_control_act->setText(tr("&Keyboard Control"));
+		add_adj_keyboard_control_act->setEnabled(true);
+	}
+
+	if (is_instrument_openned(en_instruments_ids_t::adj_ext_midi_interface) >= 0)
+	{
+		add_adj_external_midi_interface_control_act->setText(tr("✓ External MIDI Interface Control"));
+		add_adj_external_midi_interface_control_act->setEnabled(false);
+	}
+	else
+	{
+		add_adj_external_midi_interface_control_act->setText(tr("&External MIDI Interface Control"));
+		add_adj_external_midi_interface_control_act->setEnabled(true);
+	}
+
+	// Update Synth Patch Preset actions using the correct enum values
+	// Check which analog synth presets are open
+	const en_instruments_ids_t preset_ids[] = {
+		en_instruments_ids_t::analog_synth_preset_1,
+		en_instruments_ids_t::analog_synth_preset_2,
+		en_instruments_ids_t::analog_synth_preset_3,
+		en_instruments_ids_t::analog_synth_preset_4,
+		en_instruments_ids_t::analog_synth_preset_5,
+		en_instruments_ids_t::analog_synth_preset_6,
+		en_instruments_ids_t::analog_synth_preset_7,
+		en_instruments_ids_t::analog_synth_preset_8,
+		en_instruments_ids_t::analog_synth_preset_9,
+		en_instruments_ids_t::analog_synth_preset_10,
+		en_instruments_ids_t::analog_synth_preset_11,
+		en_instruments_ids_t::analog_synth_preset_12,
+		en_instruments_ids_t::analog_synth_preset_13,
+		en_instruments_ids_t::analog_synth_preset_14,
+		en_instruments_ids_t::analog_synth_preset_15,
+		en_instruments_ids_t::analog_synth_preset_16};
+
+	for (int i = 0; i < 16; i++)
+	{
+		if (is_instrument_openned(preset_ids[i]) >= 0)
+		{
+			QString preset_name = QString("✓ Preset %1").arg(i + 1);
+			load_preset_actions[i]->setText(preset_name);
+			load_preset_actions[i]->setEnabled(false);
+		}
+		else
+		{
+			QString preset_name = QString("Preset %1").arg(i + 1);
+			load_preset_actions[i]->setText(preset_name);
+			load_preset_actions[i]->setEnabled(true);
+		}
+	}
+}
+
+void MainWindow::open_synth_patch_preset_int(int preset_num)
+{
+	if (preset_num < 0 || preset_num > 15)
+	{
+		return;
+	}
+
+	InstrumentPannel *newPannel;
+	QString preset_name;
+
+	en_instruments_ids_t preset_id = static_cast<en_instruments_ids_t>(en_instruments_ids_t::analog_synth_preset_1 + preset_num);
+
+	switch (preset_num)
+	{
+	case 0:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY;
+		break;
+	case 1:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY;
+		break;
+	case 2:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_3_STR_KEY;
+		break;
+	case 3:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_4_STR_KEY;
+		break;
+	case 4:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_5_STR_KEY;
+		break;
+	case 5:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_6_STR_KEY;
+		break;
+	case 6:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_7_STR_KEY;
+		break;
+	case 7:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_8_STR_KEY;
+		break;
+	case 8:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_9_STR_KEY;
+		break;
+	case 9:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_10_STR_KEY;
+		break;
+	case 10:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_11_STR_KEY;
+		break;
+	case 11:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_12_STR_KEY;
+		break;
+	case 12:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_13_STR_KEY;
+		break;
+	case 13:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_14_STR_KEY;
+		break;
+	case 14:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_15_STR_KEY;
+		break;
+	case 15:
+		preset_name = _INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY;
+		break;
+	default:
+		preset_name = "";
+		break;
+	}
+
+	if (is_instrument_openned(preset_id) < 0 && active_instruments_list.size() < MAX_NUM_OF_MODULES)
+	{
+		newPannel =
+			add_instrument_pannel(preset_name);
+		if (newPannel)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+	}
 }
 
 int MainWindow::remove_instrument_pannel(InstrumentPannel *instrument)
@@ -873,6 +1235,18 @@ void MainWindow::request_close_instrument_pannel_name(string inst_name)
 	}
 }
 
+InstrumentPannel *MainWindow::get_instrument_panel_by_id(en_instruments_ids_t inst_id)
+{
+	for (const auto &inst : active_instruments_list)
+	{
+		if (inst.instrument_id == inst_id && inst.instrument_pannel_object)
+		{
+			return inst.instrument_pannel_object;
+		}
+	}
+	return nullptr;
+}
+
 void MainWindow::start_update_timer(int interval)
 {
 	QTimer *timer = new QTimer(this);
@@ -904,6 +1278,8 @@ void MainWindow::update_gui()
 	
 	pending_open_instruments_list.erase(pending_open_instruments_list.begin(),
 		pending_open_instruments_list.begin() + m);
+
+	update_add_instrument_menu_status();
 
 	if (control_box_right_key_pressed)
 	{
@@ -1319,6 +1695,24 @@ void MainWindow::on_open_master_volume_dialog()
 	master_volume_dialog->setFocus(Qt::ActiveWindowFocusReason);
 }
 
+// Synth Patch Preset slot implementations
+void MainWindow::on_load_synth_patch_preset_1() { open_synth_patch_preset_int(0); }
+void MainWindow::on_load_synth_patch_preset_2() { open_synth_patch_preset_int(1); }
+void MainWindow::on_load_synth_patch_preset_3() { open_synth_patch_preset_int(2); }
+void MainWindow::on_load_synth_patch_preset_4() { open_synth_patch_preset_int(3); }
+void MainWindow::on_load_synth_patch_preset_5() { open_synth_patch_preset_int(4); }
+void MainWindow::on_load_synth_patch_preset_6() { open_synth_patch_preset_int(5); }
+void MainWindow::on_load_synth_patch_preset_7() { open_synth_patch_preset_int(6); }
+void MainWindow::on_load_synth_patch_preset_8() { open_synth_patch_preset_int(7); }
+void MainWindow::on_load_synth_patch_preset_9() { open_synth_patch_preset_int(8); }
+void MainWindow::on_load_synth_patch_preset_10() { open_synth_patch_preset_int(9); }
+void MainWindow::on_load_synth_patch_preset_11() { open_synth_patch_preset_int(10); }
+void MainWindow::on_load_synth_patch_preset_12() { open_synth_patch_preset_int(11); }
+void MainWindow::on_load_synth_patch_preset_13() { open_synth_patch_preset_int(12); }
+void MainWindow::on_load_synth_patch_preset_14() { open_synth_patch_preset_int(13); }
+void MainWindow::on_load_synth_patch_preset_15() { open_synth_patch_preset_int(14); }
+void MainWindow::on_load_synth_patch_preset_16() { open_synth_patch_preset_int(15); }
+
 void MainWindow::on_auto_arrange_toggled(bool checked)
 {
 	auto_arrange_enabled = checked;
@@ -1353,7 +1747,23 @@ int MainWindow::get_panel_type_order(const QString &instrument_name)
 		instrument_name == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
-		instrument_name == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY)
+		instrument_name == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_3_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_4_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_5_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_6_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_7_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_8_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_9_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_10_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_11_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_12_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_13_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_14_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_15_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY)
 	{
 		return 0; // PLAYER
 	}

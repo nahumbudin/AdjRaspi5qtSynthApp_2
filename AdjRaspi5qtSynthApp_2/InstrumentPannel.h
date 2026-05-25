@@ -17,6 +17,7 @@
 #pragma once
 
 #include <QFrame>
+#include <QThread>
 #include <functional>
 
 #include "libAdjRaspi5SynthAPI.h"
@@ -74,6 +75,11 @@ class InstrumentPannel : public QFrame
 	void set_frame_color(const QColor &color);
 	void set_frame_color(int r, int g, int b, int a = 220);
 
+	// Method to set preset text in the instrument panel
+	void set_preset_text(const QString &text);
+	QString get_preset_text() const;
+	void clear_preset_text();
+
 	// Instrument info getters
 	QString get_instrument_name() const { return instrument_name; }
 
@@ -90,6 +96,8 @@ class InstrumentPannel : public QFrame
 	void on_instrument_exit_clicked();
 	void on_instrument_open_clicked();
 	void on_instrument_connections_clicked();
+
+	void on_preset_file_loaded(const QString &s);
 
   private:
 	void close_connections_dialog();
@@ -108,6 +116,8 @@ class InstrumentPannel : public QFrame
 	void open_string_synthesizer_dialog();
 	void open_pad_synthesizer_dialog();
 	void open_keyboard_mapper_dialog();
+
+	void open_synth_patch_preset_dialog(int preset_index);
 
 	PannelState current_state;
 
@@ -132,4 +142,16 @@ class InstrumentPannel : public QFrame
 	QWidget *widget_parent;
 
 	QColor frame_color = QColor(20, 20, 20, 220); // Default color
+
+	QString last_string_synth_preset_directory[_MAX_NUM_OF_ANALOG_PRESET_INSTRUMENTS] = {""};
+	QString last_string_synth_preset_load_file[_MAX_NUM_OF_ANALOG_PRESET_INSTRUMENTS] = {""};
+};
+
+class LoadSynthesizerPatchPresetFileThread : public QThread
+{
+	Q_OBJECT
+	void run();
+
+  signals:
+	void loadPresetFileDone(const QString &s);
 };

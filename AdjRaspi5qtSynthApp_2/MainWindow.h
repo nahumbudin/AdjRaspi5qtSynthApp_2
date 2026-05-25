@@ -50,6 +50,8 @@ public:
 	
 	void request_close_instrument_pannel_id(en_instruments_ids_t mo_id);
 	void request_close_instrument_pannel_name(string inst_name);
+
+	InstrumentPannel *get_instrument_panel_by_id(en_instruments_ids_t inst_id);
 	
 	vector<string> get_active_instruments_names_list();
 	
@@ -110,6 +112,23 @@ private slots :
 	void on_open_master_volume_dialog();
 
 	void on_auto_arrange_toggled(bool checked);
+
+	void on_load_synth_patch_preset_1();
+	void on_load_synth_patch_preset_2();
+	void on_load_synth_patch_preset_3();
+	void on_load_synth_patch_preset_4();
+	void on_load_synth_patch_preset_5();
+	void on_load_synth_patch_preset_6();
+	void on_load_synth_patch_preset_7();
+	void on_load_synth_patch_preset_8();
+	void on_load_synth_patch_preset_9();
+	void on_load_synth_patch_preset_10();
+	void on_load_synth_patch_preset_11();
+	void on_load_synth_patch_preset_12();
+	void on_load_synth_patch_preset_13();
+	void on_load_synth_patch_preset_14();
+	void on_load_synth_patch_preset_15();
+	void on_load_synth_patch_preset_16();
 	
 protected:
 //	void timerEvent(QTimerEvent *event);
@@ -119,11 +138,14 @@ protected:
 private:
 	InstrumentPannel* add_instrument_pannel(QString instrument_name_string="");
 
+	void update_add_instrument_menu_status();
 	
 	int remove_instrument_pannel(InstrumentPannel *instrument);
 	int is_instrument_openned(en_instruments_ids_t instId);
 	
 	int update_layout_geometry();
+
+	void open_synth_patch_preset_int(int preset_num);
 
 	bool auto_arrange_enabled = false;
 	
@@ -187,6 +209,9 @@ private:
 
 	QMenu *view_menu;
 	QAction *auto_arrange_act;
+
+	QMenu *synth_patches_menu;
+	QAction *load_preset_actions[16];
 
 	bool control_box_left_key_pressed = false;
 	bool control_box_right_key_pressed = false;

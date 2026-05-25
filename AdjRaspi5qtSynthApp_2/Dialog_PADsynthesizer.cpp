@@ -1211,6 +1211,17 @@ void Dialog_PADsynthesizer::on_presets_open_pushbutton_clicked()
 
 			ui->textEdit_PADsynth_PresetText->setText(QString::fromStdString(file_name));
 
+			MainWindow *mainWin = MainWindow::get_instance();
+			if (mainWin)
+			{
+				InstrumentPannel *panel =
+					mainWin->get_instrument_panel_by_id(en_instruments_ids_t::adj_pad_synth);
+				if (panel)
+				{
+					panel->set_preset_text(QString::fromStdString(file_name));
+				}
+			}
+
 			load_pad_synthesizer_preset_file_thread = new LoadPADsynthesizerPresetFileThread();
 			connect(load_pad_synthesizer_preset_file_thread,
 					&LoadPADsynthesizerPresetFileThread::finished, load_pad_synthesizer_preset_file_thread, &QObject::deleteLater);

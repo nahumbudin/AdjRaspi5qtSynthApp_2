@@ -128,7 +128,7 @@ border-color: rgb(126, 126, 126);</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_InstrumentMIDIin">
+  <widget class="CustomCheckBox" name="checkBox_InstrumentMIDIin">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -370,7 +370,74 @@ background-color: qlineargradient(spread:pad, x1:0.0795909, y1:0.119, x2:0.983, 
     <string>Instrument Name</string>
    </property>
   </widget>
+  <widget class="QTextEdit" name="textEdit_PresetText">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>65</y>
+     <width>160</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(50,50,50);
+color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Panel</enum>
+   </property>
+   <property name="lineWidth">
+    <number>2</number>
+   </property>
+   <property name="midLineWidth">
+    <number>2</number>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_InstrumentPreset">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>40</y>
+     <width>50</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(211, 211, 211);</string>
+   </property>
+   <property name="text">
+    <string>Preset</string>
+   </property>
+  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header location="global">customcheckbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

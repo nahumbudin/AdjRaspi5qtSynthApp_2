@@ -17,6 +17,8 @@
  *				Fixed circular dependency - explicit dialog opening methods
  */
 
+#include "filesystem"
+
 #include "InstrumentPannel.h"
 #include "Dialog_AdjFluidSynth.h"
 #include "Dialog_AnalogSynth_1900x1000.h"
@@ -31,7 +33,26 @@
 #include "Dialog_StringSynthesizer.h"
 #include "Dialog_PADsynthesizer.h"
 #include "MainWindow.h"
+#include "CustomFileDialog.h"
+
 #include "ui_InstrumentPannel.h"
+
+LoadSynthesizerPatchPresetFileThread *load_synthesizer_patch_preset_file_thread;
+
+QString string_synth_patch_preset_file_name;
+int string_synth_patch_preset_id = -1;
+
+void LoadSynthesizerPatchPresetFileThread::run()
+{
+	int res;
+
+	QString result = QString("Preset File Loaded");
+	res = mod_synth_load_patch_preset_synthesizer_preset_file(
+		string_synth_patch_preset_file_name.toStdString(),
+		string_synth_patch_preset_id);
+
+	emit loadPresetFileDone(result);
+}
 
 InstrumentPannel::InstrumentPannel(QWidget *parent,
 								   QString instrument_name_str,
@@ -49,8 +70,12 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 	// Set UI elements
 	ui->label_InstrumentName->setText(instrument_name);
 	ui->label_InstrumentName->setAttribute(Qt::WA_TranslucentBackground);
+	
 	ui->checkBox_InstrumentMIDIin->setAttribute(Qt::WA_TranslucentBackground);
 
+	ui->label_InstrumentPreset->setText("Preset");
+	ui->label_InstrumentPreset->setAttribute(Qt::WA_TranslucentBackground);
+	
 	// Initialize dialog pointers
 	connections_dialog = nullptr;
 	dialog_adj_fluid_synth = nullptr;
@@ -81,7 +106,7 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 			this,
 			SLOT(on_instrument_connections_clicked()));
 
-	// Disable connections button for certain instruments
+	// Disable connections button and hide Preset labelfor certain instruments
 	if ((inst_id == adj_midi_player) ||
 		(inst_id == adj_reverb_effect) ||
 		(inst_id == adj_distortion_effect) ||
@@ -90,13 +115,35 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 		(inst_id == adj_ext_midi_interface))
 	{
 		ui->pushButton_InstrumentConnections->setDisabled(true);
+		ui->label_InstrumentPreset->setVisible(false);
+	}
+
+	// Replace the Open button with a "Preset" button for certain instruments
+	if ((inst_id == analog_synth_preset_1) ||
+		(inst_id == analog_synth_preset_2) ||
+		(inst_id == analog_synth_preset_3) ||
+		(inst_id == analog_synth_preset_4) ||
+		(inst_id == analog_synth_preset_5) ||
+		(inst_id == analog_synth_preset_6) ||
+		(inst_id == analog_synth_preset_7) ||
+		(inst_id == analog_synth_preset_8) ||
+		(inst_id == analog_synth_preset_9) ||
+		(inst_id == analog_synth_preset_10) ||
+		(inst_id == analog_synth_preset_11) ||
+		(inst_id == analog_synth_preset_12) ||
+		(inst_id == analog_synth_preset_13) ||
+		(inst_id == analog_synth_preset_14) ||
+		(inst_id == analog_synth_preset_15) ||
+		(inst_id == analog_synth_preset_16))
+	{
+		ui->pushButton_InstrumentOpen->setText("Preset");
 	}
 
 	// Enable mouse tracking for hover effects
 	setMouseTracking(true);
 
 	// Set initial visual state
-	//update_visual_state();
+	// update_visual_state();
 }
 
 InstrumentPannel::~InstrumentPannel()
@@ -264,6 +311,21 @@ void InstrumentPannel::set_frame_color(int r, int g, int b, int a)
 	update_visual_state();
 }
 
+void InstrumentPannel::set_preset_text(const QString &text)
+{
+	ui->textEdit_PresetText->setText(text);
+}
+
+QString InstrumentPannel::get_preset_text() const
+{
+	return ui->textEdit_PresetText->toPlainText();
+}
+
+void InstrumentPannel::clear_preset_text()
+{
+	ui->textEdit_PresetText->clear();
+}
+
 
 void InstrumentPannel::on_instrument_exit_clicked()
 {
@@ -318,6 +380,74 @@ void InstrumentPannel::on_instrument_open_clicked()
 	else if (instrument_name == _INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY)
 	{
 		open_keyboard_mapper_dialog();
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(0);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(1);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_3_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(2);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_4_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(3);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_5_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(4);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_6_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(5);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_7_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(6);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_8_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(7);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_9_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(8);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_10_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(9);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_11_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(10);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_12_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(11);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_13_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(12);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_14_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(13);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_15_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(14);
+	}
+	else if (instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY)
+	{
+		open_synth_patch_preset_dialog(15);
+	}
+	else
+	{
+		
 	}
 }
 
@@ -509,6 +639,66 @@ void InstrumentPannel::open_keyboard_mapper_dialog()
 	dialog_keyboard_mapper->activateWindow();
 }
 
+void InstrumentPannel::open_synth_patch_preset_dialog(int preset_index)
+{
+	if (preset_index < 0 || preset_index >= _MAX_NUM_OF_ANALOG_PRESET_INSTRUMENTS)
+	{
+		return; // Invalid index
+	}
+
+	QString startDir = last_string_synth_preset_directory[preset_index].isEmpty() ? QString(_STRING_SYNTH_PRESETS_FILES_DEFAULT_DIR) : last_string_synth_preset_directory[preset_index];
+
+	CustomFileDialog dialog(this,
+							tr("Open Preset File"),
+							startDir,
+							tr("Presets (*.xml *.XML);;All Files (*)"),
+							Qt::black); // Background color set here)
+
+	// If we have a last file, select it and scroll to it
+	if (!last_string_synth_preset_load_file[preset_index].isEmpty())
+	{
+		dialog.selectFile(last_string_synth_preset_load_file[preset_index]);
+	}
+
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		string_synth_patch_preset_file_name = dialog.selectedFile();
+		string_synth_patch_preset_id = preset_index;
+
+		if (!string_synth_patch_preset_file_name.isEmpty())
+		{
+			// Remember the directory and file for next time
+			last_string_synth_preset_directory[preset_index] = QFileInfo(string_synth_patch_preset_file_name).absolutePath();
+			last_string_synth_preset_load_file[preset_index] = string_synth_patch_preset_file_name;
+
+			std::string file_name;
+			// file_name = std::string("Now Loading: ");
+			file_name = std::filesystem::path(string_synth_patch_preset_file_name.toStdString()).stem();
+
+			MainWindow *mainWin = MainWindow::get_instance();
+			if (mainWin)
+			{
+				InstrumentPannel *panel =
+					mainWin->get_instrument_panel_by_id(static_cast<en_instruments_ids_t>(en_instruments_ids_t::analog_synth_preset_1 + preset_index));
+				if (panel)
+				{
+					panel->set_preset_text(QString::fromStdString(file_name));
+				}
+			}
+
+			load_synthesizer_patch_preset_file_thread = new LoadSynthesizerPatchPresetFileThread();
+			connect(load_synthesizer_patch_preset_file_thread,
+					&LoadSynthesizerPatchPresetFileThread::finished, load_synthesizer_patch_preset_file_thread, &QObject::deleteLater);
+
+			connect(load_synthesizer_patch_preset_file_thread, &LoadSynthesizerPatchPresetFileThread::loadPresetFileDone,
+					this, &InstrumentPannel::on_preset_file_loaded);
+			
+			load_synthesizer_patch_preset_file_thread->start();
+		}
+	}
+	
+}
+
 void InstrumentPannel::on_instrument_connections_clicked()
 {
 	if (!Dialog_InstrumentConnections::dialog_is_open)
@@ -530,6 +720,10 @@ void InstrumentPannel::on_instrument_connections_clicked()
 			}
 		}
 	}
+}
+
+void InstrumentPannel::on_preset_file_loaded(const QString &s)
+{
 }
 
 void InstrumentPannel::close_connections_dialog()

@@ -1352,7 +1352,23 @@ void Dialog_InstrumentConnections::update()
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY) ||
-		(instrument_name.toStdString() == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY))
+		(instrument_name.toStdString() == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_3_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_4_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_5_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_6_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_7_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_8_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_9_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_10_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_11_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_12_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_13_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_14_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_15_STR_KEY) ||
+		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY)))
 	{
 		client_out_name = "AdjHeartSynth_out";
 	}
