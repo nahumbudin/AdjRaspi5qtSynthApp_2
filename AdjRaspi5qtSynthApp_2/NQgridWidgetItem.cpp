@@ -105,13 +105,24 @@ QVariant NQgridWidgetItem::computeFormula(const QString &formula,
 	int secondVal = end ? end->text().toInt() : 0;
 
 	QVariant result;
-	if (op == "sum") {
+	if (op == "sum")
+	{
 		int sum = 0;
-		for (int r = firstRow; r <= secondRow; ++r) {
-			for (int c = firstCol; c <= secondCol; ++c) {
-				const QTableWidgetItem *tableItem = widget->item(r, c);
-				if (tableItem && tableItem != self)
-					sum += tableItem->text().toInt();
+
+		// Validate bounds
+		if (firstRow >= 0 && secondRow >= 0 && firstCol >= 0 && secondCol >= 0 &&
+			firstRow < widget->rowCount() && secondRow < widget->rowCount() &&
+			firstCol < widget->columnCount() && secondCol < widget->columnCount() &&
+			firstRow <= secondRow && firstCol <= secondCol)
+		{
+			for (int r = firstRow; r <= secondRow; ++r)
+			{
+				for (int c = firstCol; c <= secondCol; ++c)
+				{
+					const QTableWidgetItem *tableItem = widget->item(r, c);
+					if (tableItem && tableItem != self)
+						sum += tableItem->text().toInt();
+				}
 			}
 		}
 

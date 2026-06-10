@@ -28,8 +28,11 @@ Dialog_AnalogReverb *Dialog_AnalogReverb::dialog_analog_reverb_instance = NULL;
 
 void analog_reverb_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Just forward to the dialog instance - it will emit a signal
-	Dialog_AnalogReverb::get_instance()->control_box_event_received(evnt, val);
+	Dialog_AnalogReverb *instance = Dialog_AnalogReverb::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 Dialog_AnalogReverb::Dialog_AnalogReverb(QWidget *parent)
@@ -38,6 +41,12 @@ Dialog_AnalogReverb::Dialog_AnalogReverb(QWidget *parent)
 {
 	ui->setupUi(this);
 	dialog_analog_reverb_instance = this;
+
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
 
 	close_event_callback_ptr = NULL;
 
@@ -75,7 +84,11 @@ Dialog_AnalogReverb::Dialog_AnalogReverb(QWidget *parent)
 
 Dialog_AnalogReverb::~Dialog_AnalogReverb()
 {
-	
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
+	dialog_analog_reverb_instance = nullptr;
+	delete ui;
 }
 
 Dialog_AnalogReverb *Dialog_AnalogReverb::get_instance(QWidget *parent)
@@ -258,6 +271,12 @@ void Dialog_AnalogReverb::set_reverb_signals_connections()
 
 void Dialog_AnalogReverb::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	ui->checkBox_Reverbration_Active->blockSignals(true);
 	ui->checkBox_Reverbration_Active->setChecked(mod_synth_get_active_reverb_enable_state());
 	ui->checkBox_Reverbration_Active->blockSignals(false);
@@ -508,10 +527,25 @@ void Dialog_AnalogReverb::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
+	// Hide instead of accept (which could trigger deletion)
+	event->ignore(); // Don't accept the close event
+
 	hide();
+}
+
+void Dialog_AnalogReverb::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&analog_reverb_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_AnalogReverb::on_dialog_close()

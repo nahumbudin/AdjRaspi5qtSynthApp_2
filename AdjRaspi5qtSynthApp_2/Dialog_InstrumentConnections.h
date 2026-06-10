@@ -55,8 +55,9 @@ public :
 	
 public slots:
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 
-protected slots:
+  protected slots:
 	
 	void on_dialog_ok();
 	void on_dialog_refresh();

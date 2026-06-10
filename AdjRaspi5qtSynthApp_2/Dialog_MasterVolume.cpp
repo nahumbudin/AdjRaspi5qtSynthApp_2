@@ -25,6 +25,9 @@ Dialog_MasterVolume::Dialog_MasterVolume(QWidget *parent)
 	ui->setupUi(this);
 	dialog_master_volume_instance = this;
 
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	// Set fixed size - prevents resizing
 	setFixedSize(size());
 	

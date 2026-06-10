@@ -1,23 +1,28 @@
 /**
-* @file		Dialog_MidiMapper.h
-*	@author		Nahum Budin
-*	@date		22-Sep-2025
-*	@version	1.1
-*					1. Refactoring rename modules to instriuments
-*
-*	@brief		Used for mapping MIDI channels events to instruments
-*				
-*	History:
-*			Ver1.0	19-Oct-2024		Initial
-*
-*/
+ * @file		Dialog_MidiMapper.cpp
+ *	@author		Nahum Budin
+ *	@date		23-May-2026
+ *	@version	1.2
+ *					1. Thread-safety fix for update_channels_combo_boxes()
+ *					1. Resolve memory leak of UpdateGuiThread at timerEvent() by connecting finished signal to deleteLater slot.
+ *
+ *	@brief		Used for mapping MIDI channels events to instruments
+ *
+ *	History:
+ *				Ver1.1	22-Sep-2025
+ *					1. Refactoring rename modules to instruments
+ *					2. Reserving vectors size.
+ *					3. Add a mutex
+ *				Ver1.0	19-Oct-2024		Initial
+ *
+ */
 
 #pragma once
 
-#include <QDialog>
-#include <QPushButton>
 #include <QComboBox>
+#include <QDialog>
 #include <QMutex>
+#include <QPushButton>
 
 #include "MainWindow.h"
 
@@ -31,39 +36,45 @@ namespace Ui
 class Dialog_MidiMapper : public QDialog
 {
 	Q_OBJECT
-		
-public :
-	
+
+  public:
 	~Dialog_MidiMapper();
-	
+
 	static Dialog_MidiMapper *get_instance(QWidget *parent = 0, bool showit = false);
 
 	// Called from callback - thread-safe, just emits signal
 	void control_box_event_received(int evnt, uint16_t val);
-	
+
 	QPoint get_last_position();
-	
+
 	virtual void update_gui();
-	
+
 	Ui::Dialog_MidiMapper *ui;
 
   signals:
 	// Signal emitted when control box event is received (thread-safe)
 	void control_box_event_signal(int evnt, uint16_t val);
 
+	// Signal emitted when combo boxes need to be updated (thread-safe)
+	void update_combo_boxes_signal();
+
   private slots:
 	// Slot that handles the actual UI update (runs in GUI thread)
 	void handle_control_box_event(int evnt, uint16_t val);
-	
-public slots :
-	
+
+	// Slot that updates combo boxes in GUI thread
+	void update_channels_combo_boxes_impl();
+
+  public slots:
+
 	virtual void timerEvent(); // Called by a Timer
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 	void moveEvent(QMoveEvent *event);
 	bool event(QEvent *event);
-	
+
 	static int set_channel_instrument(int ch, int inst);
-	
+
 	static void ch_1_instrument_changed(int inst);
 	static void ch_2_instrument_changed(int inst);
 	static void ch_3_instrument_changed(int inst);
@@ -80,40 +91,33 @@ public slots :
 	static void ch_14_instrument_changed(int inst);
 	static void ch_15_instrument_changed(int inst);
 	static void ch_16_instrument_changed(int inst);
-	
+
 	void set_all_channels_instrument_changed(int inst);
-	
-protected slots :
+
+  protected slots:
 
 	void on_dialog_close();
-	 
 
-private:
-	
+  private:
 	explicit Dialog_MidiMapper(QWidget *parent = 0);
-	
-	
-	static Dialog_MidiMapper *dialog_adj_midi_mapper_instance;	
-	
+
+	static Dialog_MidiMapper *dialog_adj_midi_mapper_instance;
+
 	func_ptr_void_void_t close_event_callback_ptr;
-	
+
 	void start_update_timer(int interval);
-	
-	void update_channels_combo_boxes();
-	
+
 	QPoint last_position;
-	
+
 	QComboBox *channels_combos[17];
-	
+
 	QMutex *active_instruments_mutex;
-	
+
 	func_ptr_void_int_t on_channel_combo_change_slots[16];
-	
 };
 
 class UpdateGuiThread : public QThread
 {
-	Q_OBJECT	
+	Q_OBJECT
 	void run();
-		
 };

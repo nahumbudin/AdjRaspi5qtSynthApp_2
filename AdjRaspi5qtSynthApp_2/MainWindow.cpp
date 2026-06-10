@@ -5,6 +5,11 @@
  *	@version	2.0
  *					1. Add auto-arrangement of open instrument panels in the main window.
  *					2. Added instruments.
+ *					3. Prevent crashes when main window is not available in callback wrappers.
+ *					4. Added null checks to prevent crashes when calling a null pointer.
+ *					5. Added save/load patch file threads to prevent GUI blocking during file operations.
+ *					6. Dealing with null pointers when adding instruments.
+ *					7. Adding vectors bounding checks to prevent out-of-bounds access.
  *
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
@@ -24,6 +29,8 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QtWidgets/qboxlayout.h>
+#include <QScreen>
+#include <QGuiApplication>
 
 #include <stdio.h>
 
@@ -47,32 +54,81 @@ QString patch_file_name;
 
 void wrapper_close_instrument_pannel_id(en_instruments_ids_t inst_id)
 {
-	MainWindow::get_instance()->close_instrument_pannel_id(inst_id);
+	MainWindow *instance = MainWindow::get_instance();
+	if (instance != nullptr)
+	{
+		instance->close_instrument_pannel_id(inst_id);
+	}
+	else
+	{
+		fprintf(stderr, "Warning: wrapper_close_instrument_pannel_id called but MainWindow is null\n");
+	}
 }
+
 void wrapper_request_close_instrument_pannel_id(en_instruments_ids_t inst_id)
 {
-	MainWindow::get_instance()->request_close_instrument_pannel_id(inst_id);
+	MainWindow *instance = MainWindow::get_instance();
+	if (instance != nullptr)
+	{
+		instance->request_close_instrument_pannel_id(inst_id);
+	}
+	else
+	{
+		fprintf(stderr, "Warning: wrapper_request_close_instrument_pannel_id called but MainWindow is null\n");
+	}
 }
 
 void wrapper_request_open_instrument_window_name(string instrument_name)
 {
-	MainWindow::get_instance()->pending_open_instruments_list.push_back(instrument_name);
+	MainWindow *instance = MainWindow::get_instance();
+	if (instance != nullptr)
+	{
+		instance->pending_open_instruments_list.push_back(instrument_name);
+	}
+	else
+	{
+		fprintf(stderr, "Warning: wrapper_request_open_instrument_window_name called but MainWindow is null\n");
+	}
 }
-
 
 void wrapper_request_close_instrument_pannel_name(string inst_name)
 {
-	MainWindow::get_instance()->request_close_instrument_pannel_name(inst_name);
+	MainWindow *instance = MainWindow::get_instance();
+	if (instance != nullptr)
+	{
+		instance->request_close_instrument_pannel_name(inst_name);
+	}
+	else
+	{
+		fprintf(stderr, "Warning: wrapper_request_close_instrument_pannel_name called but MainWindow is null\n");
+	}
 }
 
 void main_window_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	MainWindow::get_instance()->control_box_ui_update_callback(evnt, val);
+	MainWindow *instance = MainWindow::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_ui_update_callback(evnt, val);
+	}
+	else
+	{
+		fprintf(stderr, "Warning: main_window_control_box_event_update_ui_callback_wrapper called but MainWindow is null\n");
+	}
 }
 
-std::vector <std::string> get_active_instruments_names_list_wrapper()
+std::vector<std::string> get_active_instruments_names_list_wrapper()
 {
-	return MainWindow::get_instance()->get_active_instruments_names_list();
+	MainWindow *instance = MainWindow::get_instance();
+	if (instance != nullptr)
+	{
+		return instance->get_active_instruments_names_list();
+	}
+	else
+	{
+		fprintf(stderr, "Warning: get_active_instruments_names_list_wrapper called but MainWindow is null\n");
+		return std::vector<std::string>(); // Return empty vector
+	}
 }
 
 void SavePatchFileThread::run() 
@@ -125,17 +181,27 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	// Create tools bar menus
 	create_menus();
 
-	// Initialize window manager
-	window_manager = Dialog_WindowManager::get_instance(this);
+	try
+	{
+		// Initialize window manager
+		window_manager = Dialog_WindowManager::get_instance(this);
+		// Initialize GUI Navigator (simplified version)
+		gui_navigator = GuiNavigator::get_instance();
 
-	// Initialize GUI Navigator (simplified version)
-	gui_navigator = GuiNavigator::get_instance();
-
-	// Register MainWindow with GuiNavigator (no frame/tab navigation)
-	gui_navigator->register_widget_simple(this, "Main Window");
-
-	// Show the info panel
-	gui_navigator->show_info_panel();
+		if (gui_navigator != nullptr)
+		{
+			// Register MainWindow with GuiNavigator (no frame/tab navigation)
+			gui_navigator->register_widget_simple(this, "Main Window");
+			// Show the info panel
+			gui_navigator->show_info_panel();
+		}
+	}
+	catch (const std::bad_alloc &e)
+	{
+		QMessageBox::critical(this, "Memory Error",
+							  "Failed to allocate memory for critical components.");
+		fprintf(stderr, "Error: Memory allocation failed - %s\n", e.what());
+	}
 
 	// Register callbacks
 	mod_synth_register_callback_control_box_event_update_ui(
@@ -162,8 +228,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 		en_instruments_ids_t::adj_analog_synth;
 	instruments_ids_map[_INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_karplusstrong_string_synth;
-	instruments_ids_map[_INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY] =
-		en_instruments_ids_t::adj_morphed_sin_synth;
+	instruments_ids_map[_INSTRUMENT_NAME_MSO_SYNTH_STR_KEY] =
+		en_instruments_ids_t::adj_mso_synth;
 	instruments_ids_map[_INSTRUMENT_NAME_PAD_SYNTH_STR_KEY] =
 		en_instruments_ids_t::adj_pad_synth;
 	instruments_ids_map[_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY] =
@@ -240,7 +306,26 @@ MainWindow::~MainWindow()
 MainWindow *MainWindow::get_instance() {
 
 	if (!mwind)
-		mwind = new MainWindow();
+	{
+		try
+		{
+			mwind = new MainWindow();
+		}
+		catch (const std::bad_alloc &e)
+		{
+			fprintf(stderr, "Fatal Error: Failed to allocate MainWindow: %s\n", e.what());
+			QMessageBox::critical(nullptr, "Fatal Error",
+								  "Failed to create main window due to insufficient memory.");
+			return nullptr;
+		}
+		catch (const std::exception &e)
+		{
+			fprintf(stderr, "Fatal Error: Exception in MainWindow constructor: %s\n", e.what());
+			QMessageBox::critical(nullptr, "Fatal Error",
+								  QString("Failed to create main window: %1").arg(e.what()));
+			return nullptr;
+		}
+	}
 
 	return mwind;
 }
@@ -328,6 +413,12 @@ void MainWindow::control_box_ui_update_callback(int evnt, uint16_t val)
 				//		  to enable Qt control over dialogs position!!!
 
 				// Next dialog - ststic: kepy from last time
+				if (active_dialogs_list.empty())
+				{
+					// No dialogs to cycle through
+					return;
+				}
+				
 				last_opened_dialog_index++;
 
 				if (last_opened_dialog_index >= active_dialogs_list.size())
@@ -341,6 +432,13 @@ void MainWindow::control_box_ui_update_callback(int evnt, uint16_t val)
 				for (QDialog *dialog : active_dialogs_list)
 				{
 
+					if (dialog == nullptr)
+					{
+						fprintf(stderr, "Warning: null dialog in active_dialogs_list\n");
+						next_opened_dialog++;
+						continue;
+					}
+					
 					if (dialog->isHidden())
 					{
 						// Skip hidden dialogs
@@ -380,7 +478,15 @@ void MainWindow::control_box_ui_update_callback(int evnt, uint16_t val)
 
 void MainWindow::show_window_manager()
 {
-	window_manager->show_window_manager();
+	if (window_manager != nullptr)
+	{
+		window_manager->show_window_manager();
+	}
+	else
+	{
+		fprintf(stderr, "Error: window_manager is null, cannot show window manager\n");
+		QMessageBox::warning(this, "Error", "Window Manager is not available.");
+	}
 }
 
 
@@ -411,9 +517,8 @@ void MainWindow::copy_sketch(int src, int dest)
 		QMessageBox msgBox;
 		msgBox.setIcon(QMessageBox::Critical);
 		msgBox.setWindowTitle("Warning");
-		
-		sprintf(mssg, "Are you sure you want to overide Sketch %i?", dest+1);		
-		msgBox.setText(QString(mssg));
+
+		msgBox.setText(QString("Are you sure you want to overide Sketch %1?").arg(dest + 1));
 		msgBox.setStandardButtons(QMessageBox::Yes);
 		msgBox.addButton(QMessageBox::No);
 		msgBox.setDefaultButton(QMessageBox::No);
@@ -717,12 +822,19 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 														&wrapper_close_instrument_pannel_id,
 														instrument_id);
 
+	if (new_pannel == nullptr)
+	{
+		fprintf(stderr, "Error: Failed to allocate InstrumentPannel for %s\n",
+				instrument_name_string.toStdString().c_str());
+		return nullptr;
+	}
+
 	// Set frame color based on type
 	if (instrument_name_string == _INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
-		instrument_name_string == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
+		instrument_name_string == _INSTRUMENT_NAME_MSO_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY ||
 		instrument_name_string == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY ||
@@ -1080,10 +1192,10 @@ int MainWindow::remove_instrument_pannel(InstrumentPannel *instrument)
 */
 int MainWindow::is_instrument_openned(en_instruments_ids_t instId)
 {
-	for (int i = 0; i < active_instruments_list.size(); ++i)
+	for (size_t i = 0; i < active_instruments_list.size(); ++i)
 	{
 		if (active_instruments_list[i].instrument_id == instId)
-			return i;
+			return static_cast<int>(i); // Safe cast for return value
 	}
 	
 	return -1;
@@ -1160,7 +1272,7 @@ int MainWindow::update_layout_geometry()
 	QRect newGeom = QRect(currentGeom.x(), currentGeom.y(), window_width, window_height);
 
 	// Ensure window stays on screen
-	QRect screenGeom = QApplication::desktop()->availableGeometry(this);
+	QRect screenGeom = QGuiApplication::primaryScreen()->availableGeometry();
 	if (newGeom.y() < screenGeom.y())
 	{
 		newGeom.moveTop(screenGeom.y());
@@ -1180,13 +1292,18 @@ void MainWindow::close_instrument_pannel_id(en_instruments_ids_t inst_id)
 	InstrumentPannel *instrument;
 	
 	int pos = is_instrument_openned(inst_id);
-	
-	if (pos >= 0)
+
+	if (pos >= 0 && pos < active_instruments_list.size()) // ADD size check
 	{
-		instrument = active_instruments_list[pos].instrument_pannel_object;		
+		InstrumentPannel *instrument = active_instruments_list[pos].instrument_pannel_object;
 		active_instruments_list.erase(active_instruments_list.begin() + pos);
-		
+
 		remove_instrument_pannel(instrument);
+	}
+	else if (pos >= 0)
+	{
+		fprintf(stderr, "Error: Invalid position %d in close_instrument_pannel_id (size: %zu)\n",
+				pos, active_instruments_list.size());
 	}
 	
 }
@@ -1202,8 +1319,8 @@ void MainWindow::close_instrument_pannel_name(string inst_name)
 std::vector<std::string> MainWindow::get_active_instruments_names_list()
 {
 	std::vector<std::string> names_list_str;
-	
-	for (active_instrument_data_t module : active_instruments_list)
+
+	for (const auto &module : active_instruments_list) // No copies!
 	{
 		names_list_str.push_back(module.instrument_name.toStdString());
 	}
@@ -1213,11 +1330,11 @@ std::vector<std::string> MainWindow::get_active_instruments_names_list()
 
 void MainWindow::request_close_instrument_pannel_id(en_instruments_ids_t inst_id)
 {
-	for (int m = 0; m < active_instruments_list.size(); m++)
+	for (auto &inst : active_instruments_list)
 	{
-		if (active_instruments_list.at(m).instrument_id == inst_id)
+		if (inst.instrument_id == inst_id)
 		{
-			active_instruments_list.at(m).pending_close_event = true;
+			inst.pending_close_event = true;
 			break;
 		}
 	}
@@ -1225,11 +1342,11 @@ void MainWindow::request_close_instrument_pannel_id(en_instruments_ids_t inst_id
 
 void MainWindow::request_close_instrument_pannel_name(string inst_name)
 {
-	for (int m = 0; m < active_instruments_list.size(); m++)
+	for (auto &inst : active_instruments_list)
 	{
-		if (active_instruments_list.at(m).instrument_name.toStdString() == inst_name)
+		if (inst.instrument_name.toStdString() == inst_name)
 		{
-			active_instruments_list.at(m).pending_close_event = true;
+			inst.pending_close_event = true;
 			break;
 		}
 	}
@@ -1250,6 +1367,12 @@ InstrumentPannel *MainWindow::get_instrument_panel_by_id(en_instruments_ids_t in
 void MainWindow::start_update_timer(int interval)
 {
 	QTimer *timer = new QTimer(this);
+	if (timer == nullptr)
+	{
+		fprintf(stderr, "Error: Failed to create update timer\n");
+		return;
+	}
+	
 	connect(timer, SIGNAL(timeout()), this, SLOT(timerEvent()));
 	timer->start(interval);
 }
@@ -1262,13 +1385,21 @@ void MainWindow::timerEvent()
 void MainWindow::update_gui()
 {
 	int m;
-	
-	for (m = 0; m < active_instruments_list.size(); m++)
+
+	// Collect instruments to close first to avoid iterator invalidation
+	std::vector<en_instruments_ids_t> instruments_to_close;
+	for (const auto &inst : active_instruments_list)
 	{
-		if (active_instruments_list.at(m).pending_close_event)
+		if (inst.pending_close_event)
 		{
-			close_instrument_pannel_id(active_instruments_list.at(m).instrument_id);
+			instruments_to_close.push_back(inst.instrument_id);
 		}
+	}
+
+	// Now safely close the collected instruments
+	for (en_instruments_ids_t inst_id : instruments_to_close)
+	{
+		close_instrument_pannel_id(inst_id);
 	}
 	
 	for (m = 0; m < pending_open_instruments_list.size(); m++)
@@ -1334,215 +1465,258 @@ void MainWindow::update_gui()
 
 void MainWindow::on_add_fluid_synth_instrument()
 {
-	InstrumentPannel *newPannel;
-
 	if ((is_instrument_openned(en_instruments_ids_t::fluid_synth) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
 		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_FLUID_SYNTH_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Hammond Organ panel");
+		}
 	}
 }
 
 void MainWindow::on_add_hammond_organ_instrument()
 {
-	InstrumentPannel *newPannel;
-
 	if ((is_instrument_openned(en_instruments_ids_t::adj_hammond_organ) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Hammond Organ panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_analog_synth_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_analog_synth) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_analog_synth) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Analog Synth panel");
+		}
 	}
-	
-	
 }
 
 void MainWindow::on_add_adj_karplus_strong_strings_synth_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_karplusstrong_string_synth) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_karplusstrong_string_synth) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Karplus Strong Synth panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_morphed_sin_synth_instrument()
 {
-	InstrumentPannel *newPannel;
-	
 	if ((is_instrument_openned(en_instruments_ids_t::adj_morphed_sin_synth) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MSO_SYNTH_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create MSO Synth panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_pad_synth_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_pad_synth) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_pad_synth) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_PAD_SYNTH_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_PAD_SYNTH_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_PLAYER);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create PAD Synth panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_midi_player_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_midi_player) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_midi_player) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_PLAYER_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create MIDI Player panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_reverb_effect_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_reverb_effect) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_reverb_effect) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_REVERB_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_REVERB_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Reverb Effect panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_distortion_effect_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_distortion_effect) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_distortion_effect) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_DISTORTION_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_DISTORTION_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Distortion Effect panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_graphic_equilizer_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_graphic_equilizer) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_graphic_equilizer) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_GRAPHIC_EQUALIZER_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_EFFECT);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Graphic Equalizer panel");
+		}
 	}
 }
 
 void MainWindow::on_add_midi_mixer_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::midi_mixer) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::midi_mixer) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_MIXER_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_MIXER_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create MIDI Mixer panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_midi_mapper_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_midi_mapper) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_midi_mapper) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_MIDI_MAPPER_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create MIDI Mapper panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_external_midi_interface_control_instrument()
 {
-	InstrumentPannel *newPannel;
-	
 	if ((is_instrument_openned(en_instruments_ids_t::adj_ext_midi_interface) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY);
-
-		newPannel->hide_checkBox_InstrumentMIDIin();
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_EXT_MIDI_INT_CONTROL_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->hide_checkBox_InstrumentMIDIin();
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create External MIDI Interface panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_keyboard_control_instrument()
 {
-	InstrumentPannel *newPannel;
-	
-	if ((is_instrument_openned(en_instruments_ids_t::adj_keyboard_control) < 0)&&
+	if ((is_instrument_openned(en_instruments_ids_t::adj_keyboard_control) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_CONTROL_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Keyboard Control panel");
+		}
 	}
 }
 
 void MainWindow::on_add_adj_keyboard_mapper_instrument()
 {
-	InstrumentPannel *newPannel;
-
 	if ((is_instrument_openned(en_instruments_ids_t::adj_keyboard_mapper) < 0) &&
 		(active_instruments_list.size() < MAX_NUM_OF_MODULES))
 	{
-		// instrument is not already oppened
-
-		newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY);
-		newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		InstrumentPannel *newPannel = add_instrument_pannel(_INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY);
+		if (newPannel != nullptr)
+		{
+			newPannel->set_frame_color(_INSTRUMENT_PANNEL_FRAME_COLOR_CONTROL);
+		}
+		else
+		{
+			QMessageBox::warning(this, "Error", "Failed to create Keyboard Mapper panel");
+		}
 	}
 }
 
@@ -1568,6 +1742,22 @@ void MainWindow::on_save_patch_file()
 
 				if (!patch_file_name.isEmpty())
 				{
+					// Check if a save operation is already in progress
+					if (save_patch_file_thread != nullptr && save_patch_file_thread->isRunning())
+					{
+						QMessageBox::warning(this, "Save in Progress",
+											 "A save operation is already in progress. Please wait.");
+						return;
+					}
+
+					// Clean up old thread if it exists
+					if (save_patch_file_thread != nullptr)
+					{
+						save_patch_file_thread->wait(); // Wait for completion
+						delete save_patch_file_thread;
+						save_patch_file_thread = nullptr;
+					}
+
 					save_patch_file_thread = new SavePatchFileThread();
 
 					connect(save_patch_file_thread,
@@ -1578,6 +1768,10 @@ void MainWindow::on_save_patch_file()
 							&SavePatchFileThread::savePatchFileDone,
 							this,
 							&MainWindow::on_patch_file_saved);
+					// Reset pointer when thread is destroyed
+					connect(save_patch_file_thread,
+							&QObject::destroyed,
+							[]() { save_patch_file_thread = nullptr; });
 
 					save_patch_file_thread->start();
 				}
@@ -1610,6 +1804,22 @@ void MainWindow::on_load_patch_file()
 
 				if (!patch_file_name.isEmpty())
 				{
+					// Check if a load operation is already in progress
+					if (load_patch_file_thread != nullptr && load_patch_file_thread->isRunning())
+					{
+						QMessageBox::warning(this, "Load in Progress",
+											 "A load operation is already in progress. Please wait.");
+						return;
+					}
+
+					// Clean up old thread if it exists
+					if (load_patch_file_thread != nullptr)
+					{
+						load_patch_file_thread->wait(); // Wait for completion
+						delete load_patch_file_thread;
+						load_patch_file_thread = nullptr;
+					}
+
 					load_patch_file_thread = new LoadPatchFileThread();
 
 					connect(load_patch_file_thread,
@@ -1620,6 +1830,10 @@ void MainWindow::on_load_patch_file()
 							&LoadPatchFileThread::loadPatchFileDone,
 							this,
 							&MainWindow::on_patch_file_loaded);
+					// Reset pointer when thread is destroyed
+					connect(load_patch_file_thread,
+							&QObject::destroyed,
+							[]() { load_patch_file_thread = nullptr; });
 
 					load_patch_file_thread->start();
 				}
@@ -1746,7 +1960,7 @@ int MainWindow::get_panel_type_order(const QString &instrument_name)
 		instrument_name == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY ||
-		instrument_name == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY ||
+		instrument_name == _INSTRUMENT_NAME_MSO_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY ||
 		instrument_name == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY ||
@@ -1795,7 +2009,10 @@ void MainWindow::arrange_instrument_panels()
 	// Clear current layout
 	while (QLayoutItem *item = gridLayout->takeAt(0))
 	{
-		item->widget()->setParent(nullptr);
+		if (QWidget *widget = item->widget())
+		{
+			widget->setParent(nullptr);
+		}
 		delete item;
 	}
 
@@ -1825,7 +2042,10 @@ void MainWindow::arrange_instrument_panels()
 		// Always single column when auto-arrange is disabled
 		for (int i = 0; i < panel_count; i++)
 		{
-			gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, i, 0);
+			if (panels_to_arrange[i].instrument_pannel_object != nullptr)
+			{
+				gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, i, 0);
+			}
 		}
 	}
 	// AUTO-ARRANGE ENABLED: Multiple columns, sorted by type
@@ -1844,7 +2064,10 @@ void MainWindow::arrange_instrument_panels()
 			// Single column
 			for (int i = 0; i < panel_count; i++)
 			{
-				gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, i, 0);
+				if (panels_to_arrange[i].instrument_pannel_object != nullptr)
+				{
+					gridLayout->addWidget(panels_to_arrange[i].instrument_pannel_object, i, 0);
+				}
 			}
 		}
 		else if (panel_count <= 10)

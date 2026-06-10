@@ -20,7 +20,7 @@
 
 #include <QDialog>
 #include <QPushButton>
-#include <QTHread>
+#include <QThread>
 
 #include "libAdjRaspi5SynthAPI.h"
 
@@ -49,6 +49,7 @@ public :
 public slots :
 	virtual void timerEvent(); // Called by a Timer
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 	void moveEvent(QMoveEvent *event);
 	bool event(QEvent *event);
 	

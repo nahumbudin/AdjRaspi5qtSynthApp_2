@@ -140,6 +140,9 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 	ui->setupUi(this);
 	dialog_midi_mixer_instance = this;
 
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	// Must be called after ui is set.
 	// Controls the active remote control frame bounderies colors
 	control_widgets_color_manager = new (ControlWidgetsColorManager);
@@ -755,9 +758,20 @@ Dialog_MidiMixer::Dialog_MidiMixer(QWidget *parent)
 
 Dialog_MidiMixer::~Dialog_MidiMixer()
 {
-	// Set breakpoint here when debugging
-	//int breakpoint_here = 0; // <-- BREAKPOINT
-	//(void)breakpoint_here;
+	// Disable ALL callbacks during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+	mod_synth_register_midi_mixer_channel_volume_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_send_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_pan_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_level_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_static_volume_update_callback(NULL);
+
+	// Delete allocated objects
+	delete control_widgets_color_manager;
+
+	dialog_midi_mixer_instance = nullptr;
+	delete ui;
 }
 
 Dialog_MidiMixer *Dialog_MidiMixer::get_instance(QWidget *parent)
@@ -794,10 +808,40 @@ void Dialog_MidiMixer::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable ALL callbacks when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+	mod_synth_register_midi_mixer_channel_volume_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_send_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_pan_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_level_update_callback(NULL);
+	mod_synth_register_midi_mixer_channel_static_volume_update_callback(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 	
 	hide();
+}
+
+void Dialog_MidiMixer::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register ALL callbacks when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&midi_mixer_control_box_event_update_ui_callback_wrapper);
+	mod_synth_register_midi_mixer_channel_volume_update_callback(
+		&midi_mixer_update_channels_levels_ui_update_callback_wrapper);
+	mod_synth_register_midi_mixer_channel_send_update_callback(
+		&midi_mixer_update_channels_sends_ui_update_callback_wrapper);
+	mod_synth_register_midi_mixer_channel_pan_update_callback(
+		&midi_mixer_update_channels_pans_ui_update_callback_wrapper);
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_update_callback(
+		&midi_mixer_update_channels_pans_mod_lfo_ui_update_callback_wrapper);
+	mod_synth_register_midi_mixer_channel_pan_mod_lfo_level_update_callback(
+		&midi_mixer_update_channels_pans_mod_lfo_level_ui_update_callback_wrapper);
+	mod_synth_register_midi_mixer_channel_static_volume_update_callback(
+		&midi_mixer_update_channels_static_levels_ui_update_callback_wrapper);
 }
 
 void Dialog_MidiMixer::init_active_lfo_widget()
@@ -880,7 +924,7 @@ void Dialog_MidiMixer::update_active_lfo_frame()
 
 void Dialog_MidiMixer::channels_levels_update_callback(int chan, int vol)
 {
-	levels_updated = true;
+	levels_updated.store(true);
 
 	if (chan == 0)
 	{
@@ -949,12 +993,12 @@ void Dialog_MidiMixer::channels_levels_update_callback(int chan, int vol)
 	else
 	{
 		// Invalid channel
-		levels_updated = false;
+		levels_updated.store(false);
 	}
 }
 void Dialog_MidiMixer::channels_pans_update_callback(int chan, int pan)
 {
-	pans_updated = true;
+	pans_updated.store(true);
 
 	if (chan == 0)
 	{
@@ -1023,13 +1067,13 @@ void Dialog_MidiMixer::channels_pans_update_callback(int chan, int pan)
 	else
 	{
 		// Invalid channel
-		pans_updated = false;
+		pans_updated.store(false);
 	}
 }
 
 void Dialog_MidiMixer::channels_sends_update_callback(int chan, int send)
 {
-	sends_updated = true;
+	sends_updated.store(true);
 
 	if (chan == 0)
 	{
@@ -1098,13 +1142,13 @@ void Dialog_MidiMixer::channels_sends_update_callback(int chan, int send)
 	else
 	{
 		// Invalid channel
-		sends_updated = false;
+		sends_updated.store(false);
 	}
 }
 
 void Dialog_MidiMixer::channels_static_levels_update_callback(int chan, bool state)
 {
-	static_levels_updated = true;
+	static_levels_updated.store(true);
 	
 	if (chan == 0)
 	{
@@ -1173,13 +1217,13 @@ void Dialog_MidiMixer::channels_static_levels_update_callback(int chan, bool sta
 	else
 	{
 		// Invalid channel
-		static_levels_updated = false;
+		static_levels_updated.store(false);
 	}
 }
 
 void Dialog_MidiMixer::channels_pan_mod_lfo_level_update_callback(int chan, int lvl)
 {
-	pan_mod_levels_updated = true;
+	pan_mod_levels_updated.store(true);
 
 	if (chan == 0)
 	{
@@ -1248,13 +1292,13 @@ void Dialog_MidiMixer::channels_pan_mod_lfo_level_update_callback(int chan, int 
 	else
 	{
 		// Invalid channel
-		pan_mod_levels_updated = false;
+		pan_mod_levels_updated.store(false);
 	}
 }
 
 void Dialog_MidiMixer::channels_pan_mod_lfo_update_callback(int chan, int lfo)
 {
-	pan_mod_lfos_updated = true;
+	pan_mod_lfos_updated.store(true);
 
 	if (chan == 0)
 	{
@@ -1323,7 +1367,7 @@ void Dialog_MidiMixer::channels_pan_mod_lfo_update_callback(int chan, int lfo)
 	else
 	{
 		// Invalid channel
-		pan_mod_levels_updated = false;
+		pan_mod_lfos_updated.store(false);
 	}
 }
 
@@ -1359,7 +1403,7 @@ void Dialog_MidiMixer::channels_program_update_callback(int chan, int program)
 	if ((program >= 0) && (program <= 128) && (chan >= 0) && (chan < 16))
 	{
 		channels_programs_names[chan] = QString::fromStdString(midi_instruments_names[program]);
-		textedits_programs_updated = true;
+		textedits_programs_updated.store(true);
 	}
 }
 

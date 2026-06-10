@@ -32,6 +32,7 @@
 #include "Dialog_HammondOrgan.h"
 #include "Dialog_StringSynthesizer.h"
 #include "Dialog_PADsynthesizer.h"
+#include "Dialog_MSOsynthesizer.h"
 #include "MainWindow.h"
 #include "CustomFileDialog.h"
 
@@ -88,6 +89,7 @@ InstrumentPannel::InstrumentPannel(QWidget *parent,
 	dialog_hammond_organ = nullptr;
 	dialog_string_synthesizer = nullptr;
 	dialog_pad_synthesizer = nullptr;
+	dialog_mso_synthesizer = nullptr;
 	dialog_keyboard_mapper = nullptr;
 
 	// Connect signals
@@ -377,6 +379,10 @@ void InstrumentPannel::on_instrument_open_clicked()
 	{
 		open_pad_synthesizer_dialog();
 	}
+	else if (instrument_name == _INSTRUMENT_NAME_MSO_SYNTH_STR_KEY)
+	{
+		open_mso_synthesizer_dialog();
+	}
 	else if (instrument_name == _INSTRUMENT_NAME_KEYBOARD_MAPPER_STR_KEY)
 	{
 		open_keyboard_mapper_dialog();
@@ -623,6 +629,21 @@ void InstrumentPannel::open_pad_synthesizer_dialog()
 	dialog_pad_synthesizer->activateWindow();
 }
 
+void InstrumentPannel::open_mso_synthesizer_dialog()
+{
+	if (dialog_mso_synthesizer == nullptr)
+	{
+		dialog_mso_synthesizer = Dialog_MSOsynthesizer::get_instance(this);
+		MainWindow::get_instance()->window_manager->register_dialog(dialog_mso_synthesizer, "MSO Synthesizer");
+		connect(dialog_mso_synthesizer, &QObject::destroyed, [this]() {
+			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_mso_synthesizer);
+		});
+	}
+	dialog_mso_synthesizer->show();
+	dialog_mso_synthesizer->raise();
+	dialog_mso_synthesizer->activateWindow();
+}
+
 void InstrumentPannel::open_keyboard_mapper_dialog()
 {
 	if (dialog_keyboard_mapper == nullptr)
@@ -687,11 +708,23 @@ void InstrumentPannel::open_synth_patch_preset_dialog(int preset_index)
 			}
 
 			load_synthesizer_patch_preset_file_thread = new LoadSynthesizerPatchPresetFileThread();
-			connect(load_synthesizer_patch_preset_file_thread,
-					&LoadSynthesizerPatchPresetFileThread::finished, load_synthesizer_patch_preset_file_thread, &QObject::deleteLater);
+			//connect(load_synthesizer_patch_preset_file_thread,
+			//		&LoadSynthesizerPatchPresetFileThread::finished, 
+			//		load_synthesizer_patch_preset_file_thread, 
+			//		&QObject::deleteLater);
 
-			connect(load_synthesizer_patch_preset_file_thread, &LoadSynthesizerPatchPresetFileThread::loadPresetFileDone,
-					this, &InstrumentPannel::on_preset_file_loaded);
+			connect(load_synthesizer_patch_preset_file_thread,
+					&LoadSynthesizerPatchPresetFileThread::finished,
+					this,
+					[=]() {
+						load_synthesizer_patch_preset_file_thread->deleteLater();
+						load_synthesizer_patch_preset_file_thread = nullptr; // Reset to nullptr after deletion
+					});
+
+			connect(load_synthesizer_patch_preset_file_thread, 
+					&LoadSynthesizerPatchPresetFileThread::loadPresetFileDone,
+					this, 
+					&InstrumentPannel::on_preset_file_loaded);
 			
 			load_synthesizer_patch_preset_file_thread->start();
 		}

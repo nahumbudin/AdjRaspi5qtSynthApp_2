@@ -21,3 +21,5 @@ au
 ar
 arr
 mod_synth_save
+save
+mso

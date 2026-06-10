@@ -145,6 +145,9 @@
                   <string>Dialog_StringSynthesizer.cpp</string>
                   <string>Dialog_KeyboardMapper.cpp</string>
                   <string>Dialog_PADsynthesizer.cpp</string>
+                  <string>Dialog_MSOsynthesizer.cpp</string>
+                  <string>Dialog_MSOsynthesizer_GuiHandlers.cpp</string>
+                  <string>Dialog_MSOsynthesizer_GuiInit.cpp</string>
                 </Files>
                 <RelatedFilterName>Source Files</RelatedFilterName>
               </VirtualSourceFolder>
@@ -186,6 +189,9 @@
                   <string>Dialog_HammondOrgan.h</string>
                   <string>Dialog_StringSynthesizer.h</string>
                   <string>Dialog_KeyboardMapper.h</string>
+                  <string>Dialog_MSOsynthesizer.h</string>
+                  <string>Dialog_AnalogReverb.h</string>
+                  <string>Dialog_PADsynthesizer.h</string>
                 </Files>
                 <RelatedFilterName>Header Files</RelatedFilterName>
               </VirtualSourceFolder>

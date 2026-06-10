@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <QColor>
@@ -16,6 +17,8 @@
 #define _HAMMOND_ORGAN_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/HammondOrgan"
 #define _STRING_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/StringSynth"
 #define _PAD_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/PADsynth"
+#define _MSO_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/MSOsynth"
+
 
 
 #define _MIDI_MIXER_CHANNELS_1_8	0
@@ -107,6 +110,11 @@
 #define _ADSR_CURVE_TIME_MULTIPLIER				8		// 8 pixels per second
 #define _ADSR_CURVE_SUSTAIN_SEGMENT_LENGTH		40
 #define _ADSR_CURVE_HEIGHT						90
+
+#define _MSO_SYNTH_ADSR_CURVE_START_POINT 0
+#define _MSO_SYNTH_ADSR_CURVE_TIME_MULTIPLIER 8 // 8 pixels per second
+#define _MSO_SYNTH_ADSR_CURVE_SUSTAIN_SEGMENT_LENGTH 40
+#define _MSO_SYNTH_ADSR_CURVE_HEIGHT 55
 
 #define _ADSR_CURVE_VIEW_WIDGET_SHOW_TIME_SEC	5
 

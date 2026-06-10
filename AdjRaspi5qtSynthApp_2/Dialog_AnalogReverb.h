@@ -46,6 +46,7 @@ class Dialog_AnalogReverb : public QDialog
   public slots:
 	virtual void update_gui(); // Called by a Timer
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 
   protected slots:
 

@@ -32,15 +32,19 @@
 
 Dialog_HammondOrgan *Dialog_HammondOrgan::dialog_hammond_organ_instance = NULL;
 
-LoadHammondOrganPresetFileThread *load_hammond_organ_preset_file_thread;
-SaveHammondOrganPresetFileThread *save_hammond_organ_preset_file_thread;
+LoadHammondOrganPresetFileThread *load_hammond_organ_preset_file_thread = nullptr;
+;
+SaveHammondOrganPresetFileThread *save_hammond_organ_preset_file_thread = nullptr;;
 
 QString hammond_organpreset_file_name;
 
 void hammond_organ_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Just forward to the dialog instance - it will emit a signal
-	Dialog_HammondOrgan::get_instance()->control_box_event_received(evnt, val);
+	Dialog_HammondOrgan *instance = Dialog_HammondOrgan::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 void SaveHammondOrganPresetFileThread::run()
@@ -103,6 +107,9 @@ Dialog_HammondOrgan::Dialog_HammondOrgan(QWidget *parent)
 
 Dialog_HammondOrgan::~Dialog_HammondOrgan()
 {
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+	
 	// Reset static instance pointer when destroyed
 	dialog_hammond_organ_instance = nullptr;
 	delete ui;
@@ -126,7 +133,7 @@ void Dialog_HammondOrgan::control_box_event_received(int evnt, uint16_t val)
 
 void Dialog_HammondOrgan::init_gui_elements()
 {
-	// Initialize GUI elements here
+	// Initialize GUI elements
 
 	ui->comboBox_HammondTuneOctave->blockSignals(true);
 	ui->comboBox_HammondTuneSemitones->blockSignals(true);
@@ -423,6 +430,9 @@ void Dialog_HammondOrgan::closeEvent(QCloseEvent *event)
 	{
 		close_event_callback_ptr();
 	}
+
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
 	
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
@@ -431,6 +441,15 @@ void Dialog_HammondOrgan::closeEvent(QCloseEvent *event)
 	event->ignore(); // Don't accept the close event
 	
 	hide();
+}
+
+void Dialog_HammondOrgan::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&hammond_organ_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
@@ -1104,11 +1123,30 @@ void Dialog_HammondOrgan::on_presets_open_pushbutton_clicked()
 				}
 			}
 
+			// Check if thread is still running - prevent creating duplicate threads
+			if (load_hammond_organ_preset_file_thread != nullptr &&
+				!load_hammond_organ_preset_file_thread->isFinished())
+			{
+				// Thread still running, ignore this request or wait
+				return;
+			}
+
 			load_hammond_organ_preset_file_thread = new LoadHammondOrganPresetFileThread();
 			connect(load_hammond_organ_preset_file_thread,
-					&LoadHammondOrganPresetFileThread::finished, load_hammond_organ_preset_file_thread, &QObject::deleteLater);
-			connect(load_hammond_organ_preset_file_thread, &LoadHammondOrganPresetFileThread::loadPresetFileDone,
-					this, &Dialog_HammondOrgan::on_preset_file_loaded);
+					&LoadHammondOrganPresetFileThread::finished,
+					this,
+					[=]() {
+						load_hammond_organ_preset_file_thread->deleteLater();
+						load_hammond_organ_preset_file_thread = nullptr; // Reset to nullptr after deletion
+					});
+			connect(load_hammond_organ_preset_file_thread,
+					&LoadHammondOrganPresetFileThread::loadPresetFileDone,
+					this,
+					&Dialog_HammondOrgan::on_preset_file_loaded);
+			// Reset pointer when thread is destroyed
+			connect(load_hammond_organ_preset_file_thread,
+					&QObject::destroyed,
+					[]() { load_hammond_organ_preset_file_thread = nullptr; });
 			load_hammond_organ_preset_file_thread->start();
 		}
 	}
@@ -1165,17 +1203,31 @@ void Dialog_HammondOrgan::on_presets_save_pushbutton_clicked()
 			file_name += std::filesystem::path(hammond_organpreset_file_name.toStdString()).stem().string();
 			//ui->textEdit_HammondPresetText->setText(QString::fromStdString(file_name));
 
+			// Check if thread is still running
+			if (save_hammond_organ_preset_file_thread != nullptr &&
+				!save_hammond_organ_preset_file_thread->isFinished())
+			{
+				return;
+			}
+			
 			// Start the save thread
 			save_hammond_organ_preset_file_thread = new SaveHammondOrganPresetFileThread();
 
 			connect(save_hammond_organ_preset_file_thread,
 					&SaveHammondOrganPresetFileThread::finished,
-					save_hammond_organ_preset_file_thread,
-					&QObject::deleteLater);
+					this,
+					[=]() {
+						save_hammond_organ_preset_file_thread->deleteLater();
+						save_hammond_organ_preset_file_thread = nullptr; // Reset to nullptr after deletion
+					});
 			connect(save_hammond_organ_preset_file_thread,
 					&SaveHammondOrganPresetFileThread::savePresetFileDone,
 					this,
 					&Dialog_HammondOrgan::on_preset_file_saved);
+			// Reset pointer when thread is destroyed
+			connect(save_hammond_organ_preset_file_thread,
+					&QObject::destroyed,
+					[]() { save_hammond_organ_preset_file_thread = nullptr; });
 
 			save_hammond_organ_preset_file_thread->start();
 		}
@@ -1194,6 +1246,12 @@ void Dialog_HammondOrgan::on_preset_file_saved(const QString &s)
 
 void Dialog_HammondOrgan::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	int val;
 
 	static int prev_send_filter_1_val = -1;

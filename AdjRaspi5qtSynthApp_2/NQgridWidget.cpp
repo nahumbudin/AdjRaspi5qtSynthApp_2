@@ -304,6 +304,11 @@ void NQgridWidget::selectColor()
 
 void decode_position(const QString &pos, int *row, int *col)
 {
+	if (!row || !col)
+	{
+		return; // Guard against null pointers
+	}
+	
 	if (pos.isEmpty()) {
 		*col = -1;
 		*row = -1;

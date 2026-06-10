@@ -72,6 +72,7 @@ class Dialog_AnalogSynth_1900x1000 : public QDialog
 
 public slots:
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 	virtual void update_gui(); // Called by a Timer
 	
 protected:

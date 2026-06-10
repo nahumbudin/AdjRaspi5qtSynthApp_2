@@ -159,6 +159,12 @@ void Dialog_AnalogSynth_1900x1000::set_equalizer_signals_connections()
 
 void Dialog_AnalogSynth_1900x1000::equalizer_update()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	ui->verticalSlider_BandEquilizer31->blockSignals(true);
 	ui->verticalSlider_BandEquilizer31->setValue(mod_synth_get_active_equilizer_band31_level() + 20); // -20 ... +20 -> 0 .. 40
 	ui->verticalSlider_BandEquilizer31->blockSignals(false);

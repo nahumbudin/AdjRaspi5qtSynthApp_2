@@ -48,6 +48,8 @@ class Dialog_HammondOrgan : public QDialog
 
   public slots:
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
+
 	virtual void update_gui(); // Called by a Timer
 
   protected slots:

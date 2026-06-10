@@ -25,6 +25,12 @@ void Dialog_MidiMixer::update_gui()
 {
 	int ch;
 
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+
 	if (active_lfo_widget_showing)
 	{
 		active_lfo_frame_no_activity_counter--;
@@ -37,7 +43,7 @@ void Dialog_MidiMixer::update_gui()
 
 	for (ch = 0; ch < 16; ch++)
 	{
-		if (levels_updated)
+		if (levels_updated.load())
 		{
 			on_level_changed(ch, channels_levels[ch]);
 
@@ -50,7 +56,7 @@ void Dialog_MidiMixer::update_gui()
 			spinboxes_levels[ch]->blockSignals(false);
 		}
 
-		if (sends_updated)
+		if (sends_updated.load())
 		{
 			on_send_level_changed(ch, channels_send_levels[ch]);
 			
@@ -63,7 +69,7 @@ void Dialog_MidiMixer::update_gui()
 			spinboxes_send[ch]->blockSignals(false);
 		}
 
-		if (pans_updated)
+		if (pans_updated.load())
 		{
 			on_pan_changed(ch, channels_pan[ch]);
 
@@ -76,7 +82,7 @@ void Dialog_MidiMixer::update_gui()
 			spinboxes_pan[ch]->blockSignals(false);
 		}
 
-		if (pan_mod_levels_updated)
+		if (pan_mod_levels_updated.load())
 		{
 			on_pan_mod_level_changed(ch, channels_pan_mod_levels[ch]);
 
@@ -89,7 +95,7 @@ void Dialog_MidiMixer::update_gui()
 			spinboxes_pan_lfo_mod_level[ch]->blockSignals(false);
 		}
 
-		if (pan_mod_lfos_updated)
+		if (pan_mod_lfos_updated.load())
 		{
 			on_pan_mod_lfo_changed(ch, channels_pan_mod_lfo_selection[ch]);
 			
@@ -98,7 +104,7 @@ void Dialog_MidiMixer::update_gui()
 			comboboxes_pan_lfo_mod[ch]->blockSignals(false);
 		}
 
-		if (send_levels_updated)
+		if (send_levels_updated.load())
 		{
 			on_send_level_changed(ch, channels_send_levels[ch]);
 
@@ -111,14 +117,14 @@ void Dialog_MidiMixer::update_gui()
 			spinboxes_send[ch]->blockSignals(false);
 		}
 
-		if (static_levels_updated)
+		if (static_levels_updated.load())
 		{
 			checkboxes_static_levels[ch]->blockSignals(true);
 			checkboxes_static_levels[ch]->setChecked(channels_static_level[ch]);
 			checkboxes_static_levels[ch]->blockSignals(false);
 		}
 		
-		if (textedits_programs_updated)
+		if (textedits_programs_updated.load())
 		{
 			textedits_channel_programs[ch]->blockSignals(true);
 			textedits_channel_programs[ch]->setText(channels_programs_names[ch]);
@@ -138,12 +144,13 @@ void Dialog_MidiMixer::update_gui()
 		}
 	}
 
-	levels_updated = false;
-	pans_updated = false;
-	sends_updated = false;
-	pan_mod_levels_updated = false;
-	pan_mod_lfos_updated = false;
-	send_levels_updated = false;
-	static_levels_updated = false;
-	textedits_programs_updated = false;
+	levels_updated.store(false);
+	pans_updated.store(false);
+	sends_updated.store(false);
+	pan_mod_levels_updated.store(false);
+	pan_mod_lfos_updated.store(false);
+	send_levels_updated.store(false);
+	static_levels_updated.store(false);
+	textedits_programs_updated.store(false);
+	activity_leds_updated.store(false);
 }

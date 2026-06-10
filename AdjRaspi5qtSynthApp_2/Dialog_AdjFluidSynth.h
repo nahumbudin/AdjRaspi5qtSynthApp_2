@@ -51,6 +51,7 @@ public :
 	
 public slots:
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 	virtual void update_gui(); // Called by a Timer
 
   private slots:

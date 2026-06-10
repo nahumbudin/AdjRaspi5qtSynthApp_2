@@ -19,6 +19,9 @@
 #include <QHeaderView>
 #include <QSplitter>
 #include <QTimer>
+#include <QPointer>
+#include <QDebug>
+#include <QApplication>
 
 CustomFileDialog::CustomFileDialog(QWidget *parent,
 								   const QString &caption,
@@ -46,7 +49,13 @@ CustomFileDialog::CustomFileDialog(QWidget *parent,
 	pathEdit->setText(currentDirectory);
 
 	// Create tree view for directories
-	treeView = new QTreeView(this);
+	//treeView = new QTreeView(this);
+	treeView = new CustomTreeView(this);
+
+	treeView->setAnimated(false);		   // Disable animations
+	treeView->setIndentation(20);		   // Fixed indent
+	treeView->setUniformRowHeights(false); // Proper height calculation
+	
 	treeView->setModel(model);
 	treeView->setRootIndex(model->index(QDir::rootPath()));
 	treeView->setColumnWidth(0, 200);
@@ -172,13 +181,16 @@ CustomFileDialog::CustomFileDialog(QWidget *parent,
 	}
 
 	// Expand tree to current directory
-	treeView->setCurrentIndex(model->index(currentDirectory));
-	treeView->scrollTo(model->index(currentDirectory), QAbstractItemView::PositionAtCenter);
+	//treeView->setCurrentIndex(model->index(currentDirectory));
+	//treeView->scrollTo(model->index(currentDirectory), QAbstractItemView::PositionAtCenter);
 
 	// Connect signals
 	connect(listView, &QListView::clicked, this, &CustomFileDialog::onFileClicked);
 	connect(listView, &QListView::doubleClicked, this, &CustomFileDialog::onFileDoubleClicked);
-	connect(treeView, &QTreeView::clicked, this, &CustomFileDialog::onTreeClicked);
+	
+	//connect(treeView, &QTreeView::clicked, this, &CustomFileDialog::onTreeClicked);
+	connect(treeView, &CustomTreeView::itemClicked, this, &CustomFileDialog::onTreeClicked);
+	
 	connect(okButton, &QPushButton::clicked, this, &CustomFileDialog::onOkClicked);
 	connect(cancelButton, &QPushButton::clicked, this, &CustomFileDialog::onCancelClicked);
 	connect(filterCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CustomFileDialog::onFilterChanged);
@@ -292,7 +304,17 @@ void CustomFileDialog::navigateToDirectory(const QString &path)
 	{
 		currentDirectory = path;
 		pathEdit->setText(path);
+
+		listView->clearSelection();
+		listView->setCurrentIndex(QModelIndex());
 		listView->setRootIndex(model->index(path));
+
+		if (dialogMode == OpenMode)
+		{
+			fileNameEdit->clear();
+			selectedFilePath.clear();
+		}
+
 		treeView->setCurrentIndex(model->index(path));
 		treeView->scrollTo(model->index(path), QAbstractItemView::PositionAtCenter);
 	}
@@ -301,6 +323,7 @@ void CustomFileDialog::navigateToDirectory(const QString &path)
 void CustomFileDialog::onFileClicked(const QModelIndex &index)
 {
 	QFileInfo info = model->fileInfo(index);
+
 	if (info.isFile())
 	{
 		fileNameEdit->setText(info.fileName());
@@ -329,7 +352,8 @@ void CustomFileDialog::onFileDoubleClicked(const QModelIndex &index)
 void CustomFileDialog::onTreeClicked(const QModelIndex &index)
 {
 	QFileInfo info = model->fileInfo(index);
-	if (info.isDir())
+
+	if (info.isDir() && info.exists())
 	{
 		navigateToDirectory(info.absoluteFilePath());
 	}
@@ -377,24 +401,52 @@ void CustomFileDialog::showEvent(QShowEvent *event)
 {
 	QDialog::showEvent(event);
 
-	// Scroll after dialog is shown
+	// Expand tree to current directory
+	QModelIndex idx = model->index(currentDirectory);
+	QModelIndex parent = idx.parent();
+	while (parent.isValid())
+	{
+		treeView->expand(parent);
+		parent = parent.parent();
+	}
+	treeView->setCurrentIndex(idx);
+	treeView->scrollTo(idx, QAbstractItemView::PositionAtCenter);
+
+	// Fix tree view geometry by toggling focus
+	// This triggers viewport recalculation after programmatic expansion
+	QTimer::singleShot(0, this, [this]() {
+		fileNameEdit->setFocus();
+		QApplication::processEvents();
+		treeView->setFocus();
+		treeView->doItemsLayout();
+	});
+
+	// Handle pending file selection
 	if (!pendingFileSelection.isEmpty())
 	{
-		// First ensure the directory is set
 		QString dir = QFileInfo(pendingFileSelection).absolutePath();
 		listView->setRootIndex(model->index(dir));
 
-		// Then scroll with a longer delay
-		QTimer::singleShot(500, this, [this]() {
-			QModelIndex index = model->index(pendingFileSelection);
+		QPointer<CustomFileDialog> weakThis(this);
+		QString filePath = pendingFileSelection;
+
+		QTimer::singleShot(100, this, [weakThis, filePath]() {
+			if (!weakThis)
+			{
+				return;
+			}
+
+			QModelIndex index = weakThis->model->index(filePath);
 			if (index.isValid())
 			{
-				// Use selection model and ensure visibility
-				listView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
-				listView->scrollTo(index, QAbstractItemView::PositionAtCenter);
-
-				pendingFileSelection.clear();
+				weakThis->listView->selectionModel()->setCurrentIndex(
+					index, QItemSelectionModel::ClearAndSelect);
+				weakThis->listView->scrollTo(index, QAbstractItemView::PositionAtCenter);
+				weakThis->fileNameEdit->setText(QFileInfo(filePath).fileName());
+				weakThis->selectedFilePath = filePath;
 			}
+
+			weakThis->pendingFileSelection.clear();
 		});
 	}
 }

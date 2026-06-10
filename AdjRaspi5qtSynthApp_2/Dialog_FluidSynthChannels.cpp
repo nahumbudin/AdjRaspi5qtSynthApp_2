@@ -622,7 +622,7 @@ void Dialog_FluidSynthChannels::open_soundfont_file()
 		if (ret == QMessageBox::Yes)
 		{
 			char mssg[256];
-			sprintf(mssg, "%s SoundFont was loaded.", fileName.toStdString().c_str());
+			std::string msg = fileName.toStdString() + " SoundFont was loaded.";
 			//MainWindow::getInstance()->updateStatusDisplayText(mssg);
 			mod_synth_load_and_set_fluid_synth_soundfont(fileName.toStdString());
 			printf("%s", mssg);

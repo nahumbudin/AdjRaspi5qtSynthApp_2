@@ -79,6 +79,7 @@ public :
   public slots:
 	virtual void update_gui(); // Called by a Timer
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 
   private slots:
 	// Slot that handles the actual UI update (runs in GUI thread)
@@ -325,15 +326,15 @@ private:
 	QSpinBox *spinboxes_send[16];
 	QTextEdit *textedits_channel_programs[16];
 
-	bool levels_updated = true;
-	bool pans_updated = true;
-	bool sends_updated = true;
-	bool pan_mod_levels_updated = true;
-	bool pan_mod_lfos_updated = true;
-	bool send_levels_updated = true;
-	bool static_levels_updated = true;
-	bool textedits_programs_updated = true;
-	bool activity_leds_updated = true;
+	std::atomic<bool> levels_updated{true};
+	std::atomic<bool> pans_updated{true};
+	std::atomic<bool> sends_updated{true};
+	std::atomic<bool> pan_mod_levels_updated{true};
+	std::atomic<bool> pan_mod_lfos_updated{true};
+	std::atomic<bool> send_levels_updated{true};
+	std::atomic<bool> static_levels_updated{true};
+	std::atomic<bool> textedits_programs_updated{true};
+	std::atomic<bool> activity_leds_updated{true};
 
 	int active_lfo = _LFO_NONE;
 	int active_lfo_waveform = _OSC_WAVEFORM_SINE;

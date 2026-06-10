@@ -42,6 +42,7 @@ class Dialog_AnalogEqualizer : public QDialog
   public slots:
 	virtual void update_gui(); // Called by a Timer
 	void closeEvent(QCloseEvent *event);
+	void showEvent(QShowEvent *event);
 
   private slots:
 	// Slot that handles the actual UI update (runs in GUI thread)

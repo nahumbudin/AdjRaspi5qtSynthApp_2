@@ -24,14 +24,18 @@
 
 Dialog_PADsynthesizer *Dialog_PADsynthesizer::dialog_pad_synthesizer_instance = nullptr;
 
-LoadPADsynthesizerPresetFileThread *load_pad_synthesizer_preset_file_thread;
-SavePADsynthesizerPresetFileThread *save_pad_synthesizer_preset_file_thread;
+LoadPADsynthesizerPresetFileThread *load_pad_synthesizer_preset_file_thread = nullptr;
+SavePADsynthesizerPresetFileThread *save_pad_synthesizer_preset_file_thread = nullptr;
 
 QString pad_synth_preset_file_name;
 
 void pad_synthesizer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_PADsynthesizer::get_instance()->control_box_event_received(evnt, val);
+	Dialog_PADsynthesizer *instance = Dialog_PADsynthesizer::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 void SavePADsynthesizerPresetFileThread::run()
@@ -81,9 +85,14 @@ Dialog_PADsynthesizer::Dialog_PADsynthesizer(QWidget *parent)
 	init_gui_elements();
 	set_signal_slots_connections();
 
+	adsr_curve_max_attack = mod_synth_get_adsr_max_attack_time_sec();
+	adsr_curve_max_decay = mod_synth_get_adsr_max_decay_time_sec();
+	adsr_curve_max_sustain = 100; //%
+	adsr_curve_max_release = mod_synth_get_adsr_max_release_time_sec();
+
 	update_adsr_plot = true;
 	update_spectrum_plot = true;
-	update_adsr_plot = true;
+	//update_adsr_plot = true;
 
 	// Register with GuiNavigator (no tabs, no frames for PAD Synthesizer)
 	GuiNavigator::get_instance()->register_dialog(this, "PAD Synthesizer");
@@ -626,6 +635,9 @@ void Dialog_PADsynthesizer::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
@@ -633,6 +645,15 @@ void Dialog_PADsynthesizer::closeEvent(QCloseEvent *event)
 	event->ignore(); // Don't accept the close event
 
 	hide();
+}
+
+void Dialog_PADsynthesizer::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&pad_synthesizer_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
@@ -1096,7 +1117,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					ui->verticalSlider_PADsynth_HarmonyDetune->setValue(pad_harmonies_detune);
 				}
 			}
-			if (evnt == _I2C_CONTROL_SLIDER_14)
+			if (evnt == _I2C_CONTROL_SLIDER_15)
 			{
 				// Gray Red slider - Base width control
 				// Get new base width value from slider and calculate gap from current UI value
@@ -1222,11 +1243,22 @@ void Dialog_PADsynthesizer::on_presets_open_pushbutton_clicked()
 				}
 			}
 
+			// Check if thread is still running
+			if (load_pad_synthesizer_preset_file_thread != nullptr &&
+				!load_pad_synthesizer_preset_file_thread->isFinished())
+			{
+				return;
+			}
+
 			load_pad_synthesizer_preset_file_thread = new LoadPADsynthesizerPresetFileThread();
 			connect(load_pad_synthesizer_preset_file_thread,
 					&LoadPADsynthesizerPresetFileThread::finished, load_pad_synthesizer_preset_file_thread, &QObject::deleteLater);
 			connect(load_pad_synthesizer_preset_file_thread, &LoadPADsynthesizerPresetFileThread::loadPresetFileDone,
 					this, &Dialog_PADsynthesizer::on_preset_file_loaded);
+			// Reset pointer when thread is destroyed
+			connect(load_pad_synthesizer_preset_file_thread,
+					&QObject::destroyed,
+					[]() { load_pad_synthesizer_preset_file_thread = nullptr; });
 			load_pad_synthesizer_preset_file_thread->start();
 		}
 	}
@@ -1283,6 +1315,13 @@ void Dialog_PADsynthesizer::on_presets_save_pushbutton_clicked()
 			file_name += std::filesystem::path(pad_synth_preset_file_name.toStdString()).stem().string();
 			// ui->textEdit_HammondPresetText->setText(QString::fromStdString(file_name));
 
+			// Check if thread is still running
+			if (save_pad_synthesizer_preset_file_thread != nullptr &&
+				!save_pad_synthesizer_preset_file_thread->isFinished())
+			{
+				return;
+			}
+			
 			// Start the save thread
 			save_pad_synthesizer_preset_file_thread = new SavePADsynthesizerPresetFileThread();
 			connect(save_pad_synthesizer_preset_file_thread,
@@ -1293,6 +1332,10 @@ void Dialog_PADsynthesizer::on_presets_save_pushbutton_clicked()
 					&SavePADsynthesizerPresetFileThread::savePresetFileDone,
 					this,
 					&Dialog_PADsynthesizer::on_preset_file_saved);
+			// Reset pointer when thread is destroyed
+			connect(save_pad_synthesizer_preset_file_thread,
+					&QObject::destroyed,
+					[]() { save_pad_synthesizer_preset_file_thread = nullptr; });
 
 			save_pad_synthesizer_preset_file_thread->start();
 		}
@@ -1421,6 +1464,9 @@ void Dialog_PADsynthesizer::on_mod_lfo_frequency_dial_changed(int val)
 	ui->lineEdit_PADsynth_LFOrate->setText(QString(text));
 
 	mod_synth_pad_synth_event_int(_PAD_SYNTH_EVENT, _MOD_LFO_RATE, val);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
 void Dialog_PADsynthesizer::on_mod_lfo_symmetry_dial_changed(int val)
@@ -1437,6 +1483,9 @@ void Dialog_PADsynthesizer::on_mod_lfo_symmetry_dial_changed(int val)
 	ui->lineEdit_PADsynth_LFOsymmetry->setText(QString(text));
 
 	mod_synth_pad_synth_event_int(_PAD_SYNTH_EVENT, _MOD_LFO_SYMMETRY, val);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
 void Dialog_PADsynthesizer::on_mod_lfo_waveform_combobox_changed(int val)
@@ -1447,6 +1496,9 @@ void Dialog_PADsynthesizer::on_mod_lfo_waveform_combobox_changed(int val)
 
 	amp_mod_waveform = val;
 	mod_synth_pad_synth_event_int(_PAD_SYNTH_EVENT, _MOD_LFO_WAVEFORM, val);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
 void Dialog_PADsynthesizer::on_mod_env_level_dial_changed(int val)
@@ -1920,13 +1972,14 @@ void Dialog_PADsynthesizer::on_harmonies_detune_slider_changed(int val)
 
 void Dialog_PADsynthesizer::update_gui()
 {
-	if (update_adsr_plot)
+	// Don't update if dialog is not visible
+	if (!isVisible())
 	{
-		adsr_curve_max_attack = mod_synth_get_adsr_max_attack_time_sec();
-		adsr_curve_max_decay = mod_synth_get_adsr_max_decay_time_sec();
-		adsr_curve_max_sustain = 100; //%
-		adsr_curve_max_release = mod_synth_get_adsr_max_release_time_sec();
-		
+		return;
+	}
+	
+	if (update_adsr_plot)
+	{		
 		set_adsr_plot_widget_points();
 		refresh_adsr_curve_view(ui->widget_ADSRplot);
 		

@@ -1,0 +1,228 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiHandlers.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiHandlers.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOSynthesizer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_MSOSynthesizer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiInit.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiInit.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_PADsynthesizer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_PADsynthesizer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\LibAPI\\synthesizer.h||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\libAdjRaspi5Synth2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\FiltersGui.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\FiltersGui.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthEventsHandlingMSO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\MsoGui.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\MsoGui.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_AnalogSynth_1900x1000.h||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_AnalogSynth_1900x1000.h||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthSettingsCallbacksProgramMSO.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Dialog_MSOsynthesizer_GuiInit.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiInit.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiInit.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiInit.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiInit.cpp",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAQwA4AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-02T15:30:49.333Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dialog_MSOsynthesizer_GuiHandlers.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiHandlers.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiHandlers.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiHandlers.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer_GuiHandlers.cpp",
+              "ViewState": "AgIAAE4BAAAAAAAAAAAnwFsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-02T09:48:02.873Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Dialog_MSOsynthesizer.h",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.h",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.h",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.h",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.h",
+              "ViewState": "AgIAAGwAAAAAAAAAAAA5wHEAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-05-29T07:50:01.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Dialog_MSOsynthesizer.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_MSOsynthesizer.cpp",
+              "ViewState": "AgIAAK8BAAAAAAAAAAAAALcBAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-05-29T08:00:37.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Dialog_PADsynthesizer.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_PADsynthesizer.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_PADsynthesizer.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_PADsynthesizer.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_PADsynthesizer.cpp",
+              "ViewState": "AgIAALsFAAAAAAAAAAAYwM8FAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-01T20:14:15.826Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "adjSynthSettingsCallbacksProgramMSO.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthSettingsCallbacksProgramMSO.cpp",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthSettingsCallbacksProgramMSO.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthSettingsCallbacksProgramMSO.cpp",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthSettingsCallbacksProgramMSO.cpp",
+              "ViewState": "AgIAALcBAAAAAAAAAAAAALcBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-01T13:49:20.314Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Dialog_AnalogSynth_1900x1000.h",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_AnalogSynth_1900x1000.h",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_AnalogSynth_1900x1000.h",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_AnalogSynth_1900x1000.h",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_AnalogSynth_1900x1000.h",
+              "ViewState": "AgIAAB4CAAAAAAAAAAAWwCcCAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-05-31T20:37:38.896Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MsoGui.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\MsoGui.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\MsoGui.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\MsoGui.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\MsoGui.cpp",
+              "ViewState": "AgIAAHICAAAAAAAAAAApwIMCAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-05-31T20:24:42.779Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "adjSynthEventsHandlingMSO.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthEventsHandlingMSO.cpp",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthEventsHandlingMSO.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthEventsHandlingMSO.cpp",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\AdjSynth\\adjSynthEventsHandlingMSO.cpp",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAswJ0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-05-31T20:15:43.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "synthesizer.h",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\LibAPI\\synthesizer.h",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\LibAPI\\synthesizer.h",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\LibAPI\\synthesizer.h",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\LibAPI\\synthesizer.h",
+              "ViewState": "AgIAAMcCAAAAAAAAAAAowNsCAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-05-30T12:01:12.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "FiltersGui.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\FiltersGui.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\FiltersGui.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\FiltersGui.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\FiltersGui.cpp",
+              "ViewState": "AgIAAAABAAAAAAAAAAAcwMcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-05-30T10:57:53.221Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "libAdjRaspi5Synth2.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\libAdjRaspi5Synth2.cpp",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\libAdjRaspi5Synth2.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\libAdjRaspi5Synth2.cpp",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\libAdjRaspi5Synth2.cpp",
+              "ViewState": "AgIAAJsEAAAAAAAAAAAkwKcEAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-05-30T09:02:29.935Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

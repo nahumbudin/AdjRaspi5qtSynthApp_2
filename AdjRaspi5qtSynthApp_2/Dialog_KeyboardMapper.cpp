@@ -105,6 +105,9 @@ Dialog_KeyboardMapper::Dialog_KeyboardMapper(QWidget *parent)
 
 Dialog_KeyboardMapper::~Dialog_KeyboardMapper()
 {
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+	
 	// Reset static instance pointer when destroyed
 	dialog_keyboard_mapper_instance = nullptr;
 	delete ui;
@@ -236,6 +239,9 @@ void Dialog_KeyboardMapper::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
@@ -243,6 +249,15 @@ void Dialog_KeyboardMapper::closeEvent(QCloseEvent *event)
 	event->ignore(); // Don't accept the close event
 
 	hide();
+}
+
+void Dialog_KeyboardMapper::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&keyboard_mapper_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)

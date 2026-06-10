@@ -26,15 +26,18 @@
 
 Dialog_StringSynthesizer *Dialog_StringSynthesizer::dialog_string_synthesizer_instance = NULL;
 
-LoadStringSynthesizerPresetFileThread *load_string_synthesizer_preset_file_thread;
-SaveStringSynthesizerPresetFileThread *save_string_synthesizer_preset_file_thread;
+LoadStringSynthesizerPresetFileThread *load_string_synthesizer_preset_file_thread = nullptr;
+SaveStringSynthesizerPresetFileThread *save_string_synthesizer_preset_file_thread = nullptr;
 
 QString string_synth_preset_file_name;
 
 void string_synthesizer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Just forward to the dialog instance - it will emit a signal
-	Dialog_StringSynthesizer::get_instance()->control_box_event_received(evnt, val);
+	Dialog_StringSynthesizer *instance = Dialog_StringSynthesizer::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 void SaveStringSynthesizerPresetFileThread::run()
@@ -101,6 +104,9 @@ Dialog_StringSynthesizer::Dialog_StringSynthesizer(QWidget *parent)
 
 Dialog_StringSynthesizer::~Dialog_StringSynthesizer()
 {
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+	
 	// Reset static instance pointer when destroyed
 	dialog_string_synthesizer_instance = nullptr;
 	delete ui;
@@ -393,6 +399,9 @@ void Dialog_StringSynthesizer::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
@@ -400,6 +409,15 @@ void Dialog_StringSynthesizer::closeEvent(QCloseEvent *event)
 	event->ignore(); // Don't accept the close event
 
 	hide();
+}
+
+void Dialog_StringSynthesizer::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&string_synthesizer_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
@@ -1066,11 +1084,25 @@ void Dialog_StringSynthesizer::on_presets_open_pushbutton_clicked()
 				}
 			}
 
+			if (load_string_synthesizer_preset_file_thread != nullptr &&
+				!load_string_synthesizer_preset_file_thread->isFinished())
+			{
+				return;
+			}
+
 			load_string_synthesizer_preset_file_thread = new LoadStringSynthesizerPresetFileThread();
 			connect(load_string_synthesizer_preset_file_thread,
-					&LoadStringSynthesizerPresetFileThread::finished, load_string_synthesizer_preset_file_thread, &QObject::deleteLater);
-			connect(load_string_synthesizer_preset_file_thread, &LoadStringSynthesizerPresetFileThread::loadPresetFileDone,
-					this, &Dialog_StringSynthesizer::on_preset_file_loaded);
+					&LoadStringSynthesizerPresetFileThread::finished, 
+					load_string_synthesizer_preset_file_thread, 
+					&QObject::deleteLater);
+			connect(load_string_synthesizer_preset_file_thread, 
+					&LoadStringSynthesizerPresetFileThread::loadPresetFileDone,
+					this, 
+					&Dialog_StringSynthesizer::on_preset_file_loaded);
+			// Reset pointer when thread is destroyed
+			connect(load_string_synthesizer_preset_file_thread,
+					&QObject::destroyed,
+					[]() { load_string_synthesizer_preset_file_thread = nullptr; });
 			load_string_synthesizer_preset_file_thread->start();
 		}
 	}
@@ -1127,6 +1159,12 @@ void Dialog_StringSynthesizer::on_presets_save_pushbutton_clicked()
 			file_name += std::filesystem::path(string_synth_preset_file_name.toStdString()).stem().string();
 			// ui->textEdit_HammondPresetText->setText(QString::fromStdString(file_name));
 
+			if (save_string_synthesizer_preset_file_thread != nullptr &&
+				!save_string_synthesizer_preset_file_thread->isFinished())
+			{
+				return;
+			}
+			
 			// Start the save thread
 			save_string_synthesizer_preset_file_thread = new SaveStringSynthesizerPresetFileThread();
 
@@ -1138,6 +1176,10 @@ void Dialog_StringSynthesizer::on_presets_save_pushbutton_clicked()
 					&SaveStringSynthesizerPresetFileThread::savePresetFileDone,
 					this,
 					&Dialog_StringSynthesizer::on_preset_file_saved);
+			// Reset pointer when thread is destroyed
+			connect(save_string_synthesizer_preset_file_thread,
+					&QObject::destroyed,
+					[]() { save_string_synthesizer_preset_file_thread = nullptr; });
 
 			save_string_synthesizer_preset_file_thread->start();
 		}
@@ -1154,6 +1196,12 @@ void Dialog_StringSynthesizer::on_preset_file_saved(const QString &s)
 
 void Dialog_StringSynthesizer::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	int val;
 
 	static int prev_kps_excitation_waveform = -1;

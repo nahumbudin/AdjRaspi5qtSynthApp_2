@@ -28,8 +28,11 @@ Dialog_AnalogEqualizer *Dialog_AnalogEqualizer::dialog_analog_equalizer_instance
 
 void analog_equalizer_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Just forward to the dialog instance - it will emit a signal
-	Dialog_AnalogEqualizer::get_instance()->control_box_event_received(evnt, val);
+	Dialog_AnalogEqualizer *instance = Dialog_AnalogEqualizer::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 Dialog_AnalogEqualizer::Dialog_AnalogEqualizer(QWidget *parent)
@@ -68,14 +71,15 @@ Dialog_AnalogEqualizer::Dialog_AnalogEqualizer(QWidget *parent)
 		"Analog Equalizer",
 		nullptr, // No tab widget
 		frames_per_tab);
-
-	mod_synth_register_callback_control_box_event_update_ui(
-		&analog_equalizer_control_box_event_update_ui_callback_wrapper);
 }
 
 Dialog_AnalogEqualizer::~Dialog_AnalogEqualizer()
 {
-	
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
+	dialog_analog_equalizer_instance = nullptr;
+	delete ui;
 }
 
 Dialog_AnalogEqualizer *Dialog_AnalogEqualizer::get_instance(QWidget *parent)
@@ -298,6 +302,12 @@ void Dialog_AnalogEqualizer::set_equalizer_signals_connections()
 
 void Dialog_AnalogEqualizer::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	ui->verticalSlider_BandEquilizer31->blockSignals(true);
 	ui->verticalSlider_BandEquilizer31->setValue(mod_synth_get_active_equilizer_band31_level() + 20); // -20 ... +20 -> 0 .. 40
 	ui->verticalSlider_BandEquilizer31->blockSignals(false);
@@ -590,6 +600,9 @@ void Dialog_AnalogEqualizer::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
@@ -597,6 +610,15 @@ void Dialog_AnalogEqualizer::closeEvent(QCloseEvent *event)
 	event->ignore(); // Don't accept the close event
 
 	hide();
+}
+
+void Dialog_AnalogEqualizer::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&analog_equalizer_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_AnalogEqualizer::on_dialog_close()

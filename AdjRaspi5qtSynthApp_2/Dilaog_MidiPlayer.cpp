@@ -33,7 +33,7 @@
 #include "CustomFileDialog.h"
 
 QString midi_file_name;
-OpenMidiPlayerFileThread *open_file_thread;
+OpenMidiPlayerFileThread *open_file_thread = nullptr;;
 
 int playback_progres_percentegas = 0;
 
@@ -113,6 +113,9 @@ Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 {
 	ui->setupUi(this);
 	dialog_adj_midi_player_instance = this;
+
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
 
 	// ADD ICONS TO BUTTONS
 	QStyle *style = QApplication::style();
@@ -267,7 +270,15 @@ Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 
 Dialog_MidiPlayer::~Dialog_MidiPlayer()
 {
+	// Disable callbacks by registering NULL during destruction
+	mod_synth_register_midi_player_potision_update_callback(NULL);
+	mod_synth_register_midi_player_total_song_playing_time_update_callback(NULL);
+	mod_synth_register_midi_player_song_playing_time_update_callback(NULL);
+	mod_synth_register_midi_player_song_remaining_playing_time_update_callback(NULL);
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
 	
+	dialog_adj_midi_player_instance = nullptr;
+	delete ui;
 }
 
 Dialog_MidiPlayer *Dialog_MidiPlayer::get_instance(QWidget *parent)
@@ -289,12 +300,31 @@ void Dialog_MidiPlayer::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callbacks by registering NULL when hiding
+	mod_synth_register_midi_player_potision_update_callback(NULL);
+	mod_synth_register_midi_player_total_song_playing_time_update_callback(NULL);
+	mod_synth_register_midi_player_song_playing_time_update_callback(NULL);
+	mod_synth_register_midi_player_song_remaining_playing_time_update_callback(NULL);
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 	
 	hide();
 
 	QDialog::closeEvent(event);
+}
+
+void Dialog_MidiPlayer::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callbacks when showing dialog
+	mod_synth_register_midi_player_potision_update_callback(&update_ui_progress_percentages);
+	mod_synth_register_midi_player_total_song_playing_time_update_callback(&update_ui_total_song_playing_time);
+	mod_synth_register_midi_player_song_playing_time_update_callback(&update_ui_song_playing_time);
+	mod_synth_register_midi_player_song_remaining_playing_time_update_callback(&update_ui_song_remaining_playing_time);
+	mod_synth_register_callback_control_box_event_update_ui(&midi_player_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_MidiPlayer::moveEvent(QMoveEvent *event) {
@@ -494,7 +524,8 @@ void Dialog_MidiPlayer::display_channel_utilization(midi_file_meta_data_t &meta_
 		ui->tableWidget_MidiPlayerChannels->setItem(1, ch, item_count);
 
 		// Row 2: Usage percentage
-		int percentage = (max_count > 0) ? (meta_data.channels_counters[ch] * 100 / max_count) : 0;
+		int percentage = (max_count > 0) ? 
+			static_cast<int>((static_cast<long long>(meta_data.channels_counters[ch]) * 100) / max_count) : 0;
 		QTableWidgetItem *item_percent = new QTableWidgetItem(QString::number(percentage) + "%");
 		item_percent->setTextAlignment(Qt::AlignCenter);
 		item_percent->setForeground(QBrush(Qt::black)); // Black text
@@ -587,10 +618,21 @@ void Dialog_MidiPlayer::on_open_file_clicked()
 
 			ui->lineEdit_MidiPlayeFileName->setText(QString::fromStdString(file_name));
 
+			// Check if thread is still running
+			if (open_file_thread != nullptr && !open_file_thread->isFinished())
+			{
+				// Thread still running, ignore request
+				return;
+			}
+			
 			open_file_thread = new OpenMidiPlayerFileThread();
 			connect(open_file_thread,
 					&OpenMidiPlayerFileThread::finished, open_file_thread, &QObject::deleteLater);
 			connect(open_file_thread, &OpenMidiPlayerFileThread::resultReady, this, &Dialog_MidiPlayer::on_midi_file_loaded);
+			// Reset pointer when thread is destroyed
+			connect(open_file_thread,
+					&QObject::destroyed,
+					[]() { open_file_thread = nullptr; });
 			open_file_thread->start();
 
 			ui->pushButton_MidiPlayerPlay->setEnabled(false);
@@ -667,6 +709,12 @@ void Dialog_MidiPlayer::timerEvent()
 
 void Dialog_MidiPlayer::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	char text[16];
 	QString qtext;
 	

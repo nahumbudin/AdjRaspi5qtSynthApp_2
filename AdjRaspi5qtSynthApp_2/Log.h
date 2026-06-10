@@ -59,6 +59,11 @@ template <typename T>
 	std::string Log<T>::ToString(TLogLevel level)
 	{
 		static const char* const buffer[] = { "ERROR", "WARNING", "INFO", "DEBUG", "DEBUG1", "DEBUG2", "DEBUG3", "DEBUG4" };
+
+		// Bounds check
+		if (level < 0 || level >= sizeof(buffer) / sizeof(buffer[0]))
+			return "UNKNOWN";
+		
 		return buffer[level];
 	}
 

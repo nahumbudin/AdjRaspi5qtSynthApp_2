@@ -1,33 +1,39 @@
 /**
-* @file		Dialog_MidiMapper.cpp
-*	@author		Nahum Budin
-*	@date		22-Sep-2025
-*	@version	1.1
-*					1. Refactoring rename nodules to instruments
-*					2. Reserving vectors size.
-*					3. Add a mutex
-*
-*	@brief		Used for mapping MIDI channels events to instruments
-*				
-*	History:
-*				Ver1.0	19-Oct-2024		Initial 
-*
-*/
+ * @file		Dialog_MidiMapper.cpp
+ *	@author		Nahum Budin
+ *	@date		23-May-2026
+ *	@version	1.2
+ *					1. Thread-safety fix for update_channels_combo_boxes()
+ *					1. Resolve memory leak of UpdateGuiThread at timerEvent() by connecting finished signal to deleteLater slot.
+ *
+ *	@brief		Used for mapping MIDI channels events to instruments
+ *
+ *	History:
+ *				Ver1.1	22-Sep-2025		
+ *					1. Refactoring rename modules to instruments
+ *					2. Reserving vectors size.
+ *					3. Add a mutex
+ *				Ver1.0	19-Oct-2024		Initial
+ *
+ */
 
+#include <QMessageBox>
+#include <QMoveEvent>
+#include <QMutexLocker>
 #include <QObject>
 #include <QTimer>
-#include <QMoveEvent>
-#include <QMessageBox>
-#include <QMutexLocker>
 
-#include "MainWindow.h"
-#include "Dialog_MidiMapper.h"
-#include "ui_Dialog_MidiMapper.h"
 #include "Defs.h"
+#include "Dialog_MidiMapper.h"
+#include "MainWindow.h"
+#include "ui_Dialog_MidiMapper.h"
 
-QMutex qmutex;
-
-
+//QMutex qmutex;
+static QMutex &getQMutex()
+{
+	static QMutex mutex;
+	return mutex;
+}
 
 UpdateGuiThread *update_gui_thread;
 
@@ -35,15 +41,18 @@ vector<active_instrument_data_t> active_synth_instruments, prev_active_synth_ins
 vector<active_instrument_data_t> added_synth_instruments, removed_synth_instruments;
 vector<active_instrument_data_t> active_instruments_data;
 
-int channels_combo_box_selection_index[17] = { 0 };
+int channels_combo_box_selection_index[17] = {0};
 active_instrument_data_t channels_combo_box_selected_instrument_data[17];
 
 bool found;
 
 void midi_mapper_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Just forward to the dialog instance - it will emit a signal
-	Dialog_MidiMapper::get_instance()->control_box_event_received(evnt, val);
+	Dialog_MidiMapper *instance = Dialog_MidiMapper::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 void update_gui_wrapper()
@@ -51,39 +60,41 @@ void update_gui_wrapper()
 	Dialog_MidiMapper::get_instance()->update_gui();
 }
 
-void UpdateGuiThread::run() 
-{		
+void UpdateGuiThread::run()
+{
 	update_gui_wrapper();
 }
 
 Dialog_MidiMapper *Dialog_MidiMapper::dialog_adj_midi_mapper_instance = NULL;
 
 Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
-	: QDialog(parent)
-	, ui(new Ui::Dialog_MidiMapper)
+	: QDialog(parent), ui(new Ui::Dialog_MidiMapper)
 {
 	ui->setupUi(this);
 	dialog_adj_midi_mapper_instance = this;
-	
+
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	active_synth_instruments.reserve(_MAX_NUM_OF_INSTRUMENTS);
 	active_synth_instruments.clear();
-	
+
 	prev_active_synth_instruments.reserve(_MAX_NUM_OF_INSTRUMENTS);
 	prev_active_synth_instruments.clear();
-	
+
 	active_instruments_data.reserve(_MAX_NUM_OF_INSTRUMENTS);
 	active_instruments_data.clear();
-	
+
 	added_synth_instruments.reserve(_MAX_NUM_OF_INSTRUMENTS);
 	added_synth_instruments.clear();
-	
+
 	removed_synth_instruments.reserve(_MAX_NUM_OF_INSTRUMENTS);
-	removed_synth_instruments.clear();	
-	
+	removed_synth_instruments.clear();
+
 	move(100, 100);
-	
+
 	this->setFocus(Qt::ActiveWindowFocusReason);
-	
+
 	close_event_callback_ptr = NULL;
 
 	// Connect signal to slot with Qt::QueuedConnection for thread-safety
@@ -91,10 +102,16 @@ Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
 	connect(this, &Dialog_MidiMapper::control_box_event_signal,
 			this, &Dialog_MidiMapper::handle_control_box_event,
 			Qt::QueuedConnection);
-	
+
+	// Connect combo box update signal to slot with Qt::QueuedConnection
+	// This ensures GUI updates happen in the GUI thread
+	connect(this, &Dialog_MidiMapper::update_combo_boxes_signal,
+			this, &Dialog_MidiMapper::update_channels_combo_boxes_impl,
+			Qt::QueuedConnection);
+
 	mod_synth_register_callback_control_box_event_update_ui(
 		&midi_mapper_control_box_event_update_ui_callback_wrapper);
-	
+
 	MainWindow::get_instance()->register_active_dialog(this);
 
 	// Register with GuiNavigator (no tabs for MIDI Mixer, but has frames)
@@ -107,7 +124,7 @@ Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
 		nullptr,									// No tab widget
 		QMap<int, QList<QString>>{{0, frame_names}} // All frames in tab 0 (no tabs)
 	);
-	
+
 	channels_combos[0] = ui->comboBox_MidiMapperCh_1;
 	channels_combos[1] = ui->comboBox_MidiMapperCh_2;
 	channels_combos[2] = ui->comboBox_MidiMapperCh_3;
@@ -125,7 +142,7 @@ Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
 	channels_combos[14] = ui->comboBox_MidiMapperCh_15;
 	channels_combos[15] = ui->comboBox_MidiMapperCh_16;
 	channels_combos[16] = ui->comboBox_MidiMapperSetAll;
-	
+
 	on_channel_combo_change_slots[0] = &Dialog_MidiMapper::ch_1_instrument_changed;
 	on_channel_combo_change_slots[1] = &Dialog_MidiMapper::ch_2_instrument_changed;
 	on_channel_combo_change_slots[2] = &Dialog_MidiMapper::ch_3_instrument_changed;
@@ -142,110 +159,110 @@ Dialog_MidiMapper::Dialog_MidiMapper(QWidget *parent)
 	on_channel_combo_change_slots[13] = &Dialog_MidiMapper::ch_14_instrument_changed;
 	on_channel_combo_change_slots[14] = &Dialog_MidiMapper::ch_15_instrument_changed;
 	on_channel_combo_change_slots[15] = &Dialog_MidiMapper::ch_16_instrument_changed;
-	
-	update_channels_combo_boxes();
-	
+
+	// Initial combo box update - safe to call from constructor (GUI thread)
+	update_channels_combo_boxes_impl();
+
 	connect(ui->comboBox_MidiMapperCh_1,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_1_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_1_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_2,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_2_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_2_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_3,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_3_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_3_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_4,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_4_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_4_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_5,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_5_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_5_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_6,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_6_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_6_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_7,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_7_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_7_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_8,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_8_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_8_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_9,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_9_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_9_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_10,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_10_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_10_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_11,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_11_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_11_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_12,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_12_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_12_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_13,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_13_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_13_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_14,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_14_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_14_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_15,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_15_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_15_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperCh_16,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(ch_16_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(ch_16_instrument_changed(int)));
+
 	connect(ui->comboBox_MidiMapperSetAll,
-		SIGNAL(currentIndexChanged(int)),
-		this,
-		SLOT(set_all_channels_instrument_changed(int)));
-	
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(set_all_channels_instrument_changed(int)));
+
 	connect(ui->pushButton_MidiMapperOK,
-		SIGNAL(clicked()),
-		this,
-		SLOT(on_dialog_close()));
-	
+			SIGNAL(clicked()),
+			this,
+			SLOT(on_dialog_close()));
+
 	active_instruments_mutex = new QMutex();
-	
-	
-	// start a periodic timer after this timeout - 
+
+	// start a periodic timer after this timeout -
 	start_update_timer(200);
-	
 }
 
 Dialog_MidiMapper::~Dialog_MidiMapper()
 {
-	
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
 }
 
 Dialog_MidiMapper *Dialog_MidiMapper::get_instance(QWidget *parent, bool showit)
@@ -254,12 +271,12 @@ Dialog_MidiMapper *Dialog_MidiMapper::get_instance(QWidget *parent, bool showit)
 	{
 		dialog_adj_midi_mapper_instance = new Dialog_MidiMapper(parent);
 	}
-	
+
 	if (showit)
 	{
 		dialog_adj_midi_mapper_instance->show();
 	}
-	
+
 	return dialog_adj_midi_mapper_instance;
 }
 
@@ -277,37 +294,48 @@ void Dialog_MidiMapper::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
 	// Hide instead of accept (which could trigger deletion)
 	event->ignore(); // Don't accept the close event
-	
+
 	hide();
 }
 
-void Dialog_MidiMapper::moveEvent(QMoveEvent *event) {
+void Dialog_MidiMapper::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&midi_mapper_control_box_event_update_ui_callback_wrapper);
+}
+
+void Dialog_MidiMapper::moveEvent(QMoveEvent *event)
+{
 	QWidget::moveEvent(event); // Call the base class implementation first
-	
+
 	last_position = event->pos();
-	//printf("Mapper position %i:%i\n", last_position.x(), last_position.y());
+	// printf("Mapper position %i:%i\n", last_position.x(), last_position.y());
 }
 
 bool Dialog_MidiMapper::event(QEvent *event)
 {
-	//printf("Event type: %i pos: %i:%i\n", event->type(), this->x(), this->y());
+	// printf("Event type: %i pos: %i:%i\n", event->type(), this->x(), this->y());
 
 	return QWidget::event(event);
-	
-
 }
 
 int Dialog_MidiMapper::set_channel_instrument(int ch, int inst)
 {
 	en_instruments_ids_t instrument_id;
-	
-	qmutex.lock();
-	
+
+	getQMutex().lock();
+
 	if (inst == 0)
 	{
 		instrument_id = en_instruments_ids_t::none_instrument_id;
@@ -316,16 +344,16 @@ int Dialog_MidiMapper::set_channel_instrument(int ch, int inst)
 	{
 		instrument_id = channels_combo_box_selected_instrument_data[ch].instrument_id; // 1st is null "-----"
 	}
-	
-	qmutex.unlock();
-	
+
+	getQMutex().unlock();
+
 	mod_synth_allocate_midi_channel_synth(ch, instrument_id);
-	
+
 	return 0;
 }
 
 void Dialog_MidiMapper::ch_1_instrument_changed(int inst)
-{	
+{
 	channels_combo_box_selection_index[0] = inst;
 	if (inst == 0)
 	{
@@ -335,14 +363,14 @@ void Dialog_MidiMapper::ch_1_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[0] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	Dialog_MidiMapper::set_channel_instrument(0, inst);
 }
 
 void Dialog_MidiMapper::ch_2_instrument_changed(int inst)
-{	
+{
 	channels_combo_box_selection_index[1] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[1] = en_instruments_ids_t::none_instrument_id;
@@ -351,14 +379,14 @@ void Dialog_MidiMapper::ch_2_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[1] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(1, inst);
 }
 
 void Dialog_MidiMapper::ch_3_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[2] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[2] = en_instruments_ids_t::none_instrument_id;
@@ -367,14 +395,14 @@ void Dialog_MidiMapper::ch_3_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[2] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(2, inst);
 }
 
 void Dialog_MidiMapper::ch_4_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[3] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[3] = en_instruments_ids_t::none_instrument_id;
@@ -383,14 +411,14 @@ void Dialog_MidiMapper::ch_4_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[3] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(3, inst);
 }
 
 void Dialog_MidiMapper::ch_5_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[4] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[4] = en_instruments_ids_t::none_instrument_id;
@@ -399,14 +427,14 @@ void Dialog_MidiMapper::ch_5_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[4] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(4, inst);
 }
 
 void Dialog_MidiMapper::ch_6_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[5] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[5] = en_instruments_ids_t::none_instrument_id;
@@ -415,14 +443,14 @@ void Dialog_MidiMapper::ch_6_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[5] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(5, inst);
 }
 
 void Dialog_MidiMapper::ch_7_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[6] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[6] = en_instruments_ids_t::none_instrument_id;
@@ -431,14 +459,14 @@ void Dialog_MidiMapper::ch_7_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[6] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(6, inst);
 }
 
 void Dialog_MidiMapper::ch_8_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[7] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[7] = en_instruments_ids_t::none_instrument_id;
@@ -447,14 +475,14 @@ void Dialog_MidiMapper::ch_8_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[7] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(7, inst);
 }
 
 void Dialog_MidiMapper::ch_9_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[8] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[8] = en_instruments_ids_t::none_instrument_id;
@@ -463,14 +491,14 @@ void Dialog_MidiMapper::ch_9_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[8] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(8, inst);
 }
 
 void Dialog_MidiMapper::ch_10_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[9] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[9] = en_instruments_ids_t::none_instrument_id;
@@ -479,14 +507,14 @@ void Dialog_MidiMapper::ch_10_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[9] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(9, inst);
 }
 
 void Dialog_MidiMapper::ch_11_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[10] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[10] = en_instruments_ids_t::none_instrument_id;
@@ -495,14 +523,14 @@ void Dialog_MidiMapper::ch_11_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[10] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(10, inst);
 }
 
 void Dialog_MidiMapper::ch_12_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[11] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[11] = en_instruments_ids_t::none_instrument_id;
@@ -511,14 +539,14 @@ void Dialog_MidiMapper::ch_12_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[11] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(11, inst);
 }
 
 void Dialog_MidiMapper::ch_13_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[12] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[12] = en_instruments_ids_t::none_instrument_id;
@@ -527,14 +555,14 @@ void Dialog_MidiMapper::ch_13_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[12] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(12, inst);
 }
 
 void Dialog_MidiMapper::ch_14_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[13] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[13] = en_instruments_ids_t::none_instrument_id;
@@ -543,14 +571,14 @@ void Dialog_MidiMapper::ch_14_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[13] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(13, inst);
 }
 
 void Dialog_MidiMapper::ch_15_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[14] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[14] = en_instruments_ids_t::none_instrument_id;
@@ -559,14 +587,14 @@ void Dialog_MidiMapper::ch_15_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[14] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(14, inst);
 }
 
 void Dialog_MidiMapper::ch_16_instrument_changed(int inst)
 {
 	channels_combo_box_selection_index[15] = inst;
-	
+
 	if (inst == 0)
 	{
 		channels_combo_box_selected_instrument_data[15] = en_instruments_ids_t::none_instrument_id;
@@ -575,14 +603,14 @@ void Dialog_MidiMapper::ch_16_instrument_changed(int inst)
 	{
 		channels_combo_box_selected_instrument_data[15] = active_instruments_data[inst - 1]; // 1st is null "-----"
 	}
-	
+
 	set_channel_instrument(15, inst);
 }
 
 void Dialog_MidiMapper::set_all_channels_instrument_changed(int inst)
 {
-	qmutex.lock();
-	
+	getQMutex().lock();
+
 	QMessageBox msgBox;
 	msgBox.setIcon(QMessageBox::QMessageBox::Warning);
 	msgBox.setWindowTitle("Warning?");
@@ -596,42 +624,40 @@ void Dialog_MidiMapper::set_all_channels_instrument_changed(int inst)
 		{
 			channels_combos[ch]->blockSignals(true);
 			channels_combos[ch]->setCurrentIndex(inst);
-			qmutex.unlock();
+			getQMutex().unlock();
 			on_channel_combo_change_slots[ch](inst);
-			qmutex.lock();
+			getQMutex().lock();
 			channels_combos[ch]->blockSignals(false);
 		}
 	}
-	
-	qmutex.unlock();
+
+	getQMutex().unlock();
 }
 
 void Dialog_MidiMapper::handle_control_box_event(int evnt, uint16_t val)
-{	
+{
 	if (!this->hasFocus())
 	{
 		return;
 	}
-	
+
 	if (evnt == _CONTROL_PUSHBUTTON_BLUE_GREEN)
 	{
-		
-	}	
+	}
 }
 
 QPoint Dialog_MidiMapper::get_last_position()
-{	
+{
 	return last_position;
 }
 
 void Dialog_MidiMapper::on_dialog_close()
 {
-	//mod_synth_unregister_callback_control_box_event_update_ui(
+	// mod_synth_unregister_callback_control_box_event_update_ui(
 	//	&fluid_control_box_event_update_ui_callback_wrapper);
-	
+
 	hide();
 }
-
 
 void Dialog_MidiMapper::start_update_timer(int interval)
 {
@@ -640,24 +666,25 @@ void Dialog_MidiMapper::start_update_timer(int interval)
 	timer->start(interval);
 }
 
-void Dialog_MidiMapper::update_channels_combo_boxes()
+// This slot runs in the GUI thread - safe to manipulate widgets
+void Dialog_MidiMapper::update_channels_combo_boxes_impl()
 {
-	qmutex.lock();
-	
+	getQMutex().lock();
+
 	bool last_selected = false;
-	
+
 	for (int ch = 0; ch <= 16; ch++)
 	{
 		channels_combos[ch]->blockSignals(true);
 		channels_combos[ch]->clear();
 		channels_combos[ch]->addItem(QString("--------------"));
-		//if (ch == 0) { fprintf(stderr, "List cleared. Lenth %i\n", active_modules_data.size()); }
-		
+		// if (ch == 0) { fprintf(stderr, "List cleared. Lenth %i\n", active_modules_data.size()); }
+
 		int i = 1;
 		for (active_instrument_data_t module : active_instruments_data)
 		{
 			channels_combos[ch]->addItem(QString(module.instrument_name));
-			//if (ch == 0) { fprintf(stderr, "Add to list: %s ", module.module_name.toStdString().data()); }
+			// if (ch == 0) { fprintf(stderr, "Add to list: %s ", module.module_name.toStdString().data()); }
 			/* Locate the last selected item */
 			if (module.instrument_id == channels_combo_box_selected_instrument_data[ch].instrument_id)
 			{
@@ -666,9 +693,9 @@ void Dialog_MidiMapper::update_channels_combo_boxes()
 			}
 			i++;
 		}
-		
-		//if (ch == 0) { fprintf(stderr, "\n"); }
-		
+
+		// if (ch == 0) { fprintf(stderr, "\n"); }
+
 		if (last_selected)
 		{
 			channels_combos[ch]->setCurrentIndex(channels_combo_box_selection_index[ch]);
@@ -680,39 +707,50 @@ void Dialog_MidiMapper::update_channels_combo_boxes()
 			channels_combo_box_selected_instrument_data[ch].instrument_id = en_instruments_ids_t::none_instrument_id;
 			channels_combo_box_selection_index[ch] = 0;
 			channels_combos[ch]->setCurrentIndex(0);
-			//fprintf(stderr, "Last selected is no longer active. ch%i\n", ch);
+			// fprintf(stderr, "Last selected is no longer active. ch%i\n", ch);
 			if (ch < 16)
 			{
 				/* Skip the all channels selection */
 				mod_synth_allocate_midi_channel_synth(ch, en_instruments_ids_t::none_instrument_id);
 			}
 		}
-		
+
 		channels_combos[ch]->blockSignals(false);
 	}
-	
-	qmutex.unlock();
+
+	getQMutex().unlock();
 }
 
 void Dialog_MidiMapper::timerEvent()
 {
-	update_gui_thread = new UpdateGuiThread();
-	update_gui_thread->start();
+	UpdateGuiThread *thread = new UpdateGuiThread();
+
+	// Delete thread object when it finishes
+	connect(thread, &UpdateGuiThread::finished,
+			thread, &UpdateGuiThread::deleteLater);
+
+	thread->start();
 }
 
 void Dialog_MidiMapper::update_gui()
-{	
-	qmutex.lock();
+{
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
 	
+	getQMutex().lock();
+
 	en_instruments_ids_t inst_id;
 	static bool first_time = true;
-	
+
 	active_synth_instruments.clear();
 	added_synth_instruments.clear();
 	removed_synth_instruments.clear();
-	
+
 	/* Get all currently active instruments */
-	
+
 	for (active_instrument_data_t instrument : MainWindow::get_instance()->active_instruments_list)
 	{
 		if (mod_synth_get_instrument_type(instrument.instrument_id) == en_instruments_types_t::synth)
@@ -720,13 +758,13 @@ void Dialog_MidiMapper::update_gui()
 			active_synth_instruments.push_back(instrument);
 		}
 	}
-	
+
 	if (active_synth_instruments.size() == 0)
 	{
 		/* No active instrument. */
 		if (prev_active_synth_instruments.size() != 0)
 		{
-			/* All active instruments were just removed */			
+			/* All active instruments were just removed */
 			for (active_instrument_data_t prev_active_instrument : prev_active_synth_instruments)
 			{
 				removed_synth_instruments.push_back(prev_active_instrument);
@@ -756,10 +794,10 @@ void Dialog_MidiMapper::update_gui()
 				{
 					if (active_instrument.instrument_id == prev_active_instrument.instrument_id)
 					{
-						found = true; 
+						found = true;
 					}
 				}
-				
+
 				if (!found)
 				{
 					/* Was not found in prev list */
@@ -778,41 +816,42 @@ void Dialog_MidiMapper::update_gui()
 						found = true;
 					}
 				}
-				
+
 				if (!found)
 				{
 					/* No longer active */
 					removed_synth_instruments.push_back(prev_active_instrument);
 				}
-			}			
+			}
 		}
 	}
-	
+
 	/* Update prev with current */
 	prev_active_synth_instruments.clear();
 	for (active_instrument_data_t instrument : active_synth_instruments)
 	{
 		prev_active_synth_instruments.push_back(instrument);
 	}
-	
-	//active_modules_mutex->lock();
-	
+
+	// active_modules_mutex->lock();
+
 	if (added_synth_instruments.size() > 0)
 	{
 		/* New modules added */
 		for (active_instrument_data_t instrument : added_synth_instruments)
 		{
-			//fprintf(stderr, "Add module %s\n", module.module_name.toStdString().data());
+			// fprintf(stderr, "Add module %s\n", module.module_name.toStdString().data());
 			active_instruments_data.push_back(instrument);
 		}
-		
-		qmutex.unlock(); // update locks mutex
-		
-		update_channels_combo_boxes();
-		
-		qmutex.lock();
+
+		getQMutex().unlock();
+
+		// Emit signal to update combo boxes in GUI thread
+		emit update_combo_boxes_signal();
+
+		getQMutex().lock();
 	}
-	
+
 	if (removed_synth_instruments.size() > 0)
 	{
 		/* Prev module removed */
@@ -823,25 +862,24 @@ void Dialog_MidiMapper::update_gui()
 			{
 				if (instrument.instrument_id == inst.instrument_id)
 				{
-					//fprintf(stderr, "Remove module %i %s\n", i, module.module_name.toStdString().data());
+					// fprintf(stderr, "Remove module %i %s\n", i, module.module_name.toStdString().data());
 					active_instruments_data.erase(active_instruments_data.begin() + i);
 					break;
 				}
-				
+
 				i++;
 			}
-			
+
 			/* Disconnect MIDI channel */
 		}
 
-		qmutex.unlock();
-		
-		update_channels_combo_boxes();
-		
-		qmutex.lock();
+		getQMutex().unlock();
+
+		// Emit signal to update combo boxes in GUI thread
+		emit update_combo_boxes_signal();
+
+		getQMutex().lock();
 	}
-	
-	qmutex.unlock();
+
+	getQMutex().unlock();
 }
-
-

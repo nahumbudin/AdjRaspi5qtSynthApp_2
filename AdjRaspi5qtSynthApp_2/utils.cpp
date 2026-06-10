@@ -42,23 +42,19 @@ std::string replace_white_spaces(std::string input_str)
 	{
 		return "";
 	}
-	
+
 	std::string new_str = "";
-	
-	char in_array[input_str.length() + 1];
-	
-	strcpy(in_array, input_str.c_str());
-	
-	for (int i = 0; i < input_str.size(); i++)
+
+	for (size_t i = 0; i < input_str.size(); i++)
 	{
-		if (in_array[i] == ' ')
+		if (input_str[i] == ' ')
 		{
 			new_str += '\\';
 			new_str += " ";
 		}
-		else 
+		else
 		{
-			new_str += in_array[i];
+			new_str += input_str[i];
 		}
 	}
 	
@@ -83,6 +79,11 @@ int update_rotary_encoder_value(int prev_value,
 	int max_val,
 	int inc_dec_value)
 {
+	if (!prev_rot_val)
+	{
+		return prev_value; // Guard against null pointer
+	}
+	
 	int new_value = prev_value;
 	
 	if (((new_rot_val - *prev_rot_val) > 0) && ((new_rot_val - *prev_rot_val) < 80))

@@ -1,15 +1,18 @@
 /**
  * @file		Dialog_AdjFluidSynth.cpp
  *	@author		Nahum Budin
- *	@date		14-Dec-2025
- *	@version	2.0
- *					1. Use new control box event defines.
- *					2. Use custom gui widgets.
- *					3. Set timer to update the GUI every 100 ms.
+ *	@date		25-May-2026
+ *	@version	2.2
+ *					1. Thread-safety fix for fluid_update_ui_callback_wrapper()
  *
  *	@brief		Adj FluidSynth control dialog
  *
  *	History:\n
+ *			Ver	2.1 14-Dec-2025
+ *					1. Use new control box event defines.
+ *					2. Use custom gui widgets.
+ *					3. Set timer to update the GUI every 100 ms.
+ *			Ver. 2.0 14-Dec-2025	Added custom widgets and timer
  *			Ver. 1.0 13-Jul-2024	Initial version AdjRaspi5qtSynthApp_1
  *
  */
@@ -19,6 +22,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTimer>
+#include <QMetaObject>
 
 #include "utils.h"
 
@@ -32,12 +36,20 @@ Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::dialog_adj_fluid_synth_instance = NU
 
 void fluid_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	Dialog_AdjFluidSynth::get_instance()->control_box_event_received(evnt, val);
+	Dialog_AdjFluidSynth *instance = Dialog_AdjFluidSynth::get_instance();
+	if (instance != nullptr)
+	{
+		instance->control_box_event_received(evnt, val);
+	}
 }
 
 void fluid_update_ui_callback_wrapper()
 {
-	Dialog_AdjFluidSynth::get_instance()->get_active_settings_values();
+	Dialog_AdjFluidSynth *instance = Dialog_AdjFluidSynth::get_instance();
+	if (instance != NULL)
+	{
+		QMetaObject::invokeMethod(instance, [instance]() { instance->get_active_settings_values(); }, Qt::QueuedConnection);
+	}
 }
 
 Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
@@ -45,6 +57,9 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 {
 	ui->setupUi(this);
 	dialog_adj_fluid_synth_instance = this;
+
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
 
 	ui->comboBox_adjFluidSynth_Chorus_Type->addItem("Sine");
 	ui->comboBox_adjFluidSynth_Chorus_Type->addItem("Triangle");
@@ -65,7 +80,7 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 
 	ui->dial_adjFluidSynth_Reverb_Room->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Reverb_Room->setCircleColor(_CONTROLS_COLOR_GRAY);
-	
+
 	ui->dial_adjFluidSynth_Reverb_Damp->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Reverb_Damp->setCircleColor(_CONTROLS_COLOR_PURPLE);
 
@@ -74,17 +89,16 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 
 	ui->dial_adjFluidSynth_Reverb_Level->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Reverb_Level->setCircleColor(_CONTROLS_COLOR_GREEN);
-	
 
 	ui->dial_adjFluidSynth_Chorus_N->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Chorus_N->setCircleColor(_CONTROLS_COLOR_WHITE);
-	
+
 	ui->dial_adjFluidSynth_Chorus_Level->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Chorus_Level->setCircleColor(_CONTROLS_COLOR_YELLOW);
-	
+
 	ui->dial_adjFluidSynth_Chorus_Speed->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Chorus_Speed->setCircleColor(_CONTROLS_COLOR_RED);
-	
+
 	ui->dial_adjFluidSynth_Chorus_Depth->setKnobColor(_KNOBS_COLOR);
 	ui->dial_adjFluidSynth_Chorus_Depth->setCircleColor(_CONTROLS_COLOR_BLACK);
 
@@ -294,6 +308,12 @@ Dialog_AdjFluidSynth::Dialog_AdjFluidSynth(QWidget *parent)
 
 Dialog_AdjFluidSynth::~Dialog_AdjFluidSynth()
 {
+	// Disable callbacks during destruction
+	mod_synth_fluid_synth_register_ui_update_callback(NULL);
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
+	dialog_adj_fluid_synth_instance = nullptr;
+	delete ui;
 }
 
 Dialog_AdjFluidSynth *Dialog_AdjFluidSynth::get_instance(QWidget *parent)
@@ -320,10 +340,23 @@ void Dialog_AdjFluidSynth::closeEvent(QCloseEvent *event)
 		close_event_callback_ptr();
 	}
 
+	// Disable callbacks when hiding
+	mod_synth_fluid_synth_register_ui_update_callback(NULL);
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
 
 	hide();
+}
+
+void Dialog_AdjFluidSynth::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callbacks when showing
+	mod_synth_fluid_synth_register_ui_update_callback(&fluid_update_ui_callback_wrapper);
+	mod_synth_register_callback_control_box_event_update_ui(&fluid_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
@@ -818,6 +851,12 @@ void Dialog_AdjFluidSynth::timerEvent(QTimerEvent *event)
 // This function is called by a timer to update the GUI with the active settings values.
 void Dialog_AdjFluidSynth::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	get_active_settings_values();
 }
 

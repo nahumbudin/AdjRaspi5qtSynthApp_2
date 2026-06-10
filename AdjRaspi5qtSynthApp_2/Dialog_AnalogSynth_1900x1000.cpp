@@ -45,6 +45,9 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	ui->setupUi(this);
 	dialog_analog_synth_instance = this;
 
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	this->setFocus(Qt::ActiveWindowFocusReason);
 
 	// Set tab name font size, color, and padding to prevent text cropping
@@ -526,6 +529,12 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 
 Dialog_AnalogSynth_1900x1000::~Dialog_AnalogSynth_1900x1000()
 {
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
+	// Delete allocated objects
+	delete control_widgets_color_manager;
+	
 	dialog_analog_synth_instance = NULL;
 	delete ui;
 }	
@@ -558,10 +567,8 @@ Ui::Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::get_ui_instance(
 
 void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 {
-	// if (close_event_callback_ptr != NULL)
-	//{
-	//	close_event_callback_ptr();
-	// }
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
 
 	MainWindow::get_instance()->sketches_menu->setDisabled(true);
 
@@ -572,6 +579,15 @@ void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 	event->ignore(); // Don't accept the close event
 
 	hide();
+}
+
+void Dialog_AnalogSynth_1900x1000::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&analog_synth_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_AnalogSynth_1900x1000::set_analog_synth_general_signals_connections()
@@ -969,6 +985,12 @@ void Dialog_AnalogSynth_1900x1000::update_all()
 // Periodic GUI update function called by timer (Let Qt event loop to run GUI updates)
 void Dialog_AnalogSynth_1900x1000::update_gui()
 {
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		return;
+	}
+	
 	if (mso_replot_waveform)
 	{
 		setup_mso_plot(ui->widget_MsoWaveformPlot);

@@ -42,6 +42,9 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 {
 	ui->setupUi(this);
 	dialog_InstrumentConnectionsInstance = this;
+
+	// Prevent dialog from being deleted when closed - only hide it
+	setAttribute(Qt::WA_DeleteOnClose, false);
 	
 	this->setFocus(Qt::ActiveWindowFocusReason);
 	
@@ -112,9 +115,6 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	ui->radioButton_MIDI->setChecked(true);
 	ui->radioButton_Jack->setChecked(false);
 	
-	mod_synth_register_callback_control_box_event_update_ui(
-		&connections_control_box_event_update_ui_callback_wrapper);
-
 	ui->checkBox_source_1->setReadOnly(false);
 	ui->checkBox_source_1->setLedStyle(true);
 	ui->checkBox_source_1->setLedOnColor(_CONTROLS_COLOR_GREEN);
@@ -587,7 +587,11 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 
 Dialog_InstrumentConnections::~Dialog_InstrumentConnections()
 {
-	
+	// Disable callback during destruction
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
+
+	dialog_InstrumentConnectionsInstance = nullptr;
+	delete ui;
 }
 
 Dialog_InstrumentConnections *Dialog_InstrumentConnections::get_instance()
@@ -604,12 +608,21 @@ void Dialog_InstrumentConnections::control_box_event_received(int evnt, uint16_t
 
 void Dialog_InstrumentConnections::closeEvent(QCloseEvent *event)
 {
-	//mod_synth_unregister_callback_control_box_event_update_ui(
-	//	&connections_control_box_event_update_ui_callback_wrapper);
+	// Disable callback when hiding
+	mod_synth_register_callback_control_box_event_update_ui(NULL);
 	
 	MainWindow::get_instance()->unregister_active_dialog(this);
 	dialog_is_open = false;
 	hide();
+}
+
+void Dialog_InstrumentConnections::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	// Re-register callback when showing
+	mod_synth_register_callback_control_box_event_update_ui(
+		&connections_control_box_event_update_ui_callback_wrapper);
 }
 
 void Dialog_InstrumentConnections::handle_control_box_event(int evnt, uint16_t val)
@@ -1351,7 +1364,7 @@ void Dialog_InstrumentConnections::update()
 	if ((instrument_name.toStdString() == _INSTRUMENT_NAME_ANALOG_SYNTH_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_HAMMON_ORGAN_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_KARPLUS_STRONG_STRING_SYNTH_STR_KEY) ||
-		(instrument_name.toStdString() == _INSTRUMENT_NAME_MORPHED_SINUS_SYNTH_STR_KEY) ||
+		(instrument_name.toStdString() == _INSTRUMENT_NAME_MSO_SYNTH_STR_KEY) ||
 		(instrument_name.toStdString() == _INSTRUMENT_NAME_PAD_SYNTH_STR_KEY ||
 		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_1_STR_KEY) ||
 		 (instrument_name.toStdString() == _INSTRUMENT_NAME_SYNTH_PRESET_2_STR_KEY) ||

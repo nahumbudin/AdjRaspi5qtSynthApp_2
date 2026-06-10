@@ -24,6 +24,46 @@
 #include <QComboBox>
 #include <QShowEvent>
 
+#include <QMouseEvent>
+
+// Custom tree view that gets index directly from mouse position
+class CustomTreeView : public QTreeView
+{
+	Q_OBJECT
+  public:
+	explicit CustomTreeView(QWidget *parent = nullptr) : QTreeView(parent) {}
+
+  protected:
+	void mousePressEvent(QMouseEvent *event) override
+	{
+		if (event->button() == Qt::LeftButton)
+		{
+			m_pressedIndex = indexAt(event->pos());
+		}
+		QTreeView::mousePressEvent(event);
+	}
+
+	void mouseReleaseEvent(QMouseEvent *event) override
+	{
+		if (event->button() == Qt::LeftButton && m_pressedIndex.isValid())
+		{
+			QModelIndex releaseIndex = indexAt(event->pos());
+			if (releaseIndex == m_pressedIndex)
+			{
+				emit itemClicked(m_pressedIndex);
+			}
+			m_pressedIndex = QModelIndex();
+		}
+		QTreeView::mouseReleaseEvent(event);
+	}
+
+  signals:
+	void itemClicked(const QModelIndex &index);
+
+  private:
+	QModelIndex m_pressedIndex;
+};
+
 class CustomFileDialog : public QDialog
 {
 	Q_OBJECT
@@ -63,7 +103,10 @@ class CustomFileDialog : public QDialog
 	void showEvent(QShowEvent *event) override;
 
 	QFileSystemModel *model;
-	QTreeView *treeView;
+	
+	// *treeView;
+	CustomTreeView *treeView;
+	
 	QListView *listView;
 	QLineEdit *fileNameEdit;
 	QLineEdit *pathEdit;
@@ -75,5 +118,6 @@ class CustomFileDialog : public QDialog
 	QString pendingFileSelection;
 	Mode dialogMode; // Add this
 };
+
 
 
