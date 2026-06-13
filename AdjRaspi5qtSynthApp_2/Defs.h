@@ -19,6 +19,7 @@
 #define _PAD_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/PADsynth"
 #define _MSO_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/MSOsynth"
 
+#define _RECORDINGS_MP3_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Recordings"
 
 
 #define _MIDI_MIXER_CHANNELS_1_8	0

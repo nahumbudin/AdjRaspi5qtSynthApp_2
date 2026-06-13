@@ -10,6 +10,7 @@
  *					5. Added save/load patch file threads to prevent GUI blocking during file operations.
  *					6. Dealing with null pointers when adding instruments.
  *					7. Adding vectors bounding checks to prevent out-of-bounds access.
+ *					8. Adding Recording Dialog.
  *
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
@@ -43,6 +44,7 @@
 
 #include "Dialog_AdjFluidSynth.h"
 #include "Dialog_MasterVolume.h"
+#include "Dialog_Recording.h"
 #include "Dialog_AnalogSynth_1900x1000.h"
 
 SavePatchFileThread *save_patch_file_thread;
@@ -679,6 +681,10 @@ void MainWindow::create_actions()
 	open_master_volume_act->setStatusTip(tr("Open Master Volume Control"));
 	connect(open_master_volume_act, SIGNAL(triggered()), this, SLOT(on_open_master_volume_dialog()));
 
+	open_recording_act = new QAction(tr("&Recording"), this);
+	open_recording_act->setStatusTip(tr("Open Recording Control"));
+	connect(open_recording_act, SIGNAL(triggered()), this, SLOT(on_open_recording_dialog()));
+
 	auto_arrange_act = new QAction(tr("&Auto Arrange"), this);
 	auto_arrange_act->setStatusTip(tr("Enable/Disable automatic window arrangement"));
 	auto_arrange_act->setCheckable(true); // Make it checkable
@@ -732,6 +738,7 @@ void MainWindow::create_menus()
 
 	controls_menu = ui->menubar->addMenu(tr("&Controls"));
 	controls_menu->addAction(open_master_volume_act);
+	controls_menu->addAction(open_recording_act);
 
 	view_menu = ui->menubar->addMenu(tr("&View"));
 	view_menu->addAction(auto_arrange_act);
@@ -1907,6 +1914,41 @@ void MainWindow::on_open_master_volume_dialog()
 	master_volume_dialog->raise();
 	master_volume_dialog->activateWindow();
 	master_volume_dialog->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void MainWindow::on_open_recording_dialog()
+{
+	static Dialog_Recording *recording_dialog = nullptr;
+
+	if (!recording_dialog)
+	{
+		recording_dialog = Dialog_Recording::get_instance(this);
+		register_active_dialog(recording_dialog);
+
+		// Register with window manager
+		window_manager->register_dialog(recording_dialog, "Recording");
+
+		// Connect destroy signal to unregister
+		auto *dialog_ptr = recording_dialog;
+		connect(recording_dialog, &QObject::destroyed, [this, dialog_ptr]() {
+			window_manager->unregister_dialog(dialog_ptr);
+		});
+
+		// Position the dialog
+		QPoint position = this->pos();
+		position.setX(position.x() + 50);
+		position.setY(position.y() + 50);
+		recording_dialog->move(position);
+	}
+
+	if (recording_dialog->isHidden())
+	{
+		recording_dialog->show();
+	}
+
+	recording_dialog->raise();
+	recording_dialog->activateWindow();
+	recording_dialog->setFocus(Qt::ActiveWindowFocusReason);
 }
 
 // Synth Patch Preset slot implementations

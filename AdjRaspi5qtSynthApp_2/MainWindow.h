@@ -110,6 +110,7 @@ private slots :
 	void on_copy_sketch3_to_sketch2();
 
 	void on_open_master_volume_dialog();
+	void on_open_recording_dialog();
 
 	void on_auto_arrange_toggled(bool checked);
 
@@ -194,7 +195,8 @@ private:
 
 	QMenu *controls_menu;
 	QAction *open_master_volume_act;
-	
+	QAction *open_recording_act;
+
 	QActionGroup *patch_files_group;
 	QAction *save_patch_file_act;
 	QAction *load_patch_file_act;
