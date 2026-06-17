@@ -16,6 +16,11 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QStyleFactory>
+#include <QVariant>
+#include <QDebug>
+
+#include "HttpBridgeQt.h"
+#include "Dialog_HTTPserver.h"
 
 #include "Log.h"
 

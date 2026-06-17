@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog_HTTPserver</class>
+ <widget class="QDialog" name="Dialog_HTTPserver">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>HTTP Server</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(5, 5, 5);
+color: rgb(255, 255, 255);</string>
+  </property>
+  <widget class="CustomFrame" name="frame_HTTPserver">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>5</y>
+     <width>790</width>
+     <height>490</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(5, 5, 5);
+color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Panel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>3</number>
+   </property>
+   <property name="midLineWidth">
+    <number>1</number>
+   </property>
+   <widget class="QLabel" name="label_415">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>10</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>HTTP Server</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="CustomCheckBox" name="checkBox_HTTPserverRunning">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>440</y>
+      <width>111</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(240, 90, 90);
+color: rgb(0,0,0);</string>
+    </property>
+    <property name="text">
+     <string>Running</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_HTTPserverMessages">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>770</width>
+      <height>360</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(50,50,50);</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="midLineWidth">
+     <number>2</number>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CustomButton" name="pushButton_HTTPserverRunStop">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>440</y>
+      <width>81</width>
+      <height>35</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(148, 148, 148);
+color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Run</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_HTTPserverIPaddress">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>440</y>
+      <width>161</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(50,50,50);</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="midLineWidth">
+     <number>2</number>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_416">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>410</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>IP Address</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_HTTPserverPort">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>440</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(50,50,50);</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="midLineWidth">
+     <number>2</number>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_417">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>410</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Port</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="CustomButton" name="pushButton_HTTPserverClearText">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>440</y>
+      <width>81</width>
+      <height>35</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(148, 148, 148);
+color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Clear</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomFrame</class>
+   <extends>QFrame</extends>
+   <header location="global">customframe.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CustomButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">custombutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header location="global">customcheckbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

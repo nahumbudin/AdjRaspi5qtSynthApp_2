@@ -1,0 +1,61 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CMakeLists.txt",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\CMakeLists.txt",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\CMakeLists.txt",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\CMakeLists.txt*",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\CMakeLists.txt*",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-06-14T18:37:57.642Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dialog_Recording.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "ViewState": "AgIAAFQAAAAAAAAAAADgv2AAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-14T18:35:41.312Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

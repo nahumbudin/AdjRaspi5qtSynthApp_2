@@ -8,7 +8,7 @@
 *	History:
 *			Version	1.0		8-May-2024
 *
-*	@brief		Application Main Window that hosts the modules pannels.
+*	@brief		Application Main Window that hosts the instruments pannels.
 */
 
 #pragma once
@@ -23,6 +23,7 @@
 #include "Defs.h"
 #include "InstrumentPannel.h"
 #include "GuiNavigator.h"
+#include "HttpBridgeQt.h"
 
 #include "Dialog_WindowsManager.h"
 
@@ -44,7 +45,9 @@ public:
     ~MainWindow();
 	
 	static MainWindow *get_instance();
-	
+
+	static HttpBridgeQt *http_bridge;
+
 	void close_instrument_pannel_id(en_instruments_ids_t mo_id);
 	void close_instrument_pannel_name(string inst_name);
 	
@@ -111,6 +114,7 @@ private slots :
 
 	void on_open_master_volume_dialog();
 	void on_open_recording_dialog();
+	void on_open_http_server_dialog();
 
 	void on_auto_arrange_toggled(bool checked);
 
@@ -196,6 +200,7 @@ private:
 	QMenu *controls_menu;
 	QAction *open_master_volume_act;
 	QAction *open_recording_act;
+	QAction *open_http_server_act;
 
 	QActionGroup *patch_files_group;
 	QAction *save_patch_file_act;

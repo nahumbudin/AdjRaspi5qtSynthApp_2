@@ -9,9 +9,17 @@
 *	History:\n
 */
 
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
+
+#include <iostream>
+#include <string>
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "utils.h"
+
 
 /**
  * Strips the client name prefix (prefix:name -> name)
@@ -122,4 +130,124 @@ int normalize_slider_value(int new_value, int max_val, int min_val)
 	int normlized_value = (int)(((new_value / 100.0) * (max_val - min_val)) + min_val);	
 	
 	return normlized_value;
+}
+
+std::string getEthernetIP(const std::string &interfaceName)
+{
+	struct ifaddrs *interfaces = nullptr;
+	struct ifaddrs *tempAddr = nullptr;
+	std::string ipAddress = "";
+
+	// Retrieve the current interfaces
+	if (getifaddrs(&interfaces) == 0)
+	{
+		tempAddr = interfaces;
+
+		// Loop through the linked list of interfaces
+		while (tempAddr != nullptr)
+		{
+			// Check if it is an IPv4 interface
+			if (tempAddr->ifa_addr != nullptr && tempAddr->ifa_addr->sa_family == AF_INET)
+			{
+				// Check if the interface name matches eth0
+				if (std::string(tempAddr->ifa_name) == interfaceName)
+				{
+					char ipBuffer[INET_ADDRSTRLEN];
+					struct sockaddr_in *ipv4 = (struct sockaddr_in *)tempAddr->ifa_addr;
+
+					// Convert the IP structure to a readable string
+					if (inet_ntop(AF_INET, &(ipv4->sin_addr), ipBuffer, INET_ADDRSTRLEN))
+					{
+						ipAddress = ipBuffer;
+						break; // IP found, exit loop
+					}
+				}
+			}
+			tempAddr = tempAddr->ifa_next;
+		}
+	}
+
+	// Free allocated memory
+	if (interfaces != nullptr)
+	{
+		freeifaddrs(interfaces);
+	}
+
+	return ipAddress;
+}
+
+// Helper to check if a string is structured as valid Base64 data
+bool is_valid_base64(const std::string &s)
+{
+	if (s.empty() || s.length() % 4 != 0)
+		return false;
+
+	// Check if it contains only legal Base64 characters
+	return std::all_of(s.begin(), s.end(), [](unsigned char c) {
+		return (std::isalnum(c) || c == '+' || c == '/' || c == '=');
+	});
+}
+
+// Converts a Base64 string back into raw binary bytes
+std::vector<uint8_t> decode_base64(const std::string &input)
+{
+	static const std::string b64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	std::vector<uint8_t> out;
+	int val = 0, valb = -8;
+
+	for (unsigned char c : input)
+	{
+		if (c == '=')
+			break; // Stop at padding
+		size_t idx = b64_chars.find(c);
+		if (idx == std::string::npos)
+			continue; // Skip invalid chars
+
+		val = (val << 6) + idx;
+		valb += 6;
+		if (valb >= 0)
+		{
+			out.push_back(static_cast<uint8_t>((val >> valb) & 0xFF));
+			valb -= 8;
+		}
+	}
+	return out;
+}
+
+// Converts raw binary bytes into a Base64 encoded string
+std::string encode_base64(const std::vector<uint8_t> &input)
+{
+	static const char b64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	std::string out;
+	size_t i = 0;
+	size_t length = input.size();
+
+	// Process blocks of 3 bytes into blocks of 4 Base64 characters
+	while (i < length)
+	{
+		uint32_t octet_a = i < length ? input[i++] : 0;
+		uint32_t octet_b = i < length ? input[i++] : 0;
+		uint32_t octet_c = i < length ? input[i++] : 0;
+
+		uint32_t triple = (octet_a << 16) + (octet_b << 8) + octet_c;
+
+		out.push_back(b64_chars[(triple >> 18) & 0x3F]);
+		out.push_back(b64_chars[(triple >> 12) & 0x3F]);
+		out.push_back(b64_chars[(triple >> 6) & 0x3F]);
+		out.push_back(b64_chars[triple & 0x3F]);
+	}
+
+	// Replace trailing extra padding values if the original size wasn't divisible by 3
+	size_t remainder = length % 3;
+	if (remainder == 1)
+	{
+		out[out.size() - 1] = '=';
+		out[out.size() - 2] = '=';
+	}
+	else if (remainder == 2)
+	{
+		out[out.size() - 1] = '=';
+	}
+
+	return out;
 }

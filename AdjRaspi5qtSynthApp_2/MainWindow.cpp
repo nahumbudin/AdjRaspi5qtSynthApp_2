@@ -10,7 +10,7 @@
  *					5. Added save/load patch file threads to prevent GUI blocking during file operations.
  *					6. Dealing with null pointers when adding instruments.
  *					7. Adding vectors bounding checks to prevent out-of-bounds access.
- *					8. Adding Recording Dialog.
+ *					8. Adding Recording and HTTP Server (REST APi) Dialogs.
  *
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
@@ -45,10 +45,13 @@
 #include "Dialog_AdjFluidSynth.h"
 #include "Dialog_MasterVolume.h"
 #include "Dialog_Recording.h"
+#include "Dialog_HTTPserver.h"
 #include "Dialog_AnalogSynth_1900x1000.h"
 
 SavePatchFileThread *save_patch_file_thread;
 LoadPatchFileThread *load_patch_file_thread;
+
+HttpBridgeQt *MainWindow::http_bridge = nullptr;
 
 QString patch_file_name;
 
@@ -685,6 +688,10 @@ void MainWindow::create_actions()
 	open_recording_act->setStatusTip(tr("Open Recording Control"));
 	connect(open_recording_act, SIGNAL(triggered()), this, SLOT(on_open_recording_dialog()));
 
+	open_http_server_act = new QAction(tr("&HTTP Server"), this);
+	open_http_server_act->setStatusTip(tr("Open HTTP Server Control"));
+	connect(open_http_server_act, SIGNAL(triggered()), this, SLOT(on_open_http_server_dialog()));
+
 	auto_arrange_act = new QAction(tr("&Auto Arrange"), this);
 	auto_arrange_act->setStatusTip(tr("Enable/Disable automatic window arrangement"));
 	auto_arrange_act->setCheckable(true); // Make it checkable
@@ -739,6 +746,7 @@ void MainWindow::create_menus()
 	controls_menu = ui->menubar->addMenu(tr("&Controls"));
 	controls_menu->addAction(open_master_volume_act);
 	controls_menu->addAction(open_recording_act);
+	controls_menu->addAction(open_http_server_act);
 
 	view_menu = ui->menubar->addMenu(tr("&View"));
 	view_menu->addAction(auto_arrange_act);
@@ -1949,6 +1957,43 @@ void MainWindow::on_open_recording_dialog()
 	recording_dialog->raise();
 	recording_dialog->activateWindow();
 	recording_dialog->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void MainWindow::on_open_http_server_dialog()
+{
+	static Dialog_HTTPserver *http_server_dialog = nullptr;
+
+	if (!http_server_dialog)
+	{
+
+		http_server_dialog = Dialog_HTTPserver::get_instance(this);
+
+		register_active_dialog(http_server_dialog);
+
+		// Register with window manager
+		window_manager->register_dialog(http_server_dialog, "HTTP Server");
+
+		// Connect destroy signal to unregister
+		auto *dialog_ptr = http_server_dialog;
+		connect(http_server_dialog, &QObject::destroyed, [this, dialog_ptr]() {
+			window_manager->unregister_dialog(dialog_ptr);
+		});
+
+		// Position the dialog
+		QPoint position = this->pos();
+		position.setX(position.x() + 50);
+		position.setY(position.y() + 50);
+		http_server_dialog->move(position);
+	}
+
+	if (http_server_dialog->isHidden())
+	{
+		http_server_dialog->show();
+	}
+
+	http_server_dialog->raise();
+	http_server_dialog->activateWindow();
+	http_server_dialog->setFocus(Qt::ActiveWindowFocusReason);
 }
 
 // Synth Patch Preset slot implementations
