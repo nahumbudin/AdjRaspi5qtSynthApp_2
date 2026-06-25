@@ -13,6 +13,8 @@
  */
 
 #include "Defs.h"
+#include "synthesizer.h"
+#include "defines.h"
 #include "Dialog_AnalogSynth_1900x1000.h"
 #include "MainWindow.h"
 #include "ui_Dialog_AnalogSynth_1900x1000.h"
@@ -26,6 +28,11 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+	values[1] = _OSC_1_EVENT;
+
 	set_osc1_signals_connections();
 	//osc1_update();
 
@@ -38,16 +45,114 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1Waveform->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1Waveform->blockSignals(false);
 
-	result = init_horizontal_slider_control_colors(ui->horizontalSlider_Osc1Symmetry);	
+	values[2] = _OSC_PARAM_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;	
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1Waveform] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1Waveform);
+	
+	result = init_horizontal_slider_control_colors(ui->horizontalSlider_Osc1Symmetry);
+
+	values[2] = _OSC_PWM_SYMMETRY;
+	values[3] = _SYMMETRY_MAX_INT;
+	values[4] = _SYMMETRY_MIN_INT;
+	values[5] = _SYMMETRY_MAX_INT;
+	values[6] = _SYMMETRY_MIN_INT;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_Osc1Symmetry] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_Osc1Symmetry);
+	
 	result = init_dial_control_colors(ui->dial_Osc1SendFilter1);
+
+	values[2] = _OSC_FILTER_SEND_1;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1SendFilter1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1SendFilter1);
+	
+	
 	result = init_dial_control_colors(ui->dial_Osc1SendFilter2);
+
+	values[2] = _OSC_FILTER_SEND_2;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1SendFilter2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1SendFilter2);
+	
 	
 	// OSC1 TuneOffset frame and controls
 	result = init_frame_colors(ui->frame_Osc1TuneOffset);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1TuneOctave);
+
+	values[2] = _OSC_DETUNE_OCTAVE;
+	values[3] = _OSC_DETUNE_MAX_OCTAVE;
+	values[4] = _OSC_DETUNE_MIN_OCTAVE;
+	values[5] = _OSC_DETUNE_MAX_OCTAVE;
+	values[6] = _OSC_DETUNE_MIN_OCTAVE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1TuneOctave] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1TuneOctave);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1TuneSemitones);
+
+	values[2] = _OSC_DETUNE_SEMITONES;
+	values[3] = _OSC_DETUNE_MAX_SEMITONES;
+	values[4] = _OSC_DETUNE_MIN_SEMITONES;
+	values[5] = _OSC_DETUNE_MAX_SEMITONES;
+	values[6] = _OSC_DETUNE_MIN_SEMITONES;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1TuneSemitones] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1TuneSemitones);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1TuneCents);
+
+	values[2] = _OSC_DETUNE_CENTS;
+	values[3] = (int)(_OSC_DETUNE_MAX_CENTS * 4);  // _OSC_DETUNE_CENTS_FACTORIAL
+	values[4] = (int)(_OSC_DETUNE_MIN_CENTS * 4);
+	values[5] = (int)(_OSC_DETUNE_MAX_CENTS * 4);
+	values[6] = (int)(_OSC_DETUNE_MIN_CENTS * 4);
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1TuneCents] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1TuneCents);
+	
 
 	ui->comboBox_Osc1TuneOctave->blockSignals(true);
 	ui->comboBox_Osc1TuneSemitones->blockSignals(true);
@@ -83,8 +188,35 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	result = init_frame_colors(ui->frame_Osc1FrequencyModulation);
 
 	result = init_dial_control_colors(ui->dial_Osc1FreqModLFOLevel);
+
+	values[2] = _OSC_FREQ_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1FreqModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1FreqModLFOLevel);	
+	
 	result = init_dial_control_colors(ui->dial_Osc1FreqModAdsrLevel);
 
+	values[2] = _OSC_FREQ_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1FreqModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1FreqModAdsrLevel);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1FreqModLFO);
 	ui->comboBox_Osc1FreqModLFO->blockSignals(true);
 	ui->comboBox_Osc1FreqModLFO->addItems(string_lfo_values);
@@ -92,6 +224,19 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1FreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1FreqModLFO->blockSignals(false);
 
+	values[2] = _OSC_FREQ_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1FreqModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1FreqModLFO);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1FreqModAdsr);
 	ui->comboBox_Osc1FreqModAdsr->blockSignals(true);
 	ui->comboBox_Osc1FreqModAdsr->addItems(string_adsr_values);
@@ -99,12 +244,53 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1FreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1FreqModAdsr->blockSignals(false);
 
+	values[2] = _OSC_FREQ_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1FreqModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1FreqModAdsr);
+	
+
 	// OSC1 Amplitude Modulation frame and controls
 	result = init_frame_colors(ui->frame_Osc1AmpMod);
 
 	result = init_dial_control_colors(ui->dial_Osc1AmpModLFOLevel);
+
+	values[2] = _OSC_AMP_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1AmpModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1AmpModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_Osc1AmpModAdsrLevel);
 
+	values[2] = _OSC_AMP_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1AmpModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1AmpModAdsrLevel);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1AmpModLFO);
 	ui->comboBox_Osc1AmpModLFO->blockSignals(true);
 	ui->comboBox_Osc1AmpModLFO->addItems(string_lfo_values);
@@ -112,6 +298,19 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1AmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1AmpModLFO->blockSignals(false);
 
+	values[2] = _OSC_AMP_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1AmpModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1AmpModLFO);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1AmpModAdsr);
 	ui->comboBox_Osc1AmpModAdsr->blockSignals(true);
 	ui->comboBox_Osc1AmpModAdsr->addItems(string_adsr_values);
@@ -119,11 +318,52 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1AmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1AmpModAdsr->blockSignals(false);
 
+	values[2] = _OSC_AMP_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1AmpModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1AmpModAdsr);
+	
+
 	// OSC1 PWM Modulation frame and controls
 	result = init_frame_colors(ui->frame_Osc1PwmMod);
 
 	result = init_dial_control_colors(ui->dial_Osc1PwmModLFOLevel);
+
+	values[2] = _OSC_PWM_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1PwmModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1PwmModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_Osc1PwmModAdsrLevel);
+
+	values[2] = _OSC_PWM_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc1PwmModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc1PwmModAdsrLevel);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1PwmModLFO);
 	ui->comboBox_Osc1PwmModLFO->blockSignals(true);
@@ -132,6 +372,19 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1PwmModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1PwmModLFO->blockSignals(false);
 
+	values[2] = _OSC_PWM_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1PwmModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1PwmModLFO);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc1PwmModAdsr);
 	ui->comboBox_Osc1PwmModAdsr->blockSignals(true);
 	ui->comboBox_Osc1PwmModAdsr->addItems(string_adsr_values);
@@ -139,23 +392,189 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1PwmModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1PwmModAdsr->blockSignals(false);
 
+	values[2] = _OSC_PWM_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1PwmModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1PwmModAdsr);
+
 	// OSC1 Unison Drawbars 1-6 Frame
 	result = init_frame_colors(ui->frame_Osc1Drawbars_1_6);
 
 	// OSC1 Unison Drawbars 1-6 Sliders
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_1);
+
+	values[2] = _OSC_UNISON_LEVEL_1;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_1);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_2);
+
+	values[2] = _OSC_UNISON_LEVEL_2;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_2);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_3);
+
+	values[2] = _OSC_UNISON_LEVEL_3;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_3);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_4);
+
+	values[2] = _OSC_UNISON_LEVEL_4;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_4);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_5);
+
+	values[2] = _OSC_UNISON_LEVEL_5;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_5);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_6);
+
+	values[2] = _OSC_UNISON_LEVEL_6;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_6);
+	
 
 	// OSC1 Unison Drawbars 7-9 detune and distortion Sliders
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_7);
+
+	values[2] = _OSC_UNISON_LEVEL_7;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_7] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_7);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_8);
+
+	values[2] = _OSC_UNISON_LEVEL_8;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_8] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_8	);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1UnisonLevel_9);
+
+	values[2] = _OSC_UNISON_LEVEL_9;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1UnisonLevel_9] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1UnisonLevel_9);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1HarmonyDetuneLevel);
+
+	values[2] = _OSC_UNISON_DETUNE;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1HarmonyDetuneLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1HarmonyDetuneLevel);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_Osc1HarmonyDistortLevel);
+
+	values[2] = _OSC_UNISON_DISTORTION;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_Osc1HarmonyDistortLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_Osc1HarmonyDistortLevel);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc1UnisonMode);
 	ui->comboBox_Osc1UnisonMode->blockSignals(true);
@@ -163,12 +582,38 @@ int Dialog_AnalogSynth_1900x1000::init_osc1_gui()
 	ui->comboBox_Osc1UnisonMode->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1UnisonMode->blockSignals(false);
 
+	values[2] = _OSC_UNISON_MODE;
+	values[3] = _OSC_UNISON_MODE_Cm7_CHORD;
+	values[4] = _OSC_UNISON_MODE_12345678;
+	values[5] = _OSC_UNISON_MODE_Cm7_CHORD;
+	values[6] = _OSC_UNISON_MODE_12345678;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1UnisonMode] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1UnisonMode);
+
 	result = init_combobox_control_colors(ui->comboBox_Osc1HammondPercussionMode);
 	ui->comboBox_Osc1HammondPercussionMode->blockSignals(true);
 	ui->comboBox_Osc1HammondPercussionMode->addItems(string_hammond_modes_list);
 	ui->comboBox_Osc1HammondPercussionMode->setVisible(true); // false - hide for non Hammond unison mode
 	ui->comboBox_Osc1HammondPercussionMode->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc1HammondPercussionMode->blockSignals(false);
+
+	values[2] = _OSC_HAMMOND_PERCUSION_MODE;
+	values[3] = _HAMMOND_PERCUSION_MODE_3RD_NORM_FAST;
+	values[4] = _HAMMOND_PERCUSION_MODE_OFF;
+	values[5] = _HAMMOND_PERCUSION_MODE_3RD_NORM_FAST;
+	values[6] = _HAMMOND_PERCUSION_MODE_OFF;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc1HammondPercussionMode] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc1HammondPercussionMode);
 
 	// OSC1 Unison Drawbars 7-9 detune and distortion Frame
 	result = init_frame_colors(ui->frame_Osc1Drawbars_7_9);

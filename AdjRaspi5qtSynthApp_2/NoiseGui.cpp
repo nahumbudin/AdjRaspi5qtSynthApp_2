@@ -21,6 +21,11 @@ int Dialog_AnalogSynth_1900x1000::init_noise_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+	values[1] = _NOISE_1_EVENT;
+
 	set_noise_signals_connections();
 	noise_update();
 
@@ -37,14 +42,81 @@ int Dialog_AnalogSynth_1900x1000::init_noise_gui()
 	ui->comboBox_NoiseColor->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_NoiseColor->blockSignals(false);
 
+	values[2] = _NOISE_COLOR;
+	values[3] = _BROWN_NOISE;
+	values[4] = _WHITE_NOISE;
+	values[5] = _BROWN_NOISE;
+	values[6] = _WHITE_NOISE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_NoiseColor] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_NoiseColor);
+
 	result = init_dial_control_colors(ui->dial_NoiseSendFilter1);
+
+	values[2] = _NOISE_SEND_1;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_NoiseSendFilter1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_NoiseSendFilter1);
+	
 	result = init_dial_control_colors(ui->dial_NoiseSendFilter2);
+
+	values[2] = _NOISE_SEND_2;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_NoiseSendFilter2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_NoiseSendFilter2);
 
 	// Noise Amp Modulation frame and controls
 	result = init_frame_colors(ui->frame_NoiseAmpMod);
 
 	result = init_dial_control_colors(ui->dial_NoiseAmpModLFOLevel);
+
+	values[2] = _NOISE_AMP_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_NoiseAmpModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_NoiseAmpModLFOLevel);
+
 	result = init_dial_control_colors(ui->dial_NoiseAmpModAdsrLevel);
+
+	values[2] = _NOISE_AMP_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_NoiseAmpModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_NoiseAmpModAdsrLevel);
 	
 	result = init_combobox_control_colors(ui->comboBox_NoiseAmpModAdsr);
 	ui->comboBox_NoiseAmpModAdsr->blockSignals(true);
@@ -52,6 +124,19 @@ int Dialog_AnalogSynth_1900x1000::init_noise_gui()
 	ui->comboBox_NoiseAmpModAdsr->setIdentifier(_NOISE_AMP_MOD_ADSR_COMBOBOX_INDEX);
 	ui->comboBox_NoiseAmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_NoiseAmpModAdsr->blockSignals(false);
+
+	values[2] = _NOISE_AMP_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_NoiseAmpModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_NoiseAmpModLFO);
 	
 	result = init_combobox_control_colors(ui->comboBox_NoiseAmpModLFO);
 	ui->comboBox_NoiseAmpModLFO->blockSignals(true);
@@ -59,6 +144,19 @@ int Dialog_AnalogSynth_1900x1000::init_noise_gui()
 	ui->comboBox_NoiseAmpModLFO->setIdentifier(_NOISE_AMP_MOD_LFO_COMBOBOX_INDEX);
 	ui->comboBox_NoiseAmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_NoiseAmpModLFO->blockSignals(false);
+
+	values[2] = _NOISE_AMP_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_NoiseAmpModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_NoiseAmpModAdsr);
 
 		return 0;
 }

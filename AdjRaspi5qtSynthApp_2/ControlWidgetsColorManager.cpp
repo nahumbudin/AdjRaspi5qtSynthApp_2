@@ -1202,6 +1202,10 @@ int ControlWidgetsColorManager::init_button_controls_colors()
 int ControlWidgetsColorManager::init_checkbox_controls_colors()
 {
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+	
 	if (!analog_synth_checkboxes_colors_initialized)
 	{		
 		Ui::Dialog_AnalogSynth_1900x1000 *ui = Dialog_AnalogSynth_1900x1000::get_ui_instance();
@@ -1214,49 +1218,181 @@ int ControlWidgetsColorManager::init_checkbox_controls_colors()
 			checkbox_control_colors[ui->checkBox_Osc1Active][0] = _CONTROLS_COLOR_GREEN;	// LED ON
 			checkbox_control_colors[ui->checkBox_Osc1Active][1] = _CONTROLS_COLOR_GRAY; // Frame
 
+			values[1] = _OSC_1_EVENT;
+			values[2] = _OSC_ENABLE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_Osc1Active] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_Osc1Active);
+
 			checkbox_control_colors[ui->checkBox_Osc1UnisonSquareWave] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Osc1UnisonSquareWave][0] = _CONTROLS_COLOR_GREEN; // LED ON
 			checkbox_control_colors[ui->checkBox_Osc1UnisonSquareWave][1] = _CONTROLS_COLOR_BLUE;  // Frame
+
+			values[1] = _OSC_1_EVENT;
+			values[2] = _OSC_1_UNISON_SQUARE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_Osc1UnisonSquareWave] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_Osc1UnisonSquareWave);
 
 			checkbox_control_colors[ui->checkBox_Osc2Active] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Osc2Active][0] = _CONTROLS_COLOR_GREEN;	  // LED ON
 			checkbox_control_colors[ui->checkBox_Osc2Active][1] = _CONTROLS_COLOR_GRAY;		  // Frame
 
+			values[1] = _OSC_2_EVENT;
+			values[2] = _OSC_ENABLE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_Osc2Active] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_Osc2Active);
+
 			checkbox_control_colors[ui->checkBox_Osc2SyncOnOsc1] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Osc2SyncOnOsc1][0] = _CONTROLS_COLOR_GREEN; // LED ON
 			checkbox_control_colors[ui->checkBox_Osc2SyncOnOsc1][1] = _CONTROLS_COLOR_GRAY;	 // Frame
+
+			values[1] = _OSC_2_EVENT;
+			values[2] = _OSC_SYNC;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_Osc2SyncOnOsc1] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_Osc2SyncOnOsc1);
+
+			//checkbox_control_colors[ui->checkBox_Osc2SyncOnOsc1] = new QColor[2];
+			//checkbox_control_colors[ui->checkBox_Osc2SyncOnOsc1][0] = _CONTROLS_COLOR_GREEN; // LED ON
+			//checkbox_control_colors[ui->checkBox_Osc2SyncOnOsc1][1] = _CONTROLS_COLOR_GRAY;	 // Frame
 
 			checkbox_control_colors[ui->checkBox_MsoActive] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_MsoActive][0] = _CONTROLS_COLOR_GREEN;  // LED ON
 			checkbox_control_colors[ui->checkBox_MsoActive][1] = _CONTROLS_COLOR_GRAY; // Frame
 
+			values[1] = _MSO_1_EVENT;
+			values[2] = _MSO_ENABLE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_MsoActive] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_MsoActive);			
+			
+
 			checkbox_control_colors[ui->checkBox_NoiseActive] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_NoiseActive][0] = _CONTROLS_COLOR_GREEN;	  // LED ON
 			checkbox_control_colors[ui->checkBox_NoiseActive][1] = _CONTROLS_COLOR_GRAY; // Frame
+
+			values[1] = _NOISE_1_EVENT;
+			values[2] = _NOISE_ENABLE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_NoiseActive] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_NoiseActive);
 
 			checkbox_control_colors[ui->checkBox_KpsActive] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_KpsActive][0] = _CONTROLS_COLOR_GREEN;	// LED ON
 			checkbox_control_colors[ui->checkBox_KpsActive][1] = _CONTROLS_COLOR_GRAY; // Frame
 
+			values[1] = _KARPLUS_1_EVENT;
+			values[2] = _KARPLUS_STRONG_ENABLE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_KpsActive] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_KpsActive);
+
 			checkbox_control_colors[ui->checkBox_PadActive] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_PadActive][0] = _CONTROLS_COLOR_GREEN;	 // LED ON
 			checkbox_control_colors[ui->checkBox_PadActive][1] = _CONTROLS_COLOR_GRAY; // Frame
+
+			values[1] = _PAD_1_EVENT;
+			values[2] = _PAD_ENABLE;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_PadActive] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_PadActive);
 
 			checkbox_control_colors[ui->checkBox_Distortion_Active] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Distortion_Active][0] = _CONTROLS_COLOR_GREEN;  // LED ON
 			checkbox_control_colors[ui->checkBox_Distortion_Active][1] = _CONTROLS_COLOR_GRAY; // Frame
 
+			values[1] = _DISTORTION_1_EVENT;
+			values[2] = _ENABLE_DISTORTION;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_Distortion_Active] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_Distortion_Active);
+
 			checkbox_control_colors[ui->checkBox_Reverbration3_Active] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Reverbration3_Active][0] = _CONTROLS_COLOR_GREEN;	// LED ON
 			checkbox_control_colors[ui->checkBox_Reverbration3_Active][1] = _CONTROLS_COLOR_GRAY; // Frame
+			
 
 			checkbox_control_colors[ui->checkBox_Reverbration_Active] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Reverbration_Active][0] = _CONTROLS_COLOR_GREEN;	 // LED ON
 			checkbox_control_colors[ui->checkBox_Reverbration_Active][1] = _CONTROLS_COLOR_GRAY; // Frame
 
-			checkbox_control_colors[ui->checkBox_Distortion_Active] = new QColor[2];
-			checkbox_control_colors[ui->checkBox_Distortion_Active][0] = _CONTROLS_COLOR_GREEN; // LED ON
-			checkbox_control_colors[ui->checkBox_Distortion_Active][1] = _CONTROLS_COLOR_GRAY;  // Frame
+			//checkbox_control_colors[ui->checkBox_Distortion_Active] = new QColor[2];
+			//checkbox_control_colors[ui->checkBox_Distortion_Active][0] = _CONTROLS_COLOR_GREEN; // LED ON
+			//checkbox_control_colors[ui->checkBox_Distortion_Active][1] = _CONTROLS_COLOR_GRAY;  // Frame
 
 			checkbox_control_colors[ui->checkBox_Reverbration3_Active] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_Reverbration3_Active][0] = _CONTROLS_COLOR_GREEN; // LED ON
@@ -1270,9 +1406,37 @@ int ControlWidgetsColorManager::init_checkbox_controls_colors()
 			checkbox_control_colors[ui->checkBox_Filter2FollowFilter1][0] = _CONTROLS_COLOR_GREEN; // LED ON
 			checkbox_control_colors[ui->checkBox_Filter2FollowFilter1][1] = _CONTROLS_COLOR_GRAY;  // Frame
 
+			values[1] = _FILTER_2_EVENT;
+			values[2] = _FILTER_2_TRACK_FILT_1;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_Filter2FollowFilter1] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_Filter2FollowFilter1);
+
 			checkbox_control_colors[ui->checkBox_DistortionAutoGain] = new QColor[2];
 			checkbox_control_colors[ui->checkBox_DistortionAutoGain][0] = _CONTROLS_COLOR_GREEN; // LED ON
 			checkbox_control_colors[ui->checkBox_DistortionAutoGain][1] = _CONTROLS_COLOR_GRAY;  // Frame
+
+			values[1] = _DISTORTION_1_EVENT;
+			values[2] = _DISTORTION_AUTO_GAIN;
+			values[3] = (int)_ENABLE;
+			values[4] = (int)_DISABLE;
+			values[5] = (int)_ENABLE;
+			values[6] = (int)_DISABLE;
+			values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+			values[8] = _WIDGET_TYPE_CHECKBOX;
+
+			MainWindow::widgets_map_ml_training_info[ui->checkBox_DistortionAutoGain] = values;
+
+			// Register for click detection
+			MainWindow::get_instance()->register_widget_for_click_detection(ui->checkBox_DistortionAutoGain);
 		}
 	}
 

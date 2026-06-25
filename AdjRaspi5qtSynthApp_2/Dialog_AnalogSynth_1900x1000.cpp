@@ -110,34 +110,39 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	{
 		string_lfo_values.append("---");
 		string_lfo_values.append("1");
-		string_lfo_values.append("2");
-		string_lfo_values.append("3");
-		string_lfo_values.append("4");
-		string_lfo_values.append("5");
-		string_lfo_values.append("6");
 		string_lfo_values.append("1 0.5s");
-		string_lfo_values.append("2 0.5s");
-		string_lfo_values.append("3 0.5s");
-		string_lfo_values.append("4 0.5s");
-		string_lfo_values.append("5 0.5s");
-		string_lfo_values.append("6 0.5s");
 		string_lfo_values.append("1 1.0s");
-		string_lfo_values.append("2 1.0s");
-		string_lfo_values.append("3 1.0s");
-		string_lfo_values.append("4 1.0s");
-		string_lfo_values.append("5 1.0s");
-		string_lfo_values.append("6 1.0s");
 		string_lfo_values.append("1 1.5s");
+		string_lfo_values.append("1 2.0s");		
+		
+		string_lfo_values.append("2");
+		string_lfo_values.append("2 0.5s");
+		string_lfo_values.append("2 1.0s");
 		string_lfo_values.append("2 1.5s");
+		string_lfo_values.append("2 2.0s");		
+		
+		string_lfo_values.append("3");
+		string_lfo_values.append("3 0.5s");
+		string_lfo_values.append("3 1.0s");
 		string_lfo_values.append("3 1.5s");
-		string_lfo_values.append("4 1.5s");
-		string_lfo_values.append("5 1.5s");
-		string_lfo_values.append("6 1.5s");
-		string_lfo_values.append("1 2.0s");
-		string_lfo_values.append("2 2.0s");
 		string_lfo_values.append("3 2.0s");
-		string_lfo_values.append("4 2.0s");
+		
+		string_lfo_values.append("4");
+		string_lfo_values.append("4 0.5s");
+		string_lfo_values.append("4 1.0s");
+		string_lfo_values.append("4 1.5s");
+		string_lfo_values.append("4 2.0s");		
+		
+		string_lfo_values.append("5");
+		string_lfo_values.append("5 0.5s");
+		string_lfo_values.append("5 1.0s");
+		string_lfo_values.append("5 1.5s");
 		string_lfo_values.append("5 2.0s");
+		
+		string_lfo_values.append("6");
+		string_lfo_values.append("6 0.5s");
+		string_lfo_values.append("6 1.0s");
+		string_lfo_values.append("6 1.5s");
 		string_lfo_values.append("6 2.0s");
 	}
 
@@ -1748,7 +1753,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 		}
 
 		// Each LFO provides multiple modes: 1. no delay 2. 0.5Sec delay 3. 1Sec 4. 1.5Sec 5. 2Sec
-		active_lfo = (ui->comboBox_Osc1FreqModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1; // _LFO_1 (0) = 1
+		active_lfo = (ui->comboBox_Osc1FreqModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1; // % _NUM_OF_LFOS + 1; // _LFO_1 (0) = 1
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(360, 400);
@@ -1767,7 +1772,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_Osc1AmpModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_Osc1AmpModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1; // % _NUM_OF_LFOS + 1; // _LFO_1 (0) = 1
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(560, 400);
@@ -1785,7 +1790,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_Osc1PwmModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_Osc1PwmModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1; // % _NUM_OF_LFOS + 1; // _LFO_1 (0) = 1
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(760, 400);
@@ -1803,7 +1808,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_Osc2FreqModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_Osc2FreqModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(1130, 70);
@@ -1822,7 +1827,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_Osc2AmpModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_Osc2AmpModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(1130, 230);
@@ -1840,7 +1845,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_Osc2PwmModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_Osc2PwmModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(1130, 390);
@@ -1858,7 +1863,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_MsoFreqModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_MsoFreqModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(1550, 70);
@@ -1877,7 +1882,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_MsoAmpModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_MsoAmpModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(1550, 230);
@@ -1895,7 +1900,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_MsoPwmModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_MsoPwmModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1; // % _NUM_OF_LFOS + 1; // _LFO_1 (0) = 1
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(1550, 390);
@@ -1913,7 +1918,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_PadFreqModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_PadFreqModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(950, 610);
@@ -1932,7 +1937,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_PadAmpModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_PadAmpModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(950, 610);
@@ -1950,7 +1955,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_NoiseAmpModLFO->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_NoiseAmpModLFO->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1; // % _NUM_OF_LFOS + 1; // _LFO_1 (0) = 1
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(240, 610);
@@ -1967,7 +1972,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_FilterFreqModLfo_1->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_FilterFreqModLfo_1->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(280, 180);
@@ -1985,7 +1990,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_FilterFreqModLfo_2->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_FilterFreqModLfo_2->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(280, 480);
@@ -2003,7 +2008,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_AmpPanModLfo_1->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_AmpPanModLfo_1->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(620, 260);
@@ -2021,7 +2026,7 @@ void Dialog_AnalogSynth_1900x1000::on_modulator_combo_box_mouse_entered(int val)
 			break;
 		}
 
-		active_lfo = (ui->comboBox_AmpPanModLfo_2->currentIndex() - 1) % _NUM_OF_LFOS + 1;
+		active_lfo = (ui->comboBox_AmpPanModLfo_2->currentIndex() - 1) / _NUM_OF_LFO_DELAY_OPTIONS + 1;
 
 		ui->label_LFOtitle->setText("LFO " + QString::number(active_lfo));
 		ui->frame_LFO->move(620, 560);

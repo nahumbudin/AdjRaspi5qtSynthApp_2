@@ -21,6 +21,10 @@ int Dialog_AnalogSynth_1900x1000::init_adsrs_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+
 	set_adsrs_signals_connections();
 	adsrs_update();
 
@@ -161,32 +165,389 @@ int Dialog_AnalogSynth_1900x1000::init_adsrs_gui()
 	update_adsr_plot[_ENV_6 - 1] = true;
 
 	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_1);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_1);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_1);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_1);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_2);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_2);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_2);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_2);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_3);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_3);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_3);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_3);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_4);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_4);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_4);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_4);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_5);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_5);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_5);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_5);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_6);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_6);
-	result - init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_6);
-	result - init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_6);
 
+	values[1] = _ENV_1_EVENT;
+	values[2] = _MOD_ADSR_ATTACK;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
 
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrA_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrA_1);
 	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_1);
+
+	values[1] = _ENV_1_EVENT;
+	values[2] = _MOD_ADSR_DECAY;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrD_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrD_1);
+	
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_1);
+
+	values[1] = _ENV_1_EVENT;
+	values[2] = _MOD_ADSR_SUSTAIN;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrS_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrS_1);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_1);
+
+	values[1] = _ENV_1_EVENT;
+	values[2] = _MOD_ADSR_RELEASE;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrR_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrR_1);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_2);
+
+	values[1] = _ENV_2_EVENT;
+	values[2] = _MOD_ADSR_ATTACK;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrA_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrA_2);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_2);
+
+	values[1] = _ENV_2_EVENT;
+	values[2] = _MOD_ADSR_DECAY;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrD_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrD_2);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_2);
+
+	values[1] = _ENV_2_EVENT;
+	values[2] = _MOD_ADSR_SUSTAIN;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrS_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrS_2);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_2);
+
+	values[1] = _ENV_2_EVENT;
+	values[2] = _MOD_ADSR_RELEASE;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrR_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrR_2);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_3);
+
+	values[1] = _ENV_3_EVENT;
+	values[2] = _MOD_ADSR_ATTACK;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrA_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrA_3);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_3);
+
+	values[1] = _ENV_3_EVENT;
+	values[2] = _MOD_ADSR_DECAY;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrD_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrD_3);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_3);
+
+	values[1] = _ENV_3_EVENT;
+	values[2] = _MOD_ADSR_SUSTAIN;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrS_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrS_3);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_3);
+
+	values[1] = _ENV_3_EVENT;
+	values[2] = _MOD_ADSR_RELEASE;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrR_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrR_3);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_4);
+
+	values[1] = _ENV_4_EVENT;
+	values[2] = _MOD_ADSR_ATTACK;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrA_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrA_4);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_4);
+
+	values[1] = _ENV_4_EVENT;
+	values[2] = _MOD_ADSR_DECAY;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrD_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrD_4);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_4);
+
+	values[1] = _ENV_4_EVENT;
+	values[2] = _MOD_ADSR_SUSTAIN;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrS_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrS_4);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_4);
+
+	values[1] = _ENV_4_EVENT;
+	values[2] = _MOD_ADSR_RELEASE;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrR_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrR_4);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_5);
+
+	values[1] = _ENV_5_EVENT;
+	values[2] = _MOD_ADSR_ATTACK;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrA_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrA_5);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_5);
+
+	values[1] = _ENV_5_EVENT;
+	values[2] = _MOD_ADSR_DECAY;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrD_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrD_5);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_5);
+
+	values[1] = _ENV_5_EVENT	;
+	values[2] = _MOD_ADSR_SUSTAIN;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrS_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrS_5);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_5);
+
+	values[1] = _ENV_5_EVENT;
+	values[2] = _MOD_ADSR_RELEASE;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrR_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrR_5);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrA_6);
+
+	values[1] = _ENV_6_EVENT;
+	values[2] = _MOD_ADSR_ATTACK;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrA_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrA_6);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrD_6);
+
+	values[1] = _ENV_6_EVENT;
+	values[2] = _MOD_ADSR_DECAY;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrD_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrD_6);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrS_6);
+
+	values[1] = _ENV_6_EVENT;
+	values[2] = _MOD_ADSR_SUSTAIN;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrS_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrS_6);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_AdsrR_6);
+
+	values[1] = _ENV_6_EVENT;
+	values[2] = _MOD_ADSR_RELEASE;
+	values[3] = 100; // To be noremalized to Attack range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_AdsrR_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_AdsrR_6);
 
 	return 0;
 }

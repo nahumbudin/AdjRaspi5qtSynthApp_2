@@ -11,6 +11,7 @@
  *					6. Dealing with null pointers when adding instruments.
  *					7. Adding vectors bounding checks to prevent out-of-bounds access.
  *					8. Adding Recording and HTTP Server (REST APi) Dialogs.
+ *					9. Adding widgets selection for ML training.
  *
  *
  *	@brief		Application Main Window that hosts the modules pannels as acolomn.
@@ -47,11 +48,28 @@
 #include "Dialog_Recording.h"
 #include "Dialog_HTTPserver.h"
 #include "Dialog_AnalogSynth_1900x1000.h"
+#include "Dialog_TrainingParamsEditor.h"
+
+// Holds all GUI controls widgets and ML training data.
+// int[9] - Module id, submodule id, param id, 99Param MAX, MIN, max, min, fix(0)/iterate(1), type (0-dial, 1-slider, 2-combobox, 3-button, 4-checkbox)
+std::unordered_map<QWidget *, std::array<int, 9>> MainWindow::widgets_map_ml_training_info;
+
+std::unordered_map<int, std::string> MainWindow::modules_names_map;
+std::unordered_map<int, std::string> MainWindow::submodules_names_map;
+std::unordered_map<int, std::string> MainWindow::params_names_map;
+
+bool MainWindow::widgets_selection_active = false;
+std::vector<std::array<int, 8>> MainWindow::ml_training_params_list;
+
+Dialog_SelectMLtrainingParam *MainWindow::active_ml_param_dialog = nullptr;
+Dialog_TrainingParamsEditor *MainWindow::training_params_editor_dialog = nullptr;
+
+std::array<int, 8> MainWindow::param_info;
 
 SavePatchFileThread *save_patch_file_thread;
 LoadPatchFileThread *load_patch_file_thread;
 
-HttpBridgeQt *MainWindow::http_bridge = nullptr;
+//HttpBridgeQt *MainWindow::http_bridge = nullptr;
 
 QString patch_file_name;
 
@@ -288,6 +306,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	instruments_ids_map[_INSTRUMENT_NAME_SYNTH_PRESET_16_STR_KEY] =
 		en_instruments_ids_t::analog_synth_preset_16;
 
+	init_dictionaries();
+
 	// Start the periodic gui update timer
 	start_update_timer(200);
 }
@@ -495,6 +515,15 @@ void MainWindow::show_window_manager()
 }
 
 
+void MainWindow::register_widget_for_click_detection(QWidget *widget)
+{
+	if (widget)
+	{
+		widget->installEventFilter(this);
+	}
+}
+
+
 void MainWindow::on_patch_file_saved(const QString &s)
 {
 	
@@ -698,6 +727,17 @@ void MainWindow::create_actions()
 	auto_arrange_act->setChecked(false);  // Initial state
 	connect(auto_arrange_act, SIGNAL(toggled(bool)), this, SLOT(on_auto_arrange_toggled(bool)));
 
+	toggle_widgets_selection_act = new QAction(tr("&Widgets Selection"), this);
+	toggle_widgets_selection_act->setStatusTip(tr("Enable/Disable Widgets Selection"));
+	toggle_widgets_selection_act->setCheckable(true); // Make it checkable
+	toggle_widgets_selection_act->setChecked(false);  // Initial state
+	connect(toggle_widgets_selection_act, SIGNAL(triggered()), this, SLOT(on_ml_widgets_selection_toggled()));
+	
+	open_widgets_selction_edit_dialog_act = new QAction(tr("&Edit Training Widgets Selection"), this);
+	open_widgets_selction_edit_dialog_act->setStatusTip(tr("Open Training Widgets Selection Edit Dialog"));
+	connect(open_widgets_selction_edit_dialog_act, SIGNAL(triggered()), this, 
+			SLOT(on_open_widgets_selction_edit_dialog()));
+
 	const char *slot_names[] = {
 		SLOT(on_load_synth_patch_preset_1()),
 		SLOT(on_load_synth_patch_preset_2()),
@@ -724,8 +764,6 @@ void MainWindow::create_actions()
 		connect(load_preset_actions[i], SIGNAL(triggered()), this, slot_names[i]);
 	}
 	
-	
-	
 	//add_modules_group = new QActionGroup(this);
 	//add_modules_group->addAction(add_fluid_synth_act);
 	
@@ -750,6 +788,10 @@ void MainWindow::create_menus()
 
 	view_menu = ui->menubar->addMenu(tr("&View"));
 	view_menu->addAction(auto_arrange_act);
+
+	widgets_selection_menu = ui->menubar->addMenu(tr("&Widgets Selection"));
+	widgets_selection_menu->addAction(toggle_widgets_selection_act);
+	widgets_selection_menu->addAction(open_widgets_selction_edit_dialog_act);
 
 	add_module_menu = ui->menubar->addMenu(tr("&Add Instrument"));
 	add_module_menu->addAction(add_fluid_synth_act);
@@ -2031,10 +2073,78 @@ void MainWindow::on_auto_arrange_toggled(bool checked)
 	}
 }
 
+void MainWindow::on_ml_widgets_selection_toggled()
+{
+	set_ml_widgets_selection_active(!widgets_selection_active);
+	toggle_widgets_selection_act->setChecked(widgets_selection_active); // Update menu checkbox
+
+	if (widgets_selection_active)
+	{
+		open_widgets_selction_edit_dialog_act->setEnabled(true);
+	}
+	else
+	{
+		open_widgets_selction_edit_dialog_act->setEnabled(false);
+	}
+}
+
+void MainWindow::on_open_widgets_selction_edit_dialog()
+{
+	if (!training_params_editor_dialog)
+	{
+		training_params_editor_dialog = new Dialog_TrainingParamsEditor(
+			this,
+			ml_training_params_list);
+
+		// Set to delete on close
+		training_params_editor_dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+		register_active_dialog(training_params_editor_dialog);
+
+		// Register with window manager
+		window_manager->register_dialog(training_params_editor_dialog, "Training Params Editor");
+
+		// Connect destroyed signal to null the pointer and unregister
+		connect(training_params_editor_dialog, &QObject::destroyed, [this]() {
+			if (training_params_editor_dialog)
+			{
+				window_manager->unregister_dialog(training_params_editor_dialog);
+				training_params_editor_dialog = nullptr; // Null the pointer
+			}
+		});
+
+		// Position the dialog
+		QPoint position = this->pos();
+		position.setX(position.x() + 50);
+		position.setY(position.y() + 50);
+		training_params_editor_dialog->move(position);
+
+		training_params_editor_dialog->show();
+	}
+	else
+	{
+		// Dialog already exists, just show and raise it
+		if (training_params_editor_dialog->isHidden())
+		{
+			training_params_editor_dialog->show();
+		}
+
+		training_params_editor_dialog->raise();
+		training_params_editor_dialog->activateWindow();
+		training_params_editor_dialog->setFocus(Qt::ActiveWindowFocusReason);
+	}
+}
+
 void MainWindow::set_auto_arrange(bool enabled)
 {
 	auto_arrange_enabled = enabled;
 	auto_arrange_act->setChecked(enabled); // Update menu checkbox
+}
+
+void MainWindow::set_ml_widgets_selection_active(bool active)
+{
+	widgets_selection_active = active;
+	toggle_widgets_selection_act->setChecked(active); // Update menu checkbox
 }
 
 /**

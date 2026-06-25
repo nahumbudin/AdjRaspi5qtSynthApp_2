@@ -21,16 +21,110 @@ int Dialog_AnalogSynth_1900x1000::init_distortion_gui()
 {
 	int result = -1;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+
 	set_distortion_signals_connections();
 	distortion_update();
 
 	result = init_dial_control_colors(ui->dial_DistortionDrive_1);
+
+	values[1] = _DISTORTION_1_EVENT;
+	values[2] = _DISTORTION_DRIVE;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_DistortionDrive_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_DistortionDrive_1);
+	
 	result = init_dial_control_colors(ui->dial_DistortionRange_1);
+
+	values[1] = _DISTORTION_1_EVENT;
+	values[2] = _DISTORTION_RANGE;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_DistortionRange_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_DistortionRange_1);
+	
 	result = init_dial_control_colors(ui->dial_DistortionBlend_1);
+
+	values[1] = _DISTORTION_1_EVENT;
+	values[2] = _DISTORTION_BLEND;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_DistortionBlend_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_DistortionBlend_1);
+	
 	
 	result = init_dial_control_colors(ui->dial_DistortionDrive_2);
+
+	values[1] = _DISTORTION_2_EVENT;
+	values[2] = _DISTORTION_DRIVE;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_DistortionDrive_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_DistortionDrive_2);
+	
 	result = init_dial_control_colors(ui->dial_DistortionRange_2);
+
+	values[1] = _DISTORTION_2_EVENT;
+	values[2] = _DISTORTION_RANGE;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_DistortionRange_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_DistortionRange_2);
+	
 	result = init_dial_control_colors(ui->dial_DistortionBlend_2);
+
+	values[1] = _DISTORTION_2_EVENT;
+	values[2] = _DISTORTION_BLEND;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_DistortionBlend_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_DistortionBlend_2);
+	
 
 	return 0;
 }

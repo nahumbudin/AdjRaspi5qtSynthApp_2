@@ -21,6 +21,10 @@ int Dialog_AnalogSynth_1900x1000::init_filters_gui()
 {
 	int result = 0;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+
 	if (string_filters_bands.isEmpty())
 	{
 		string_filters_bands.append("Low Pass");
@@ -30,23 +34,51 @@ int Dialog_AnalogSynth_1900x1000::init_filters_gui()
 		string_filters_bands.append("All Pass");
 	}
 
+	result = init_combobox_control_colors(ui->comboBox_FilterBand_1);
+
 	ui->comboBox_FilterBand_1->blockSignals(true);
 	ui->comboBox_FilterBand_1->clear();
 	ui->comboBox_FilterBand_1->addItems(string_filters_bands);
 	ui->comboBox_FilterBand_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterBand_1->blockSignals(false);
 
-	ui->comboBox_FilterBand_2->blockSignals(true);
-	ui->comboBox_FilterBand_2->clear();
-	ui->comboBox_FilterBand_2->addItems(string_filters_bands);
-	ui->comboBox_FilterBand_2->setTextAlignment(Qt::AlignCenter);	
-	ui->comboBox_FilterBand_2->blockSignals(false);
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_BAND;
+	values[3] = _FILTER_BAND_PASS_ALL;
+	values[4] = _FILTER_BAND_LPF;
+	values[5] = _FILTER_BAND_PASS_ALL;
+	values[6] = _FILTER_BAND_LPF;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
 
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterBand_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_FilterBand_1);
+
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModAdsr_1);
+	
 	ui->comboBox_FilterFreqModAdsr_1->blockSignals(true);
 	ui->comboBox_FilterFreqModAdsr_1->addItems(string_adsr_values);
 	ui->comboBox_FilterFreqModAdsr_1->setIdentifier(_FILTER1_FREQ_MOD_ADSR_COMBOBOX_INDEX);
 	ui->comboBox_FilterFreqModAdsr_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModAdsr_1->blockSignals(false);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_FREQ_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterFreqModAdsr_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_FilterFreqModAdsr_1);
+
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModLfo_1);
 
 	ui->comboBox_FilterFreqModLfo_1->blockSignals(true);
 	ui->comboBox_FilterFreqModLfo_1->addItems(string_lfo_values);
@@ -54,42 +86,278 @@ int Dialog_AnalogSynth_1900x1000::init_filters_gui()
 	ui->comboBox_FilterFreqModLfo_1->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModLfo_1->blockSignals(false);
 
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_FREQ_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterFreqModLfo_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_FilterFreqModLfo_1);
+
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModLfoLevel_1);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_FREQ_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterFreqModLfo_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_FilterFreqModLfoLevel_1);
+	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModAdsrLevel_1);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_FREQ_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_FilterFreqModAdsrLevel_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_FilterFreqModAdsrLevel_1);
+
+	
+	result = init_dial_control_colors(ui->dial_FilterFreq_1);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_FREQ;
+	values[3] = 100; // To be normlized to actual filter frequency range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterFreq_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterFreq_1);
+	
+	result = init_dial_control_colors(ui->dial_FilterOctave_1);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_OCT;
+	values[3] = 100; // To be normlized to actual filter modulation octave range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterOctave_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterOctave_1);
+	
+	result = init_dial_control_colors(ui->dial_FilterQ_1);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_Q;
+	values[3] = 100; // To be normlized to actual filter modulation Q range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterQ_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterQ_1);
+	
+	result = init_dial_control_colors(ui->dial_FilterKbdTrack_1);
+
+	values[1] = _FILTER_1_EVENT;
+	values[2] = _FILTER_KBD_TRACK;
+	values[3] = 100; // To be normlized to actual filter modulation keyboard tracking range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterKbdTrack_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterKbdTrack_1);
+
+	result = init_combobox_control_colors(ui->comboBox_FilterBand_2);
+	
+	ui->comboBox_FilterBand_2->blockSignals(true);
+	ui->comboBox_FilterBand_2->clear();
+	ui->comboBox_FilterBand_2->addItems(string_filters_bands);
+	ui->comboBox_FilterBand_2->setTextAlignment(Qt::AlignCenter);
+	ui->comboBox_FilterBand_2->blockSignals(false);
+
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_BAND;
+	values[3] = _FILTER_BAND_PASS_ALL;
+	values[4] = _FILTER_BAND_LPF;
+	values[5] = _FILTER_BAND_PASS_ALL;
+	values[6] = _FILTER_BAND_LPF;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterBand_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_FilterBand_2);
+
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModAdsr_2);
+
 	ui->comboBox_FilterFreqModAdsr_2->blockSignals(true);
 	ui->comboBox_FilterFreqModAdsr_2->addItems(string_adsr_values);
 	ui->comboBox_FilterFreqModAdsr_2->setIdentifier(_FILTER2_FREQ_MOD_ADSR_COMBOBOX_INDEX);
 	ui->comboBox_FilterFreqModAdsr_2->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModAdsr_2->blockSignals(false);
 
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_FREQ_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterFreqModAdsr_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_FilterFreqModAdsr_2);
+
+	result = init_combobox_control_colors(ui->comboBox_FilterFreqModLfo_2);
+	
 	ui->comboBox_FilterFreqModLfo_2->blockSignals(true);
 	ui->comboBox_FilterFreqModLfo_2->addItems(string_lfo_values);
 	ui->comboBox_FilterFreqModLfo_2->setIdentifier(_FILTER2_FREQ_MOD_LFO_COMBOBOX_INDEX);
 	ui->comboBox_FilterFreqModLfo_2->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_FilterFreqModLfo_2->blockSignals(false);
 
-	result = init_dial_control_colors(ui->dial_FilterFreq_1);
-	result = init_dial_control_colors(ui->dial_FilterOctave_1);
-	result = init_dial_control_colors(ui->dial_FilterQ_1);
-	result = init_dial_control_colors(ui->dial_FilterKbdTrack_1);
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_FREQ_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_FilterFreqModLfo_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_FilterFreqModLfo_2);
+
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModLfoLevel_2);
+
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_FREQ_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_FilterFreqModLfoLevel_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_FilterFreqModLfoLevel_2);
 	
+	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModAdsrLevel_2);
+
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_FREQ_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_FilterFreqModAdsrLevel_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_FilterFreqModAdsrLevel_2);
+
 	result = init_dial_control_colors(ui->dial_FilterFreq_2);
+
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_FREQ;
+	values[3] = 100; // To be normlized to actual filter frequency range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterFreq_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterFreq_2);
+	
 	result = init_dial_control_colors(ui->dial_FilterOctave_2);
+
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_OCT;
+	values[3] = 100; // To be normlized to actual filter modulation octave range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterOctave_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterOctave_2);
+	
 	result = init_dial_control_colors(ui->dial_FilterQ_2);
+
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_Q;
+	values[3] = 100; // To be normlized to actual filter modulation Q range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterQ_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterQ_2);
+	
 	result = init_dial_control_colors(ui->dial_FilterKbdTrack_2);
 
-	result = init_combobox_control_colors(ui->comboBox_FilterBand_1);
-	result = init_combobox_control_colors(ui->comboBox_FilterFreqModAdsr_1);
-	result = init_combobox_control_colors(ui->comboBox_FilterFreqModLfo_1);
-	
-	result = init_combobox_control_colors(ui->comboBox_FilterBand_2);
-	result = init_combobox_control_colors(ui->comboBox_FilterFreqModAdsr_2);
-	result = init_combobox_control_colors(ui->comboBox_FilterFreqModLfo_2);
+	values[1] = _FILTER_2_EVENT;
+	values[2] = _FILTER_KBD_TRACK;
+	values[3] = 100; // To be normlized to actual filter modulation keyboard tracking range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
 
-	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModLfoLevel_1);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModAdsrLevel_1);
-	
-	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModLfoLevel_2);
-	result = init_vertical_slider_control_colors(ui->verticalSlider_FilterFreqModAdsrLevel_2);
-	
+	MainWindow::widgets_map_ml_training_info[ui->dial_FilterKbdTrack_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_FilterKbdTrack_2);	
 
 	set_filters_signals_connections();
 	filters_update();

@@ -21,6 +21,10 @@ int Dialog_AnalogSynth_1900x1000::init_lfos_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+
 	if (string_waveforms_list.size() == 0)
 	{
 		/* Do only once for all */
@@ -62,24 +66,294 @@ int Dialog_AnalogSynth_1900x1000::init_lfos_gui()
 	ui->comboBox_LFOwaveform_6->blockSignals(false);
 
 	result = init_dial_control_colors(ui->dial_LFOsymmetry_1);
-	result = init_dial_control_colors(ui->dial_LFOrate_1);
+
+	values[1] = _LFO_1_EVENT;
+	values[2] = _MOD_LFO_SYMMETRY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOsymmetry_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOsymmetry_1);
+
 	result = init_dial_control_colors(ui->dial_LFOsymmetry_2);
-	result = init_dial_control_colors(ui->dial_LFOrate_2);
+
+	values[1] = _LFO_2_EVENT;
+	values[2] = _MOD_LFO_SYMMETRY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOsymmetry_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOsymmetry_2);
+
 	result = init_dial_control_colors(ui->dial_LFOsymmetry_3);
-	result = init_dial_control_colors(ui->dial_LFOrate_3);
+
+	values[1] = _LFO_3_EVENT;
+	values[2] = _MOD_LFO_SYMMETRY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOsymmetry_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOsymmetry_3);
+
 	result = init_dial_control_colors(ui->dial_LFOsymmetry_4);
-	result = init_dial_control_colors(ui->dial_LFOrate_4);
+
+	values[1] = _LFO_4_EVENT;
+	values[2] = _MOD_LFO_SYMMETRY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOsymmetry_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOsymmetry_4);
+
 	result = init_dial_control_colors(ui->dial_LFOsymmetry_5);
-	result = init_dial_control_colors(ui->dial_LFOrate_5);
+
+	values[1] = _LFO_5_EVENT;
+	values[2] = _MOD_LFO_SYMMETRY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOsymmetry_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOsymmetry_5);
+
 	result = init_dial_control_colors(ui->dial_LFOsymmetry_6);
+
+	values[1] = _LFO_6_EVENT;
+	values[2] = _MOD_LFO_SYMMETRY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOsymmetry_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOsymmetry_6);
+	
+	
+	
+	result = init_dial_control_colors(ui->dial_LFOrate_1);
+
+	values[1] = _LFO_1_EVENT;
+	values[2] = _MOD_LFO_RATE;
+	values[3] = 100; // Normalize to LFO rate range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOrate_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOrate_1);
+	
+	result = init_dial_control_colors(ui->dial_LFOrate_2);
+
+	values[1] = _LFO_2_EVENT;
+	values[2] = _MOD_LFO_RATE;
+	values[3] = 100; // Normalize to LFO rate range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOrate_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOrate_2);
+	
+	result = init_dial_control_colors(ui->dial_LFOrate_3);
+
+	values[1] = _LFO_3_EVENT;
+	values[2] = _MOD_LFO_RATE;
+	values[3] = 100; // Normalize to LFO rate range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOrate_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOrate_3);
+	
+	result = init_dial_control_colors(ui->dial_LFOrate_4);
+
+	values[1] = _LFO_4_EVENT;
+	values[2] = _MOD_LFO_RATE;
+	values[3] = 100; // Normalize to LFO rate range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOrate_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOrate_4);
+	
+	result = init_dial_control_colors(ui->dial_LFOrate_5);
+
+	values[1] = _LFO_5_EVENT;
+	values[2] = _MOD_LFO_RATE;
+	values[3] = 100; // Normalize to LFO rate range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOrate_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOrate_5);
+	
 	result = init_dial_control_colors(ui->dial_LFOrate_6);
 
+	values[1] = _LFO_6_EVENT;
+	values[2] = _MOD_LFO_RATE;
+	values[3] = 100; // Normalize to LFO rate range.
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_LFOrate_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_LFOrate_6);
+
 	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_1);
+
+	values[1] = _LFO_1_EVENT;
+	values[2] = _MOD_LFO_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_LFOwaveform_1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_LFOwaveform_1);
+	
 	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_2);
+
+	values[1] = _LFO_2_EVENT;
+	values[2] = _MOD_LFO_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_LFOwaveform_2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_LFOwaveform_2);
+	
 	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_3);
+
+	values[1] = _LFO_3_EVENT;
+	values[2] = _MOD_LFO_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_LFOwaveform_3] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_LFOwaveform_3);
+	
 	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_4);
+
+	values[1] = _LFO_4_EVENT;
+	values[2] = _MOD_LFO_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_LFOwaveform_4] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_LFOwaveform_4);
+	
 	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_5);
+
+	values[1] = _LFO_5_EVENT;
+	values[2] = _MOD_LFO_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_LFOwaveform_5] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_LFOwaveform_5);
+	
 	result = init_combobox_control_colors(ui->comboBox_LFOwaveform_6);
+
+	values[1] = _LFO_6_EVENT;
+	values[2] = _MOD_LFO_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_LFOwaveform_6] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_LFOwaveform_6);
 
 	set_lfos_signals_connections();
 	lfos_update();

@@ -21,6 +21,11 @@ int Dialog_AnalogSynth_1900x1000::init_karplus_strong_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+	values[1] = _KARPLUS_1_EVENT;
+
 	set_kps_signals_connections();
 	kps_update();
 
@@ -44,24 +49,176 @@ int Dialog_AnalogSynth_1900x1000::init_karplus_strong_gui()
 	ui->comboBox_KarplusSynth_ExcitationWaveform->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_KarplusSynth_ExcitationWaveform->blockSignals(false);
 
-	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_WaveformVariations);
+	values[2] = _KARPLUS_STRONG_EXCITATION_WAVEFORM;
+	values[3] = _KARPLUS_STRONG_EXCITATION_SQUARE_WAVE;
+	values[4] = _KARPLUS_STRONG_EXCITATION_WHITE_NOISE;
+	values[5] = _KARPLUS_STRONG_EXCITATION_SQUARE_WAVE;
+	values[6] = _KARPLUS_STRONG_EXCITATION_WHITE_NOISE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_KarplusSynth_ExcitationWaveform] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_KarplusSynth_ExcitationWaveform);
+	
 	result = init_combobox_control_colors(ui->comboBox_KarplusSynth_CalculationMode);
 	ui->comboBox_KarplusSynth_CalculationMode->blockSignals(true);
 	ui->comboBox_KarplusSynth_CalculationMode->addItems(string_karplus_string_damping_calc_mode_list);
 	ui->comboBox_KarplusSynth_CalculationMode->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_KarplusSynth_CalculationMode->blockSignals(false);
 
+	values[2] = _KARPLUS_STRONG_STRING_DUMP_CALC_MODE;
+	values[3] = _KARPLUS_STRONG_STRING_DAMPING_CALC_MAGIC;
+	values[4] = _KARPLUS_STRONG_STRING_DAMPING_CALC_DIRECT;
+	values[5] = _KARPLUS_STRONG_STRING_DAMPING_CALC_MAGIC;
+	values[6] = _KARPLUS_STRONG_STRING_DAMPING_CALC_DIRECT;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_KarplusSynth_CalculationMode] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_KarplusSynth_CalculationMode);	
+
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_StringDamping);
+
+	values[2] = _KARPLUS_STRONG_STRING_DAMPING;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_StringDamping] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_StringDamping);
+	
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_StringDampingVariations);
+
+	values[2] = _KARPLUS_STRONG_STRING_DAMPING_VARIATION;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_StringDampingVariations] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_StringDampingVariations);
+	
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_PluckDamping);
+
+	values[2] = _KARPLUS_STRONG_PLUCK_DAMPING;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_PluckDamping] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_PluckDamping);
+	
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_PluckDampingVariations);
+
+	values[2] = _KARPLUS_STRONG_PLUCK_DAMPING_VARIATION;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_PluckDampingVariations] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_PluckDampingVariations);
+	
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_OnDecay);
+
+	values[2] = _KARPLUS_STRONG_ON_DECAY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_OnDecay] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_OnDecay);
+	
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_OffDecay);
+
+	values[2] = _KARPLUS_STRONG_OFF_DECAY;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_OffDecay] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_OffDecay);
+	
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_WaveformVariations);
-	
+
+	values[2] = _KARPLUS_STRONG_EXCITATION_WAVEFORM_VARIATIONS;
+	values[3] = 95;
+	values[4] = 5;
+	values[5] = 95;
+	values[6] = 5;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_KarplusSynth_WaveformVariations] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_KarplusSynth_WaveformVariations);
+
+	result = init_horizontal_slider_control_colors(ui->horizontalSlider_KarplusSynth_WaveformVariations);
+
+	// _KARPLUS_STRONG_CHARACTER_VARIATIONS TODO: Add to GUI and ML training. See KPS Synthesizer Instrument.
+
 	result = init_dial_control_colors(ui->dial_KarplusSynth_SendFilter1);
-	result = init_dial_control_colors(ui->dial_KarplusSynth_SendFilter2);
+
+	values[2] = _KARPLUS_STRONG_SEND_1;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_KarplusSynth_SendFilter1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_KarplusSynth_SendFilter1);
 	
+	result = init_dial_control_colors(ui->dial_KarplusSynth_SendFilter2);
+
+	values[2] = _KARPLUS_STRONG_SEND_2;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_KarplusSynth_SendFilter2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_KarplusSynth_SendFilter2);
 
 	return result;
 }

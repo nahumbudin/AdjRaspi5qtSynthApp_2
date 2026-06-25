@@ -30,6 +30,11 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+	values[1] = _MSO_1_EVENT;
+
 	set_mso_signals_connections();
 	//mso_update();
 	mso_replot_waveform = true;
@@ -47,10 +52,80 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	result = init_frame_colors(ui->frame_MsoSendFiltersTuneOffset);
 
 	result = init_dial_control_colors(ui->dial_MsoSendFilter1);
+
+	values[2] = _MSO_FILTER_SEND_1;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_MsoSendFilter1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_MsoSendFilter1);
+	
+	
 	result = init_dial_control_colors(ui->dial_MsoSendFilter2);
+
+	values[2] = _MSO_FILTER_SEND_2;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_MsoSendFilter2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_MsoSendFilter2);
+	
 	result = init_combobox_control_colors(ui->comboBox_MsoTuneOctave);
+
+	values[2] = _MSO_DETUNE_OCTAVE;
+	values[3] = _OSC_DETUNE_MAX_OCTAVE;
+	values[4] = _OSC_DETUNE_MIN_OCTAVE;
+	values[5] = _OSC_DETUNE_MAX_OCTAVE;
+	values[6] = _OSC_DETUNE_MIN_OCTAVE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoTuneOctave] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoTuneOctave);
+	
 	result = init_combobox_control_colors(ui->comboBox_MsoTuneSemitones);
+
+	values[2] = _MSO_DETUNE_SEMITONES;
+	values[3] = _OSC_DETUNE_MAX_SEMITONES;
+	values[4] = _OSC_DETUNE_MIN_SEMITONES;
+	values[5] = _OSC_DETUNE_MAX_SEMITONES;
+	values[6] = _OSC_DETUNE_MIN_SEMITONES;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoTuneSemitones] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoTuneSemitones);
+	
 	result = init_combobox_control_colors(ui->comboBox_MsoTuneCents);
+
+	values[2] = _MSO_DETUNE_CENTS;
+	values[3] = (int)(_OSC_DETUNE_MAX_CENTS * 4); // _OSC_DETUNE_CENTS_FACTORIAL
+	values[4] = (int)(_OSC_DETUNE_MIN_CENTS * 4);
+	values[5] = (int)(_OSC_DETUNE_MAX_CENTS * 4);
+	values[6] = (int)(_OSC_DETUNE_MIN_CENTS * 4);
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoTuneCents] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoTuneCents);
 
 	ui->comboBox_MsoTuneOctave->blockSignals(true);
 	ui->comboBox_MsoTuneSemitones->blockSignals(true);
@@ -84,7 +159,34 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	result = init_frame_colors(ui->frame_MsoFreqMod);
 
 	result = init_dial_control_colors(ui->dial_MsoFreqModLFOLevel);
+
+	values[2] = _MSO_FREQ_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_MsoFreqModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_MsoFreqModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_MsoFreqModAdsrLevel);
+
+	values[2] = _MSO_FREQ_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_MsoFreqModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_MsoFreqModAdsrLevel);
 	
 	result = init_combobox_control_colors(ui->comboBox_MsoFreqModLFO);
 	
@@ -93,6 +195,19 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoFreqModLFO->setIdentifier(_MSO_FREQ_MOD_LFO_COMBOBOX_INDEX);
 	ui->comboBox_MsoFreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoFreqModLFO->blockSignals(false);
+
+	values[2] = _MSO_FREQ_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoFreqModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoFreqModLFO);
 	
 	result = init_combobox_control_colors(ui->comboBox_MsoFreqModAdsr);
 	ui->comboBox_MsoFreqModAdsr->blockSignals(true);
@@ -100,12 +215,52 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoFreqModAdsr->setIdentifier(_MSO_FREQ_MOD_ADSR_COMBOBOX_INDEX);
 	ui->comboBox_MsoFreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoFreqModAdsr->blockSignals(false);
+
+	values[2] = _MSO_FREQ_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoFreqModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoFreqModAdsr);
 	
 	// MSO Amplitude Modulation frame and controls
 	result = init_frame_colors(ui->frame_MsoAmpMod);
 	
 	result = init_dial_control_colors(ui->dial_MsoAmpModLFOLevel);
+
+	values[2] = _MSO_AMP_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_MsoAmpModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_MsoAmpModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_MsoAmpModAdsrLevel);
+
+	values[2] = _MSO_AMP_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_MsoAmpModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_MsoAmpModAdsrLevel);
 	
 	result = init_combobox_control_colors(ui->comboBox_MsoAmpModLFO);
 	
@@ -114,6 +269,19 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoAmpModLFO->setIdentifier(_MSO_AMP_MOD_LFO_COMBOBOX_INDEX);
 	ui->comboBox_MsoAmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoAmpModLFO->blockSignals(false);
+
+	values[2] = _MSO_AMP_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoAmpModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoAmpModLFO);
 	
 	result = init_combobox_control_colors(ui->comboBox_MsoAmpModAdsr);
 	ui->comboBox_MsoAmpModAdsr->blockSignals(true);
@@ -121,8 +289,21 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoAmpModAdsr->setIdentifier(_MSO_AMP_MOD_ADSR_COMBOBOX_INDEX);
 	ui->comboBox_MsoAmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoAmpModAdsr->blockSignals(false);
-	
-	// MSO PWM Modulation frame and controls
+
+	values[2] = _MSO_AMP_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_MsoAmpModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_MsoAmpModAdsr);
+
+	// MSO PWM Modulation frame and controls - NOTE: PWM modulation is not implemented yet in the MSO (if at all possible)
 	result = init_frame_colors(ui->frame_MsoPwmMod);
 	
 	result = init_dial_control_colors(ui->dial_MsoPwmModLFOLevel);
@@ -152,14 +333,112 @@ int Dialog_AnalogSynth_1900x1000::init_mso_gui()
 	ui->comboBox_MsoPreset->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_MsoPreset->blockSignals(false);
 
+	// MSO Presets will not be used for ML training, so no need to register it in the widgets_map_ml_training_info
+
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_MsoMorph);
 
+	values[2] = _MSO_SYMETRY;
+	values[3] = _MSO_MAX_SYMETRY;
+	values[4] = _MSO_MIN_SYMETRY;
+	values[5] = _MSO_MAX_SYMETRY;
+	values[6] = _MSO_MIN_SYMETRY;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_MsoMorph] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_MsoMorph);
+
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_a);
+
+	values[2] = _MSO_SEGMENT_A_POSITION;
+	values[3] = _MSO_POINT_MAX_VALUE;
+	values[4] = _MSO_POINT_MIN_VALUE;
+	values[5] = _MSO_POINT_MAX_VALUE;
+	values[6] = _MSO_POINT_MIN_VALUE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_MSO_Pos_a] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_MSO_Pos_a);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_b);
+
+	values[2] = _MSO_SEGMENT_B_POSITION;
+	values[3] = _MSO_POINT_MAX_VALUE;
+	values[4] = _MSO_POINT_MIN_VALUE;
+	values[5] = _MSO_POINT_MAX_VALUE;
+	values[6] = _MSO_POINT_MIN_VALUE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_MSO_Pos_b] = values;
+	
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_MSO_Pos_b);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_c);
+
+	values[2] = _MSO_SEGMENT_C_POSITION;
+	values[3] = _MSO_POINT_MAX_VALUE;
+	values[4] = _MSO_POINT_MIN_VALUE;
+	values[5] = _MSO_POINT_MAX_VALUE;
+	values[6] = _MSO_POINT_MIN_VALUE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_MSO_Pos_c] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_MSO_Pos_c);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_d);
+
+	values[2] = _MSO_SEGMENT_D_POSITION;
+	values[3] = _MSO_POINT_MAX_VALUE;
+	values[4] = _MSO_POINT_MIN_VALUE;
+	values[5] = _MSO_POINT_MAX_VALUE;
+	values[6] = _MSO_POINT_MIN_VALUE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_MSO_Pos_d] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_MSO_Pos_d);
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_e);
+
+	values[2] = _MSO_SEGMENT_E_POSITION;
+	values[3] = _MSO_POINT_MAX_VALUE;
+	values[4] = _MSO_POINT_MIN_VALUE;
+	values[5] = _MSO_POINT_MAX_VALUE;
+	values[6] = _MSO_POINT_MIN_VALUE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_MSO_Pos_e] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_MSO_Pos_e);	
+	
 	result = init_vertical_slider_control_colors(ui->verticalSlider_MSO_Pos_f);
+
+	values[2] = _MSO_SEGMENT_F_POSITION;
+	values[3] = _MSO_POINT_MAX_VALUE;
+	values[4] = _MSO_POINT_MIN_VALUE;
+	values[5] = _MSO_POINT_MAX_VALUE;
+	values[6] = _MSO_POINT_MIN_VALUE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->verticalSlider_MSO_Pos_f] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->verticalSlider_MSO_Pos_f);
 
 	mso_update();
 

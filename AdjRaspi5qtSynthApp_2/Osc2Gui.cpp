@@ -21,6 +21,11 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 {
 	int result;
 
+	std::array<int, 9> values;
+
+	values[0] = _MOD_SYNTH_EVENT;
+	values[1] = _OSC_2_EVENT;
+
 	set_osc2_signals_connections();
 	//osc2_update();
 
@@ -33,16 +38,111 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2Waveform->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2Waveform->blockSignals(false);
 
+	values[2] = _OSC_PARAM_WAVEFORM;
+	values[3] = _OSC_WAVEFORM_SAMPHOLD;
+	values[4] = _OSC_WAVEFORM_SINE;
+	values[5] = _OSC_WAVEFORM_SAMPHOLD;
+	values[6] = _OSC_WAVEFORM_SINE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2Waveform] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2Waveform);
+
 	result = init_horizontal_slider_control_colors(ui->horizontalSlider_Osc2Symmetry);
+
+	values[2] = _OSC_PWM_SYMMETRY;
+	values[3] = _SYMMETRY_MAX_INT;
+	values[4] = _SYMMETRY_MIN_INT;
+	values[5] = _SYMMETRY_MAX_INT;
+	values[6] = _SYMMETRY_MIN_INT;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_SLIDER;
+
+	MainWindow::widgets_map_ml_training_info[ui->horizontalSlider_Osc2Symmetry] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->horizontalSlider_Osc2Symmetry);
+	
 	result = init_dial_control_colors(ui->dial_Osc2SendFilter1);
+
+	values[2] = _OSC_FILTER_SEND_1;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2SendFilter1] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2SendFilter1);
+	
 	result = init_dial_control_colors(ui->dial_Osc2SendFilter2);
+
+	values[2] = _OSC_FILTER_SEND_2;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2SendFilter2] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2SendFilter2);
 
 	// OSC2 TuneOffset frame and controls
 	result = init_frame_colors(ui->frame_Osc2TuneOffset);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2TuneOctave);
+
+	values[2] = _OSC_DETUNE_OCTAVE;
+	values[3] = _OSC_DETUNE_MAX_OCTAVE;
+	values[4] = _OSC_DETUNE_MIN_OCTAVE;
+	values[5] = _OSC_DETUNE_MAX_OCTAVE;
+	values[6] = _OSC_DETUNE_MIN_OCTAVE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2TuneOctave] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2TuneOctave);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc2TuneSemitones);
+
+	values[2] = _OSC_DETUNE_SEMITONES;
+	values[3] = _OSC_DETUNE_MAX_SEMITONES;
+	values[4] = _OSC_DETUNE_MIN_SEMITONES;
+	values[5] = _OSC_DETUNE_MAX_SEMITONES;
+	values[6] = _OSC_DETUNE_MIN_SEMITONES;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2TuneSemitones] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2TuneSemitones);
+	
 	result = init_combobox_control_colors(ui->comboBox_Osc2TuneCents);
+
+	values[2] = _OSC_DETUNE_CENTS;
+	values[3] = (int)(_OSC_DETUNE_MAX_CENTS * 4); // _OSC_DETUNE_CENTS_FACTORIAL
+	values[4] = (int)(_OSC_DETUNE_MIN_CENTS * 4);
+	values[5] = (int)(_OSC_DETUNE_MAX_CENTS * 4);
+	values[6] = (int)(_OSC_DETUNE_MIN_CENTS * 4);
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2TuneCents] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2TuneCents);
 
 	ui->comboBox_Osc2TuneOctave->blockSignals(true);
 	ui->comboBox_Osc2TuneSemitones->blockSignals(true);
@@ -77,7 +177,34 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	result = init_frame_colors(ui->frame_Osc2FreqMod);
 
 	result = init_dial_control_colors(ui->dial_Osc2FreqModLFOLevel);
+
+	values[2] = _OSC_FREQ_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2FreqModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2FreqModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_Osc2FreqModAdsrLevel);
+
+	values[2] = _OSC_FREQ_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2FreqModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2FreqModAdsrLevel);	
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2FreqModLFO);
 	ui->comboBox_Osc2FreqModLFO->blockSignals(true);
@@ -86,6 +213,19 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2FreqModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2FreqModLFO->blockSignals(false);
 
+	values[2] = _OSC_FREQ_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2FreqModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2FreqModLFO);
+
 	result = init_combobox_control_colors(ui->comboBox_Osc2FreqModAdsr);
 	ui->comboBox_Osc2FreqModAdsr->blockSignals(true);
 	ui->comboBox_Osc2FreqModAdsr->addItems(string_adsr_values);
@@ -93,11 +233,51 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2FreqModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2FreqModAdsr->blockSignals(false);
 
+	values[2] = _OSC_FREQ_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2FreqModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2FreqModAdsr);
+
 	// OSC2 Amplitude Modulation frame and controls
 	result = init_frame_colors(ui->frame_Osc2AmpMod);
 
 	result = init_dial_control_colors(ui->dial_Osc2AmpModLFOLevel);
+
+	values[2] = _OSC_AMP_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2AmpModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2AmpModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_Osc2AmpModAdsrLevel);
+
+	values[2] = _OSC_AMP_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2AmpModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2AmpModAdsrLevel);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2AmpModLFO);
 	ui->comboBox_Osc2AmpModLFO->blockSignals(true);
@@ -106,6 +286,19 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2AmpModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2AmpModLFO->blockSignals(false);
 
+	values[2] = _OSC_AMP_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2AmpModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2AmpModLFO);
+
 	result = init_combobox_control_colors(ui->comboBox_Osc2AmpModAdsr);
 	ui->comboBox_Osc2AmpModAdsr->blockSignals(true);
 	ui->comboBox_Osc2AmpModAdsr->addItems(string_adsr_values);
@@ -113,11 +306,51 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2AmpModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2AmpModAdsr->blockSignals(false);
 
+	values[2] = _OSC_AMP_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2AmpModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2AmpModAdsr);
+
 	// OSC2 PWM Modulation frame and controls
 	result = init_frame_colors(ui->frame_Osc2PwmMod);
 
 	result = init_dial_control_colors(ui->dial_Osc2PwmModLFOLevel);
+
+	values[2] = _OSC_PWM_MOD_LFO_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2PwmModLFOLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2PwmModLFOLevel);
+	
 	result = init_dial_control_colors(ui->dial_Osc2PwmModAdsrLevel);
+
+	values[2] = _OSC_PWM_MOD_ENV_LEVEL;
+	values[3] = 100;
+	values[4] = 0;
+	values[5] = 100;
+	values[6] = 0;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_DIAL;
+
+	MainWindow::widgets_map_ml_training_info[ui->dial_Osc2PwmModAdsrLevel] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->dial_Osc2PwmModAdsrLevel);
 
 	result = init_combobox_control_colors(ui->comboBox_Osc2PwmModLFO);
 	ui->comboBox_Osc2PwmModLFO->blockSignals(true);
@@ -126,12 +359,38 @@ int Dialog_AnalogSynth_1900x1000::init_osc2_gui()
 	ui->comboBox_Osc2PwmModLFO->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2PwmModLFO->blockSignals(false);
 
+	values[2] = _OSC_PWM_MOD_LFO;
+	values[3] = _LFO_6_DELAYED_2000MS;
+	values[4] = _LFO_NONE;
+	values[5] = _LFO_6_DELAYED_2000MS;
+	values[6] = _LFO_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2PwmModLFO] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2PwmModLFO);
+
 	result = init_combobox_control_colors(ui->comboBox_Osc2PwmModAdsr);
 	ui->comboBox_Osc2PwmModAdsr->blockSignals(true);
 	ui->comboBox_Osc2PwmModAdsr->addItems(string_adsr_values);
 	ui->comboBox_Osc2PwmModAdsr->setIdentifier(_OSC2_PWM_MOD_ADSR_COMBOBOX_INDEX);
 	ui->comboBox_Osc2PwmModAdsr->setTextAlignment(Qt::AlignCenter);
 	ui->comboBox_Osc2PwmModAdsr->blockSignals(false);
+
+	values[2] = _OSC_PWM_MOD_ENV;
+	values[3] = _ENV_6;
+	values[4] = _ENV_NONE;
+	values[5] = _ENV_6;
+	values[6] = _ENV_NONE;
+	values[7] = _ML_TRAINNING_MODE_FIXED_PARAM; // Default.
+	values[8] = _WIDGET_TYPE_COMBOBOX;
+
+	MainWindow::widgets_map_ml_training_info[ui->comboBox_Osc2PwmModAdsr] = values;
+
+	// Register for click detection
+	MainWindow::get_instance()->register_widget_for_click_detection(ui->comboBox_Osc2PwmModAdsr);
 
 	osc2_update();
 

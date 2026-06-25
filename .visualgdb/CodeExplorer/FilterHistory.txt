@@ -23,3 +23,12 @@ arr
 mod_synth_save
 save
 mso
+on_
+menu
+filt
+widg
+on
+mas
+open
+cre
+sa

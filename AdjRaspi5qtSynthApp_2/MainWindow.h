@@ -26,6 +26,8 @@
 #include "HttpBridgeQt.h"
 
 #include "Dialog_WindowsManager.h"
+#include "Dialog_SelectMLtrainingParam.h"
+#include "Dialog_TrainingParamsEditor.h"
 
 class InstrumentPannel;
 class GuiNavigator;
@@ -46,13 +48,17 @@ public:
 	
 	static MainWindow *get_instance();
 
-	static HttpBridgeQt *http_bridge;
+	//static HttpBridgeQt *http_bridge;
 
 	void close_instrument_pannel_id(en_instruments_ids_t mo_id);
 	void close_instrument_pannel_name(string inst_name);
 	
 	void request_close_instrument_pannel_id(en_instruments_ids_t mo_id);
 	void request_close_instrument_pannel_name(string inst_name);
+
+	bool eventFilter(QObject *watched, QEvent *event) override;
+
+	void register_widget_for_click_detection(QWidget *widget);
 
 	InstrumentPannel *get_instrument_panel_by_id(en_instruments_ids_t inst_id);
 	
@@ -70,12 +76,32 @@ public:
 
 	bool is_auto_arrange_enabled() const { return auto_arrange_enabled; }
 	void set_auto_arrange(bool enabled);
-	
+
+	bool is_ml_widgets_selection_active() const { return widgets_selection_active; }
+	void set_ml_widgets_selection_active(bool active);
+
+	static void add_new_ml_iterare_parm_min_max_values();
+
 	vector<string> pending_open_instruments_list;
 	
 	vector<active_instrument_data_t> active_instruments_list;
 	
 	QMenu *sketches_menu;
+
+	// Holds all GUI controls widgets and ML training data.
+	// int[9] - Module id, submodule id, param id, 99Param MAX, MIN, max, min, fix(0)/iterate(1), type (0-dial, 1-slider, 2-combobox, 3-button, 4-checkbox)
+	static std::unordered_map<QWidget *, std::array<int, 9>> widgets_map_ml_training_info;
+
+	static std::unordered_map<int, std::string> modules_names_map;
+	static std::unordered_map<int, std::string> submodules_names_map;
+	static std::unordered_map<int, std::string> params_names_map;
+
+	static std::vector<std::array<int, 8>> ml_training_params_list;
+
+	static Dialog_SelectMLtrainingParam *active_ml_param_dialog;
+	static Dialog_TrainingParamsEditor *training_params_editor_dialog;
+
+	static std::array<int, 8> param_info;
 
 	Dialog_WindowManager *window_manager;
 	
@@ -85,7 +111,9 @@ public slots:
 
 	void show_window_manager();
 
-private slots :
+	//void focusChanged(QWidget *, QWidget *now);
+
+  private slots:
 	void on_add_fluid_synth_instrument();
 	void on_add_hammond_organ_instrument();
 	void on_add_adj_analog_synth_instrument();
@@ -117,6 +145,10 @@ private slots :
 	void on_open_http_server_dialog();
 
 	void on_auto_arrange_toggled(bool checked);
+
+	void on_ml_widgets_selection_toggled();
+	void on_open_widgets_selction_edit_dialog();
+
 
 	void on_load_synth_patch_preset_1();
 	void on_load_synth_patch_preset_2();
@@ -153,7 +185,9 @@ private:
 	void open_synth_patch_preset_int(int preset_num);
 
 	bool auto_arrange_enabled = false;
-	
+
+	static bool widgets_selection_active;
+
 	void create_actions();
 	void create_menus();
 
@@ -161,9 +195,10 @@ private:
 	int get_panel_type_order(const QString &instrument_name);
 	
 	void start_update_timer(int interval);
-	
-		
-    Ui::MainWindow *ui;
+
+	void init_dictionaries();
+
+	Ui::MainWindow *ui;
 	static MainWindow *mwind;	
 	
 	QLayout *layout;
@@ -216,6 +251,10 @@ private:
 
 	QMenu *view_menu;
 	QAction *auto_arrange_act;
+
+	QMenu *widgets_selection_menu;
+	QAction *toggle_widgets_selection_act;
+	QAction *open_widgets_selction_edit_dialog_act;
 
 	QMenu *synth_patches_menu;
 	QAction *load_preset_actions[16];
