@@ -18,6 +18,9 @@
 #include <QStyleFactory>
 #include <QVariant>
 #include <QDebug>
+#include <QFont>
+#include <QFontDatabase>
+#include <QFileInfo>
 
 #include "HttpBridgeQt.h"
 #include "Dialog_HTTPserver.h"
@@ -178,6 +181,50 @@ int main(int argc, char *argv[])
 	
 	
 	QApplication app(argc, argv);
+
+	// Ensure default font is available
+	// Try to explicitly load a known system font FIRST
+	QString fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+	int fontId = -1;
+
+	// Check if font file exists before trying to load it
+	QFileInfo fontFile(fontPath);
+	if (fontFile.exists())
+	{
+		fontId = QFontDatabase::addApplicationFont(fontPath);
+		if (fontId == -1)
+		{
+			fprintf(stderr, "Warning: Failed to load font from %s\n", fontPath.toStdString().c_str());
+		}
+		else
+		{
+			printf("Successfully loaded DejaVu Sans font (ID: %d)\n", fontId);
+		}
+	}
+	else
+	{
+		fprintf(stderr, "Warning: Font file not found: %s\n", fontPath.toStdString().c_str());
+	}
+
+	// Now set a fallback font
+	QFont font;
+	font.setFamily("DejaVu Sans");
+	font.setPointSize(10);
+	font.setStyleHint(QFont::SansSerif, QFont::PreferAntialias); // Provide a fallback hint
+	QApplication::setFont(font);
+
+	// Verify the font was actually set
+	QFont actualFont = QApplication::font();
+	printf("Active font family: %s\n", actualFont.family().toStdString().c_str());
+
+	// List available fonts for debugging
+	QStringList fontFamilies = QFontDatabase().families();
+	printf("Available font families: %d\n", fontFamilies.size());
+	if (fontFamilies.isEmpty())
+	{
+		fprintf(stderr, "CRITICAL: No fonts available in Qt font database! Check fontconfig installation.\n");
+		// Consider exiting or using software rendering
+	}
 
 	// Connect to Qt's aboutToQuit signal**
 	QObject::connect(&app, &QApplication::aboutToQuit, [pFile]() {

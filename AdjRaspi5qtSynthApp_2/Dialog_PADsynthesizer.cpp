@@ -14,6 +14,7 @@
 #include "ui_Dialog_PADsynthesizer.h"
 
 #include "utils.h"
+#include "Defs.h"
 
 #include "GuiNavigator.h"
 #include "MainWindow.h"
@@ -771,7 +772,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_pad_send_filter_1,
 					pad_control_min,
 					pad_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PADsynthSendFilter1->setValue(pad_send_filter_1);
 			}
@@ -793,7 +794,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_pad_send_filter_2,
 					pad_control_min,
 					pad_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PADsynthSendFilter2->setValue(pad_send_filter_2);
 			}
@@ -807,7 +808,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_tune_offset_octave,
 				tune_offset_octave_min,
 				tune_offset_octave_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_PADsynthTuneOctave->setCurrentIndex(pad_tune_offset_octave);
 		}
@@ -820,7 +821,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_tune_offset_semitone,
 				tune_offset_semitone_min,
 				tune_offset_semitone_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_PADsynthTuneSemitones->setCurrentIndex(pad_tune_offset_semitone);
 		}
@@ -833,7 +834,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_tune_offset_cents,
 				tune_offset_cents_min,
 				tune_offset_cents_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_PADsynthTuneCents->setCurrentIndex(pad_tune_offset_cents);
 		}
@@ -846,7 +847,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_amp_mod_adsr_level,
 				pad_control_min,
 				pad_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_PADsynth_AmpModAdsrLevel->setValue(pad_amp_mod_adsr_level);
 		}
@@ -859,7 +860,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_amp_mod_lfo_level,
 				pad_control_min,
 				pad_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_PADsynth_AmpModLFOLevel->setValue(pad_amp_mod_lfo_level);
 		}
@@ -872,7 +873,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_amp_mod_lfo_symmetry,
 				pad_control_min,
 				pad_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_PADsynth_LFOsymmetry->setValue(pad_amp_mod_lfo_symmetry);
 		}
@@ -885,7 +886,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_amp_mod_lfo_rate,
 				pad_control_min,
 				pad_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_PADsynth_LFOrate->setValue(pad_amp_mod_lfo_rate);
 		}
@@ -898,7 +899,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_pad_amp_mod_lfo_waveform,
 				_OSC_WAVEFORM_SINE,
 				_OSC_WAVEFORM_SAMPHOLD,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_PADsynth_LFOwaveform->setCurrentIndex(pad_amp_mod_lfo_waveform);
 		}
@@ -1140,7 +1141,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_pad_shape,
 					pad_shape_min,
 					pad_shape_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PADsynth_Shape->setCurrentIndex(pad_shape);
 			}
@@ -1160,7 +1161,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 						&prev_pad_shape_cutoff,
 						pad_shape_cutoff_min,
 						pad_shape_cutoff_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_PADsynth_ShapeCutoff->setCurrentIndex(pad_shape_cutoff);
 				}
@@ -1174,7 +1175,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_pad_base_note,
 					pad_base_note_min,
 					pad_base_note_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PADsynth_BaseNote->setCurrentIndex(pad_base_note);
 			}
@@ -1187,7 +1188,7 @@ void Dialog_PADsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_pad_quality,
 					pad_quality_min,
 					pad_quality_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PADsynth_Quality->setCurrentIndex(pad_quality);
 			}

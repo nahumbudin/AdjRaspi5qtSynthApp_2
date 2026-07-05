@@ -5,6 +5,14 @@
 
 #include "types.h"
 
+// Increments per dial step.
+#define _DIAL_INCREMENTS	2
+// Increments per control box encoder step.
+#define _COMBOBOX_INCREMENTS 1
+
+#define _DIAL_TIME_GUARD_MS			10
+#define _COMBOBOX_TIME_GUARD_MS		250
+
 #define _FLUID_DEFAULT_SOUNDFONT_FILE "/home/pi/AdjRaspiSynth5qtApp_2/SoundFonts/FluidR3_GM.sf2"
 #define _FLUID_DEFAULT_SOUNDFONT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/SoundFonts"
 

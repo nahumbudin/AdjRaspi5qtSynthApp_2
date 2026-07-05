@@ -1,13 +1,15 @@
 /**
-*	@file		utils.cpp
-*	@author		Nahum Budin
-*	@date		12-Jul-2024
-*	@version	1.0 
-*
-*	@brief		Utilities.
-* 
-*	History:\n
-*/
+ *	@file		utils.cpp
+ *	@author		Nahum Budin
+ *	@date		27-June-2026
+ *	@version	1.1
+ *					1. Added a time guard to the rotary encoder value update function to avoid too fast updates.
+ *
+ *	@brief		Utilities.
+ *
+ *	History:\n
+ *		Version 1.0	12-Jul-2024
+ */
 
 #include <bits/stdc++.h>
 
@@ -17,6 +19,8 @@
 #include <ifaddrs.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+#include <chrono>
 
 #include "utils.h"
 
@@ -81,12 +85,27 @@ std::string replace_white_spaces(std::string input_str)
  * @return new controled value
  */
 int update_rotary_encoder_value(int prev_value,
-	int new_rot_val, 
-	int *prev_rot_val,
-	int min_val,
-	int max_val,
-	int inc_dec_value)
+								int new_rot_val,
+								int *prev_rot_val,
+								int min_val,
+								int max_val,
+								int inc_dec_value,
+								int time_guard_ms)
 {
+	static auto last_call_time = std::chrono::steady_clock::now();
+
+	auto current_time = std::chrono::steady_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+					   current_time - last_call_time)
+					   .count();
+	last_call_time = current_time;
+
+	// Check if less than time_guard_ms since last call
+	if (elapsed < time_guard_ms)
+	{
+		return prev_value;
+	}
+	
 	if (!prev_rot_val)
 	{
 		return prev_value; // Guard against null pointer

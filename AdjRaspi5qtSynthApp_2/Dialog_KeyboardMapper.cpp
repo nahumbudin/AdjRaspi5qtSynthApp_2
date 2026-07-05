@@ -20,6 +20,7 @@
 
 #include "modSynthAPI.h"
 #include "utils.h"
+#include "Defs.h"
 
 #define _UPDATE_TIMER_PERIOD_MS 250
 
@@ -299,7 +300,7 @@ void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)
 			&prev_split_point_note,
 			-10000000,
 			10000000,
-			4);
+			_DIAL_INCREMENTS);
 
 		on_split_point_note_dial_changed(split_point_note);
 	}
@@ -312,7 +313,7 @@ void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)
 			&prev_zone_1_midi_channel,
 			0,
 			15,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KeyboardMapper_MidiChannelZone_1->setCurrentIndex(zone_1_midi_channel);
 	}
@@ -325,7 +326,7 @@ void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)
 			&prev_zone_1_octave_transpose,
 			0,
 			12,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KeyboardMapper_OctaveTransposeZone_1->setCurrentIndex(zone_1_octave_transpose);
 	}
@@ -338,7 +339,7 @@ void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)
 			&prev_zone_2_midi_channel,
 			0,
 			15,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KeyboardMapper_MidiChannelZone_2->setCurrentIndex(zone_2_midi_channel);
 	}
@@ -351,7 +352,7 @@ void Dialog_KeyboardMapper::handle_control_box_event(int evnt, uint16_t val)
 			&prev_zone_2_octave_transpose,
 			0,
 			12,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KeyboardMapper_OctaveTransposeZone_2->setCurrentIndex(zone_2_octave_transpose);
 	}

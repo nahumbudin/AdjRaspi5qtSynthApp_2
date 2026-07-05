@@ -203,30 +203,6 @@ color: rgb(255, 255, 255);</string>
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_423">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>460</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 255, 255);</string>
-   </property>
-   <property name="text">
-    <string>Iterrate</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="lineEdit_SelectMlparams_Submodule">
    <property name="geometry">
     <rect>
@@ -335,23 +311,6 @@ color: rgb(255, 255, 255);</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_SelectMlparams_Iterate">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>460</y>
-     <width>15</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-color: rgb(0, 0, 0);
-background-color: rgb(80,80,80);</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton_SelectMlparams_Add">
    <property name="geometry">
     <rect>
@@ -376,7 +335,7 @@ background-color: rgb(80,80,80);</string>
     <string>Add</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_SelectMlparams_Add_2">
+  <widget class="QPushButton" name="pushButton_SelectMlparams_Cancell">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -397,7 +356,7 @@ background-color: rgb(80,80,80);</string>
     <string notr="true">background-color: rgb(135, 135, 135);</string>
    </property>
    <property name="text">
-    <string>Camcel</string>
+    <string>Cancel</string>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox_SelectMlparams_MaxIterationsVal">
@@ -545,36 +504,28 @@ background-color: rgb(70, 70, 70);</string>
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_SelectMlparams_IterateVal">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>440</y>
-     <width>91</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 255, 255);</string>
-   </property>
-   <property name="text">
-    <string>Fixed
-use max</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="checkBox_SelectMlparams_MaxIterationsVal">
    <property name="geometry">
     <rect>
      <x>270</x>
      <y>320</y>
+     <width>15</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(0, 0, 0);
+background-color: rgb(80,80,80);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_SelectMlparams_MinIterationsVal">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>400</y>
      <width>15</width>
      <height>20</height>
     </rect>

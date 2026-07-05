@@ -328,6 +328,12 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	event->accept();
+	QApplication::quit();
+}
+
 MainWindow *MainWindow::get_instance() {
 
 	if (!mwind)
@@ -738,6 +744,11 @@ void MainWindow::create_actions()
 	connect(open_widgets_selction_edit_dialog_act, SIGNAL(triggered()), this, 
 			SLOT(on_open_widgets_selction_edit_dialog()));
 
+	clear_widgets_selection_list_act = new QAction(tr("&Clear Widgets Selection List"), this);
+	clear_widgets_selection_list_act->setStatusTip(tr("Clear Widgets Selection List"));
+	connect(clear_widgets_selection_list_act, SIGNAL(triggered()), this,
+			SLOT(on_clear_widgets_selection_list()));
+
 	const char *slot_names[] = {
 		SLOT(on_load_synth_patch_preset_1()),
 		SLOT(on_load_synth_patch_preset_2()),
@@ -792,7 +803,8 @@ void MainWindow::create_menus()
 	widgets_selection_menu = ui->menubar->addMenu(tr("&Widgets Selection"));
 	widgets_selection_menu->addAction(toggle_widgets_selection_act);
 	widgets_selection_menu->addAction(open_widgets_selction_edit_dialog_act);
-
+	widgets_selection_menu->addAction(clear_widgets_selection_list_act);
+	
 	add_module_menu = ui->menubar->addMenu(tr("&Add Instrument"));
 	add_module_menu->addAction(add_fluid_synth_act);
 	add_module_menu->addAction(add_hammond_organ_act);
@@ -1892,6 +1904,12 @@ void MainWindow::on_load_patch_file()
 							&QObject::destroyed,
 							[]() { load_patch_file_thread = nullptr; });
 
+					// Close all open instrument dialogs before loading
+					if (window_manager != nullptr)
+					{
+						window_manager->clear_all_dialogs();
+					}
+
 					load_patch_file_thread->start();
 				}
 			}
@@ -2132,6 +2150,30 @@ void MainWindow::on_open_widgets_selction_edit_dialog()
 		training_params_editor_dialog->raise();
 		training_params_editor_dialog->activateWindow();
 		training_params_editor_dialog->setFocus(Qt::ActiveWindowFocusReason);
+	}
+}
+
+void MainWindow::on_clear_widgets_selection_list()
+{
+	QMessageBox msgBox;
+	msgBox.setIcon(QMessageBox::Critical);
+	msgBox.setWindowTitle("Warning");
+
+	msgBox.setText(QString("Are you sure you want to clear the widgets selection list?"));
+	msgBox.setStandardButtons(QMessageBox::Yes);
+	msgBox.addButton(QMessageBox::No);
+	msgBox.setDefaultButton(QMessageBox::No);
+	if (msgBox.exec() == QMessageBox::Yes)
+	{
+		ml_training_params_list.clear();
+		if (active_ml_param_dialog)
+		{
+			active_ml_param_dialog->update_ml_params_list_display();
+		}
+	}
+	else
+	{
+		return;
 	}
 }
 

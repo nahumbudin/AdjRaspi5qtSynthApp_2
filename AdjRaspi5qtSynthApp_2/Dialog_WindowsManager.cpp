@@ -152,6 +152,7 @@ void Dialog_WindowManager::register_dialog(QWidget *window, const QString &windo
 
 void Dialog_WindowManager::unregister_dialog(QWidget *window)
 {
+
 	QMutexLocker locker(&dialog_list_mutex);
 	
 	for (int i = 0; i < dialog_list.size(); ++i)
@@ -174,6 +175,16 @@ void Dialog_WindowManager::unregister_dialog(QWidget *window)
 void Dialog_WindowManager::clear_all_dialogs()
 {
 	QMutexLocker locker(&dialog_list_mutex);
+
+	// Close all instrument dialogs
+	for (auto dialog : dialog_list)
+	{
+		if (dialog.widget != nullptr)
+		{
+			dialog.widget->close();
+			//dialog.widget->deleteLater(); // Important: actually delete the dialog
+		}
+	}
 	
 	dialog_list.clear();
 	qDebug() << "Dialog_WindowManager: Cleared all dialogs";

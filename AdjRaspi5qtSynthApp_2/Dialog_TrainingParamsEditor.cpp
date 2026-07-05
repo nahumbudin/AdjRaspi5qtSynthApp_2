@@ -129,7 +129,7 @@ QString Dialog_TrainingParamsEditor::convert_params_to_json()
 
 		// Build parameter object with guaranteed order
 		json_string += "    {\n";
-		json_string += "      \"index\": " + QString::number(i + 1) + ",\n";
+		//json_string += "      \"index\": " + QString::number(i + 1) + ",\n";
 		json_string += "      \"module\": {\n";
 		json_string += "        \"id\": " + QString::number(module) + ",\n";
 		json_string += "        \"name\": \"" + module_name + "\"\n";

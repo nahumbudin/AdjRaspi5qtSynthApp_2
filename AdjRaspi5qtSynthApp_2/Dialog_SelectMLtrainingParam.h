@@ -54,10 +54,10 @@ class Dialog_SelectMLtrainingParam : public QDialog
 	void on_min_combobox_val_changed(int value);
 
 	void on_max_checkbox_val_toggled(bool checked);
-
-	void on_iterate_mode_toggled(bool checked);
+	void on_min_checkbox_val_toggled(bool checked);
 
 	void on_add_button_clicked();
+	void on_cancel_button_clicked();
 
 
   private:

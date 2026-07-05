@@ -17,6 +17,7 @@
 
 #include "GuiNavigator.h"
 #include "Utils.h"
+#include "Defs.h"
 
 void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 {
@@ -172,7 +173,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_mso_send_filter_1,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MsoSynthSendFilter->setValue(mso_send_filter_1);
 		}
@@ -193,7 +194,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_mso_tune_offset_octave,
 					tune_offset_octave_min,
 					tune_offset_octave_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoSynthTuneOctave->setCurrentIndex(mso_tune_offset_octave);
 			}
@@ -215,7 +216,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 					&prev_mso_tune_offset_semitone,
 					tune_offset_semitone_min,
 					tune_offset_semitone_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoSynthTuneSemitones->setCurrentIndex(mso_tune_offset_semitone);
 			}
@@ -229,7 +230,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_mso_tune_offset_cents,
 				tune_offset_cents_min,
 				tune_offset_cents_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_MsoSynthTuneCents->setCurrentIndex(mso_tune_offset_cents);
 		}
@@ -244,7 +245,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_waveform_preset,
 				waveform_preset_min,
 				waveform_preset_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_MsoSynthPreset->setCurrentIndex(waveform_preset);
 		}
@@ -360,7 +361,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_amp_mod_env_level,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_AmpModAdsrLevel->setValue(amp_mod_env_level);
 		}
@@ -373,7 +374,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_amp_mod_lfo_level,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_AmpModLFOLevel->setValue(amp_mod_lfo_level);
 		}
@@ -386,7 +387,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_amp_mod_lfo_waveform,
 				mod_lfo_waveform_min,
 				mod_lfo_waveform_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_MSOsynth_AmpModLFOwaveform->setCurrentIndex(amp_mod_lfo_waveform);
 		}
@@ -399,7 +400,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_amp_mod_lfo_symmetry,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_AmpModLFOsymmetry->setValue(amp_mod_lfo_symmetry);
 		}
@@ -412,7 +413,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_amp_mod_lfo_rate,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_AmpModLFOrate->setValue(amp_mod_lfo_rate);
 		}
@@ -492,7 +493,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_freq_mod_lfo_level,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FreqModLFOLevel->setValue(freq_mod_lfo_level);
 		}
@@ -505,7 +506,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_freq_mod_lfo_waveform,
 				mod_lfo_waveform_min,
 				mod_lfo_waveform_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_MSOsynth_FreqModLFOwaveform->setCurrentIndex(freq_mod_lfo_waveform);
 		}
@@ -518,7 +519,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_freq_mod_lfo_symmetry,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FreqModLFOsymmetry->setValue(freq_mod_lfo_symmetry);
 		}
@@ -531,7 +532,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_freq_mod_lfo_rate,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FreqModLFOrate->setValue(freq_mod_lfo_rate);
 		}
@@ -601,7 +602,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_frequency,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MsoSynthFilterFreq->setValue(filter_frequency);
 		}
@@ -614,7 +615,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_modulation_octave,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MsoSynthFilterOctave->setValue(filter_modulation_octave);
 		}
@@ -627,7 +628,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_q,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MsoSynthFilterQ->setValue(filter_q);
 		}
@@ -640,7 +641,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_kbd_tracking,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MsoSynthFilterKbdTrack->setValue(filter_kbd_tracking);
 		}
@@ -653,7 +654,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_band,
 				filter_band_min,
 				filter_band_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_MsoSynthFilterBand->setCurrentIndex(filter_band);
 		}
@@ -668,7 +669,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_freq_mod_env_level,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FilterFreqModAdsrLevel->setValue(filter_freq_mod_env_level);
 		}
@@ -681,7 +682,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_freq_mod_lfo_level,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FilterFreqModLFOLevel->setValue(filter_freq_mod_lfo_level);
 		}
@@ -694,7 +695,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_freq_mod_lfo_waveform,
 				mod_lfo_waveform_min,
 				mod_lfo_waveform_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_MSOsynth_FilterFreqModLFOwaveform->setCurrentIndex(filter_freq_mod_lfo_waveform);
 		}
@@ -707,7 +708,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_freq_mod_lfo_symmetry,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FilterFreqModLFOsymmetry->setValue(filter_freq_mod_lfo_symmetry);
 		}
@@ -720,7 +721,7 @@ void Dialog_MSOsynthesizer::handle_control_box_event(int evnt, uint16_t val)
 				&prev_filter_freq_mod_lfo_rate,
 				mso_control_min,
 				mso_control_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_MSOsynth_FilterFreqModLFOrate->setValue(filter_freq_mod_lfo_rate);
 		}

@@ -615,7 +615,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 				&prev_reverb_preset,
 				reverb_preset_min,
 				reverb_preset_max,
-				1);
+				_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 			ui->comboBox_ReverbType->setCurrentIndex(reverb_preset);
 		}
@@ -636,7 +636,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 				&prev_reverb_room_size,
 				reverb_room_size_min,
 				reverb_room_size_max,
-				4);
+				_DIAL_INCREMENTS);
 
 			ui->dial_ReverbRoomSize->setValue(reverb_room_size);
 		}
@@ -650,7 +650,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 			&prev_reverb_damping,
 			reverb_control_min,
 			reverb_control_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_ReverbDamp->setValue(reverb_damping);
 	}
@@ -663,7 +663,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 			&prev_reverb_wet,
 			reverb_control_min,
 			reverb_control_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_ReverbWet->setValue(reverb_wet);
 	}
@@ -676,7 +676,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 			&prev_reverb_dry,
 			reverb_control_min,
 			reverb_control_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_ReverbDry->setValue(reverb_dry);
 	}
@@ -689,7 +689,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 			&prev_reverb_width,
 			reverb_width_min,
 			reverb_control_max,
-			4);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->dial_ReverbWidth->setValue(reverb_width);
 	}
@@ -702,7 +702,7 @@ void Dialog_AnalogReverb::handle_control_box_event(int evnt, uint16_t val)
 			&prev_reverb_mode,
 			reverb_control_min,
 			reverb_mode_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_ReverbMode->setValue(reverb_mode);
 	}

@@ -32,3 +32,9 @@ mas
 open
 cre
 sa
+box
+ev
+ha
+regi
+instance
+close

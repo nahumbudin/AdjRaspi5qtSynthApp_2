@@ -25,6 +25,7 @@
 #include <QMetaObject>
 
 #include "utils.h"
+#include "Defs.h"
 
 #include "MainWindow.h"
 #include "Dialog_AdjFluidSynth.h"
@@ -398,7 +399,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 															   &prev_knob_reverb_room_size_val,
 															   reverb_room_size_min,
 															   reverb_room_size_max,
-															   4);
+															   _DIAL_INCREMENTS);
 
 				reverb_room_size_changed(reverb_room_size);
 			}
@@ -425,7 +426,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 														  &prev_knob_reverb_damp_val,
 														  reverb_damp_min,
 														  reverb_damp_max,
-														  4);
+														  _DIAL_INCREMENTS);
 
 				reverb_damp_changed(reverb_damp);
 			}
@@ -451,7 +452,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 														   &prev_knob_reverb_width_val,
 														   reverb_width_min,
 														   reverb_width_max,
-														   4);
+														   _DIAL_INCREMENTS);
 
 				reverb_width_changed(reverb_width);
 			}
@@ -474,7 +475,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 													   &prev_knob_reverb_level_val,
 													   reverb_level_min,
 													   reverb_level_max,
-													   4);
+													   _DIAL_INCREMENTS);
 
 			reverb_level_changed(reverb_level);
 		}
@@ -489,7 +490,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 														&prev_knob_chorus_number_val,
 														chorus_number_min,
 														chorus_number_max,
-														4);
+														_DIAL_INCREMENTS);
 
 			chorus_number_changed(chorus_number);
 		}
@@ -511,7 +512,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 													   &prev_knob_chorus_level_val,
 													   chorus_level_min,
 													   chorus_level_max,
-													   4);
+													   _DIAL_INCREMENTS);
 
 			chorus_level_changed(chorus_level);
 		}
@@ -533,7 +534,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 													   &prev_knob_chorus_speed_val,
 													   chorus_speed_min,
 													   chorus_speed_max,
-													   10);
+													   _DIAL_INCREMENTS * 5);
 
 			chorus_speed_changed(chorus_speed);
 		}
@@ -556,7 +557,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 													   &prev_knob_chorus_depth_val,
 													   chorus_depth_min,
 													   chorus_depth_max,
-													   10);
+													   _DIAL_INCREMENTS * 5);
 
 			chorus_depth_changed(chorus_depth);
 		}
@@ -614,7 +615,7 @@ void Dialog_AdjFluidSynth::handle_control_box_event(int evnt, uint16_t val)
 														  &prev_knob_chorus_waveform_val,
 														  chorus_waveform_min,
 														  chorus_waveform_max,
-														  1);
+														  _DIAL_INCREMENTS);
 
 			chorus_waveform_select_changed(chorus_waveform);
 		}

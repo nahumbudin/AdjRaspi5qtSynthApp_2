@@ -27,6 +27,7 @@
 
 #include "MainWindow.h"
 #include "utils.h"
+#include "Defs.h"
 
 #define _UPDATE_TIMER_PERIOD_MS 250
 
@@ -522,7 +523,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_send_filter_1,
 			send_min,
 			send_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_HammondSendFilter1->setValue(send_filter_1);
 	}
@@ -540,7 +541,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_send_filter_2,
 			send_min,
 			send_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_HammondSendFilter2->setValue(send_filter_2);
 	}
@@ -553,7 +554,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_leslie_speed,
 			send_min,
 			send_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_HammondLeslieSpeed->setValue(leslie_speed);
 	}
@@ -566,7 +567,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_leslie_level,
 			send_min,
 			send_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_HammondLeslieLevel->setValue(leslie_level);
 	}
@@ -579,7 +580,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_tune_offset_octave,
 			send_min,
 			send_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_HammondTuneOctave->setCurrentIndex(tune_offset_octave);
 	}
@@ -592,7 +593,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_tune_offset_semitone,
 			send_min,
 			send_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_HammondTuneSemitones->setCurrentIndex(tune_offset_semitone);
 	}
@@ -605,7 +606,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_tune_offset_cents,
 			send_min,
 			send_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_HammondTuneCents->setCurrentIndex(tune_offset_cents);
 	}
@@ -618,7 +619,7 @@ void Dialog_HammondOrgan::handle_control_box_event(int evnt, uint16_t val)
 			&prev_percussion_mode,
 			send_min,
 			send_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_HammondPercussionMode->setCurrentIndex(percussion_mode);
 	}

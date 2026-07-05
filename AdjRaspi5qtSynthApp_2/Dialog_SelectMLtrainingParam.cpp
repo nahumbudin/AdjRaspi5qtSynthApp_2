@@ -75,6 +75,12 @@ Dialog_SelectMLtrainingParam::Dialog_SelectMLtrainingParam(
 
 		ui->lineEdit_SelectMlparams_MaxIterationsVal->setText(QString::number(max));
 		ui->lineEdit_SelectMlparams_MinIterationsVal->setText(QString::number(min));
+
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setEnabled(false);
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setVisible(false);
+
+		ui->checkBox_SelectMlparams_MinIterationsVal->setEnabled(false);
+		ui->checkBox_SelectMlparams_MinIterationsVal->setVisible(false);
 	}
 	else if (type == _WIDGET_TYPE_DIAL)
 	{
@@ -105,6 +111,12 @@ Dialog_SelectMLtrainingParam::Dialog_SelectMLtrainingParam(
 
 		ui->lineEdit_SelectMlparams_MaxIterationsVal->setText(QString::number(max));
 		ui->lineEdit_SelectMlparams_MinIterationsVal->setText(QString::number(min));
+
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setEnabled(false);
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setVisible(false);
+
+		ui->checkBox_SelectMlparams_MinIterationsVal->setEnabled(false);
+		ui->checkBox_SelectMlparams_MinIterationsVal->setVisible(false);
 	}
 	else if (type == _WIDGET_TYPE_COMBOBOX)
 	{
@@ -138,11 +150,24 @@ Dialog_SelectMLtrainingParam::Dialog_SelectMLtrainingParam(
 		ui->comboBox_SelectMlparams_MinIterationsVal->addItems(min_str_list);
 		ui->comboBox_SelectMlparams_MinIterationsVal->setCurrentIndex(min_str_list.indexOf(MIN));
 		ui->comboBox_SelectMlparams_MinIterationsVal->blockSignals(false);
+
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setEnabled(false);
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setVisible(false);
+
+		ui->checkBox_SelectMlparams_MinIterationsVal->setEnabled(false);
+		ui->checkBox_SelectMlparams_MinIterationsVal->setVisible(false);
+		
 	}
 	else if (type == _WIDGET_TYPE_CHECKBOX)
 	{
-		ui->comboBox_SelectMlparams_MaxIterationsVal->setEnabled(true);
-		ui->comboBox_SelectMlparams_MaxIterationsVal->setVisible(true);
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setEnabled(true);
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setVisible(true);
+
+		ui->checkBox_SelectMlparams_MinIterationsVal->setEnabled(true);
+		ui->checkBox_SelectMlparams_MinIterationsVal->setVisible(true);
+		
+		ui->comboBox_SelectMlparams_MaxIterationsVal->setEnabled(false);
+		ui->comboBox_SelectMlparams_MaxIterationsVal->setVisible(false);
 
 		ui->horizontalSlider_SelectMlparams_MaxIterationsVal->setEnabled(false);
 		ui->horizontalSlider_SelectMlparams_MaxIterationsVal->setVisible(false);
@@ -165,6 +190,8 @@ Dialog_SelectMLtrainingParam::Dialog_SelectMLtrainingParam(
 
 		ui->comboBox_SelectMlparams_MinIterationsVal->setEnabled(false);
 		ui->comboBox_SelectMlparams_MinIterationsVal->setVisible(false);
+		
+		
 
 		max_value = 0; // Default for checkbox is 0 (unchecked) - Disabled
 	}
@@ -207,15 +234,20 @@ Dialog_SelectMLtrainingParam::Dialog_SelectMLtrainingParam(
 			this,
 			SLOT(on_add_button_clicked()));
 
-	connect(ui->checkBox_SelectMlparams_Iterate,
-			SIGNAL(toggled(bool)),
+	connect(ui->pushButton_SelectMlparams_Cancell,
+			SIGNAL(clicked()),
 			this,
-			SLOT(on_iterate_mode_toggled(bool)));
+			SLOT(on_cancel_button_clicked()));
 
 	connect(ui->checkBox_SelectMlparams_MaxIterationsVal,
 			SIGNAL(toggled(bool)),
 			this,
 			SLOT(on_max_checkbox_val_toggled(bool)));
+
+	connect(ui->checkBox_SelectMlparams_MinIterationsVal,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_min_checkbox_val_toggled(bool)));
 
 	update_ml_params_list_display();
 
@@ -290,7 +322,7 @@ void Dialog_SelectMLtrainingParam::on_max_dial_val_changed(int value)
 	}
 	else if (value <= min_value)
 	{
-		max_value = min_value + 1;
+		max_value = min_value;
 		ui->dial_SelectMlparams_MaxIterationsVal->setValue(max_value);
 		ui->lineEdit_SelectMlparams_MaxIterationsVal->setText(QString::number(max_value));
 	}
@@ -306,7 +338,7 @@ void Dialog_SelectMLtrainingParam::on_min_dial_val_changed(int value)
 	}
 	else if (value >= max_value)
 	{
-		min_value = max_value - 1;
+		min_value = max_value;
 		ui->dial_SelectMlparams_MinIterationsVal->setValue(min_value);
 		ui->lineEdit_SelectMlparams_MinIterationsVal->setText(QString::number(min_value));
 	}
@@ -322,7 +354,7 @@ void Dialog_SelectMLtrainingParam::on_max_slider_val_changed(int value)
 	}
 	else if (value <= min_value)
 	{
-		max_value = min_value + 1;
+		max_value = min_value;
 		ui->horizontalSlider_SelectMlparams_MaxIterationsVal->setValue(max_value);
 		ui->lineEdit_SelectMlparams_MaxIterationsVal->setText(QString::number(max_value));
 	}
@@ -338,7 +370,7 @@ void Dialog_SelectMLtrainingParam::on_min_slider_val_changed(int value)
 	}
 	else if (value >= max_value)
 	{
-		min_value = max_value - 1;
+		min_value = max_value;
 		ui->horizontalSlider_SelectMlparams_MinIterationsVal->setValue(min_value);
 		ui->lineEdit_SelectMlparams_MinIterationsVal->setText(QString::number(min_value));
 	}
@@ -352,7 +384,7 @@ void Dialog_SelectMLtrainingParam::on_max_combobox_val_changed(int value)
 	}
 	else if (value <= min_value)
 	{
-		max_value = min_value + 1;
+		max_value = min_value;
 	}
 }
 
@@ -365,7 +397,7 @@ void Dialog_SelectMLtrainingParam::on_min_combobox_val_changed(int value)
 	}
 	else if (value >= max_value)
 	{
-		min_value = max_value - 1;
+		min_value = max_value;
 		ui->comboBox_SelectMlparams_MinIterationsVal->setCurrentIndex(min_value);
 	}
 }
@@ -384,19 +416,17 @@ void Dialog_SelectMLtrainingParam::on_max_checkbox_val_toggled(bool checked)
 	}
 }
 
-void Dialog_SelectMLtrainingParam::on_iterate_mode_toggled(bool checked)
+void Dialog_SelectMLtrainingParam::on_min_checkbox_val_toggled(bool checked)
 {
-	do_iterate = !do_iterate;
-
-	if (do_iterate)
+	if (checked)
 	{
-		ui->label_SelectMlparams_IterateVal->setText("Iterate\nmin to max");
-		ui->lineEdit_SelectMlparams_MaxIterationsVal->setEnabled(true);
+		min_value = 1;
+		ui->checkBox_SelectMlparams_MaxIterationsVal->setChecked(true);
 	}
 	else
 	{
-		ui->label_SelectMlparams_IterateVal->setText("Fixed\nuse max");
-		ui->lineEdit_SelectMlparams_MaxIterationsVal->setEnabled(false);
+		min_value = 0;
+		ui->checkBox_SelectMlparams_MinIterationsVal->setChecked(false);
 	}
 }
 
@@ -405,16 +435,22 @@ void Dialog_SelectMLtrainingParam::on_add_button_clicked()
 	MainWindow::param_info[5] = max_value;
 	MainWindow::param_info[6] = min_value;
 
-	if (do_iterate)
+	if (max_value > min_value)
 	{
 		MainWindow::param_info[7] = _ML_TRAINNING_MODE_ITERATIVE_PARAM;
 	}
 	else
 	{
+		// If max_value is equal to min_value, set the mode to fixed parameter
 		MainWindow::param_info[7] = _ML_TRAINNING_MODE_FIXED_PARAM;
 	}
 
 	MainWindow::add_new_ml_iterare_parm_min_max_values();
 
+	this->close();
+}
+
+void Dialog_SelectMLtrainingParam::on_cancel_button_clicked()
+{
 	this->close();
 }

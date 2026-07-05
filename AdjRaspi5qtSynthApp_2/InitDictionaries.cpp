@@ -121,6 +121,18 @@ void MainWindow::init_dictionaries()
 	
 
 	params_names_map[_KARPLUS_STRONG_ENABLE] = "Karplus-Strong Enable";
+	params_names_map[_KARPLUS_STRONG_EXCITATION_WAVEFORM] = "KPS Excitation Waveform";
+	params_names_map[_KARPLUS_STRONG_STRING_DUMP_CALC_MODE] = "KPS String Dump Calc Mode";
+	params_names_map[_KARPLUS_STRONG_STRING_DAMPING] = "KPS String Damping";
+	params_names_map[_KARPLUS_STRONG_STRING_DAMPING_VARIATION] = "KPS String Damping Variation";
+	params_names_map[_KARPLUS_STRONG_PLUCK_DAMPING] = "KPS Pluck Damping";
+	params_names_map[_KARPLUS_STRONG_PLUCK_DAMPING_VARIATION] = "KPS Pluck Damping Variation";
+	params_names_map[_KARPLUS_STRONG_ON_DECAY] = "KPS On Decay";
+	params_names_map[_KARPLUS_STRONG_OFF_DECAY] = "KPS Off Decay";
+	params_names_map[_KARPLUS_STRONG_EXCITATION_WAVEFORM_VARIATIONS] = "KPS Excitation Waveform Variations";
+	params_names_map[_KARPLUS_STRONG_CHARACTER_VARIATIONS] = "KPS Character Variations";
+	params_names_map[_KARPLUS_STRONG_SEND_1] = "KPS Send Filter 1 Level";
+	params_names_map[_KARPLUS_STRONG_SEND_2] = "KPS Send Filter 2 Level";
 
 	params_names_map[_PAD_ENABLE] = "PAD Enable";
 

@@ -4,6 +4,7 @@
  *	@date		22-Dec-2025
  *	@version	1.0
  *					1. First version.
+ *					2. Add a callback for selective update of the GUI controls
  *
  *	@brief		Used for controling the Analog Synthesizer instrument
  *				A single integrated 1900x1000 dialog version for large screen devices.
@@ -19,6 +20,9 @@
 #include <QSlider>
 #include <QTHread>
 
+#include <vector>
+#include <functional>
+
 #include "CustomDial.h"
 
 #include "Defs.h"
@@ -26,6 +30,8 @@
 #include "ControlWidgetsColorManager.h"
 
 #include "qcustomplot.h"
+
+
 
 namespace Ui
 {
@@ -44,6 +50,11 @@ class Dialog_AnalogSynth_1900x1000 : public QDialog
 	static Ui::Dialog_AnalogSynth_1900x1000 *get_ui_instance();
 
 	void update_all();
+	
+	void update_selective(uint32_t update_bitmap);
+
+	void analog_selective_update_received(uint32_t update_bitmap);
+	
 
 	// Called from callback - thread-safe, just emits signal
 	void control_box_event_received(int evnt, uint16_t val);
@@ -56,19 +67,31 @@ class Dialog_AnalogSynth_1900x1000 : public QDialog
 
 	void osc1_set_unison_mode(int mode);
 
-	static CustomComboBox *combo_lfo_waveform[_NUM_OF_LFOS];
-	static CustomDial *dial_lfo_symmetry[_NUM_OF_LFOS];
-	static CustomDial *dial_lfo_rate[_NUM_OF_LFOS];
-	static QLineEdit *lineedit_lfo_rate[_NUM_OF_LFOS];
-	static QLineEdit *lineedit_lfo_symmetry[_NUM_OF_LFOS];
+	//static CustomComboBox *combo_lfo_waveform[_NUM_OF_LFOS];
+	//static CustomDial *dial_lfo_symmetry[_NUM_OF_LFOS];
+	//static CustomDial *dial_lfo_rate[_NUM_OF_LFOS];
+	//static QLineEdit *lineedit_lfo_rate[_NUM_OF_LFOS];
+	//static QLineEdit *lineedit_lfo_symmetry[_NUM_OF_LFOS];
+
+	CustomComboBox *combo_lfo_waveform[_NUM_OF_LFOS];
+	CustomDial *dial_lfo_symmetry[_NUM_OF_LFOS];
+	CustomDial *dial_lfo_rate[_NUM_OF_LFOS];
+	QLineEdit *lineedit_lfo_rate[_NUM_OF_LFOS];
+	QLineEdit *lineedit_lfo_symmetry[_NUM_OF_LFOS];
 
   signals:
 	// Signal emitted when control box event is received (thread-safe)
 	void control_box_event_signal(int evnt, uint16_t val);
 
+	// Signal emitted when selective update is requested (thread-safe)
+	void selective_update_signal(uint32_t update_bitmap);
+
   private slots:
 	// Slot that handles the actual UI update (runs in GUI thread)
 	void handle_control_box_event(int evnt, uint16_t val);
+
+	// Slot that handles the selective update in GUI thread
+	void handle_selective_update(uint32_t update_bitmap);
 
 public slots:
 	void closeEvent(QCloseEvent *event);
@@ -447,6 +470,8 @@ protected slots:
 	
 
   private:
+	uint32_t pending_update_bitmap = 0;
+	
 	bool sketch1_active = true;
 	bool sketch2_active = false;
 	bool sketch3_active = false;

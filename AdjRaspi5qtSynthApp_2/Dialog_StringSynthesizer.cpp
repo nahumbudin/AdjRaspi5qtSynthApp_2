@@ -17,6 +17,7 @@
 #include "Dialog_StringSynthesizer.h"
 #include "ui_Dialog_StringSynthesizer.h"
 #include "utils.h"
+#include "Defs.h"
 
 #include "MainWindow.h"
 #include "GuiNavigator.h"
@@ -496,7 +497,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_send_filter_1,
 			send_min,
 			send_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_KarplusSynth_SendFilter1->setValue(send_filter_1);
 	}
@@ -515,7 +516,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_send_filter_2,
 			send_min,
 			send_max,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_KarplusSynth_SendFilter2->setValue(send_filter_2);
 	}
@@ -528,7 +529,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_waveform,
 			waveform_min,
 			waveform_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KarplusSynth_ExcitationWaveform->setCurrentIndex(waveform);
 	}
@@ -541,7 +542,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_calculation_mode,
 			_KARPLUS_STRONG_STRING_DAMPING_CALC_DIRECT,
 			_KARPLUS_STRONG_STRING_DAMPING_CALC_MAGIC,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KarplusSynth_CalculationMode->setCurrentIndex(calculation_mode);
 	}
@@ -554,7 +555,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_tune_offset_octave,
 			tune_offset_octave_min,
 			tune_offset_octave_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KPStuneOctave->setCurrentIndex(tune_offset_octave);
 	}
@@ -567,7 +568,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_tune_offset_semitone,
 			tune_offset_semitone_min,
 			tune_offset_semitone_max,
-			1);
+			_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 		ui->comboBox_KPStuneSemitones->setCurrentIndex(tune_offset_semitone);
 	}
@@ -580,7 +581,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_distortion_drive,
 			kps_control_min_value,
 			kps_control_max_value,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_KPSdistortionDrive->setValue(distortion_drive);
 	}
@@ -593,7 +594,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_distortion_range,
 			kps_control_min_value,
 			kps_control_max_value,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_KPSdistortionRange->setValue(distortion_range);
 	}
@@ -606,7 +607,7 @@ void Dialog_StringSynthesizer::handle_control_box_event(int evnt, uint16_t val)
 			&prev_distortion_blend,
 			kps_control_min_value,
 			kps_control_max_value,
-			4);
+			_DIAL_INCREMENTS);
 
 		ui->dial_KPSdistortionBlend->setValue(distortion_blend);
 	}

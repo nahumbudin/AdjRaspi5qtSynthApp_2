@@ -461,7 +461,7 @@ void InstrumentPannel::open_fluid_synth_dialog()
 {
 	if (dialog_adj_fluid_synth == nullptr)
 	{
-		dialog_adj_fluid_synth = Dialog_AdjFluidSynth::get_instance(this);
+		dialog_adj_fluid_synth = Dialog_AdjFluidSynth::get_instance(nullptr);
 
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_adj_fluid_synth, "Fluid Synth");
 
@@ -479,7 +479,7 @@ void InstrumentPannel::open_analog_synth_dialog()
 {
 	if (dialog_analog_synth_1900x1000 == nullptr)
 	{
-		dialog_analog_synth_1900x1000 = Dialog_AnalogSynth_1900x1000::get_instance(this);
+		dialog_analog_synth_1900x1000 = Dialog_AnalogSynth_1900x1000::get_instance(nullptr);
 
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_analog_synth_1900x1000, "Analog Synth");
 
@@ -490,7 +490,8 @@ void InstrumentPannel::open_analog_synth_dialog()
 
 	dialog_analog_synth_1900x1000->show();
 	dialog_analog_synth_1900x1000->raise();
-	dialog_analog_synth_1900x1000->activateWindow();
+	dialog_analog_synth_1900x1000->activateWindow();	
+	
 	MainWindow::get_instance()->sketches_menu->setDisabled(false);
 }
 
@@ -498,7 +499,7 @@ void InstrumentPannel::open_midi_player_dialog()
 {
 	if (dialog_adj_midi_player == nullptr)
 	{
-		dialog_adj_midi_player = Dialog_MidiPlayer::get_instance(widget_parent);
+		dialog_adj_midi_player = Dialog_MidiPlayer::get_instance(nullptr);
 
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_adj_midi_player, "MIDI Player");
 
@@ -516,7 +517,7 @@ void InstrumentPannel::open_midi_mixer_dialog()
 {
 	if (dialog_midi_mixer == nullptr)
 	{
-		dialog_midi_mixer = Dialog_MidiMixer::get_instance(this);
+		dialog_midi_mixer = Dialog_MidiMixer::get_instance(nullptr);
 
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_midi_mixer, "MIDI Mixer");
 
@@ -534,7 +535,7 @@ void InstrumentPannel::open_midi_mapper_dialog()
 {
 	if (dialog_midi_mapper == nullptr)
 	{
-		dialog_midi_mapper = Dialog_MidiMapper::get_instance(this, true);
+		dialog_midi_mapper = Dialog_MidiMapper::get_instance(nullptr, true);
 
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_midi_mapper, "MIDI Mapper");
 
@@ -552,7 +553,7 @@ void InstrumentPannel::open_analog_reverb_dialog()
 {
 	if (dialog_analog_reverb == nullptr)
 	{
-		dialog_analog_reverb = Dialog_AnalogReverb::get_instance(this);
+		dialog_analog_reverb = Dialog_AnalogReverb::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_analog_reverb, "Analog Reverb");
 
 		connect(dialog_analog_reverb, &QObject::destroyed, [this]() {
@@ -569,7 +570,7 @@ void InstrumentPannel::open_analog_equalizer_dialog()
 {
 	if (dialog_analog_equalizer == nullptr)
 	{
-		dialog_analog_equalizer = Dialog_AnalogEqualizer::get_instance(this);
+		dialog_analog_equalizer = Dialog_AnalogEqualizer::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_analog_equalizer, "Analog Equalizer");
 
 		connect(dialog_analog_equalizer, &QObject::destroyed, [this]() {
@@ -586,7 +587,7 @@ void InstrumentPannel::open_hammond_organ_dialog()
 {
 	if (dialog_hammond_organ == nullptr)
 	{
-		dialog_hammond_organ = Dialog_HammondOrgan::get_instance(this);
+		dialog_hammond_organ = Dialog_HammondOrgan::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_hammond_organ, "Hammond Organ");
 
 		connect(dialog_hammond_organ, &QObject::destroyed, [this]() {
@@ -603,7 +604,7 @@ void InstrumentPannel::open_string_synthesizer_dialog()
 {
 	if (dialog_string_synthesizer == nullptr)
 	{
-		dialog_string_synthesizer = Dialog_StringSynthesizer::get_instance(this);
+		dialog_string_synthesizer = Dialog_StringSynthesizer::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_string_synthesizer, "String Synthesizer");
 		connect(dialog_string_synthesizer, &QObject::destroyed, [this]() {
 			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_string_synthesizer);
@@ -618,7 +619,7 @@ void InstrumentPannel::open_pad_synthesizer_dialog()
 {
 	if (dialog_pad_synthesizer == nullptr)
 	{
-		dialog_pad_synthesizer = Dialog_PADsynthesizer::get_instance(this);
+		dialog_pad_synthesizer = Dialog_PADsynthesizer::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_pad_synthesizer, "PAD Synthesizer");
 		connect(dialog_pad_synthesizer, &QObject::destroyed, [this]() {
 			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_pad_synthesizer);
@@ -633,7 +634,7 @@ void InstrumentPannel::open_mso_synthesizer_dialog()
 {
 	if (dialog_mso_synthesizer == nullptr)
 	{
-		dialog_mso_synthesizer = Dialog_MSOsynthesizer::get_instance(this);
+		dialog_mso_synthesizer = Dialog_MSOsynthesizer::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_mso_synthesizer, "MSO Synthesizer");
 		connect(dialog_mso_synthesizer, &QObject::destroyed, [this]() {
 			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_mso_synthesizer);
@@ -648,7 +649,7 @@ void InstrumentPannel::open_keyboard_mapper_dialog()
 {
 	if (dialog_keyboard_mapper == nullptr)
 	{
-		dialog_keyboard_mapper = Dialog_KeyboardMapper::get_instance(this);
+		dialog_keyboard_mapper = Dialog_KeyboardMapper::get_instance(nullptr);
 		MainWindow::get_instance()->window_manager->register_dialog(dialog_keyboard_mapper, "Keyboard Mapper");
 		connect(dialog_keyboard_mapper, &QObject::destroyed, [this]() {
 			MainWindow::get_instance()->window_manager->unregister_dialog(dialog_keyboard_mapper);

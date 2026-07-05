@@ -21,6 +21,7 @@
 #include "GuiNavigator.h"
 
 #include "utils.h"
+#include "Defs.h"
 
 void Dialog_MidiMixer::handle_control_box_event(int evnt, uint16_t val)
 {
@@ -110,7 +111,7 @@ void Dialog_MidiMixer::handle_control_box_event(int evnt, uint16_t val)
 						&prev_knob_pan_val[channel],
 						pan_min,
 						pan_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					dials_pan[channel]->setValue(pan_val[channel]);
 
@@ -124,7 +125,7 @@ void Dialog_MidiMixer::handle_control_box_event(int evnt, uint16_t val)
 						&prev_knob_pan_mod_level_val[channel],
 						pan_mod_level_min,
 						pan_mod_level_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					dials_pan_lfo_mod_level[channel]->setValue(pan_mod_level_val[channel]);
 
@@ -138,7 +139,7 @@ void Dialog_MidiMixer::handle_control_box_event(int evnt, uint16_t val)
 						&prev_knob_pan_mod_lfo_selection_val[channel],
 						pan_mod_lfo_selection_min,
 						pan_mod_lfo_selection_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					comboboxes_pan_lfo_mod[channel]->setCurrentIndex(pan_mod_lfo_selection_val[channel]);
 
@@ -152,7 +153,7 @@ void Dialog_MidiMixer::handle_control_box_event(int evnt, uint16_t val)
 						&prev_chan_send_level_val[channel],
 						send_level_min,
 						send_level_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					dials_send[channel]->setValue(send_level_val[channel]);
 

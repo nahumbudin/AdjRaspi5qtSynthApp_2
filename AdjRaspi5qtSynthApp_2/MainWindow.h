@@ -79,6 +79,7 @@ public:
 
 	bool is_ml_widgets_selection_active() const { return widgets_selection_active; }
 	void set_ml_widgets_selection_active(bool active);
+	void clear_widgets_selection_list();
 
 	static void add_new_ml_iterare_parm_min_max_values();
 
@@ -148,7 +149,8 @@ public slots:
 
 	void on_ml_widgets_selection_toggled();
 	void on_open_widgets_selction_edit_dialog();
-
+	void on_clear_widgets_selection_list();
+	
 
 	void on_load_synth_patch_preset_1();
 	void on_load_synth_patch_preset_2();
@@ -169,7 +171,8 @@ public slots:
 	
 protected:
 //	void timerEvent(QTimerEvent *event);
-	virtual void update_gui(); 
+	virtual void update_gui();
+	void closeEvent(QCloseEvent *event) override;
     
 
 private:
@@ -255,6 +258,7 @@ private:
 	QMenu *widgets_selection_menu;
 	QAction *toggle_widgets_selection_act;
 	QAction *open_widgets_selction_edit_dialog_act;
+	QAction *clear_widgets_selection_list_act;
 
 	QMenu *synth_patches_menu;
 	QAction *load_preset_actions[16];

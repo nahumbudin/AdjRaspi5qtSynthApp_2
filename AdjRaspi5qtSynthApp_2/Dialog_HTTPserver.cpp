@@ -156,9 +156,6 @@ void Dialog_HTTPserver::on_clear_button_clicked()
 
 void Dialog_HTTPserver::update_status_display(int mod, int sub, int param, const QVariant &val)
 {
-	// Append the parameter update string to the visual layout display
-	//static QString update_log;
-
 	QString visualValue;
 
 	// 1. Check if the incoming variant is holding a raw Qt byte array
@@ -183,6 +180,20 @@ void Dialog_HTTPserver::update_status_display(int mod, int sub, int param, const
 							   .arg(param)
 							   .arg(visualValue); // <-- Passes the formatted string or hex block here
 
+	// 4. Limit to last 1000 lines
+	QStringList lines = update_log.split('\n');
+	if (lines.size() > 1000)
+	{
+		lines = lines.mid(lines.size() - 1000); // Keep only last 1000 lines
+		update_log = lines.join('\n');
+	}
+
 	// Force your UI element (like a QLabel or QTextEdit) to render the new log string
 	ui->textEdit_HTTPserverMessages->setText(update_log);
+
+	// 5. Auto-scroll to bottom to show the latest entry
+	QTextCursor cursor = ui->textEdit_HTTPserverMessages->textCursor();
+	cursor.movePosition(QTextCursor::End);
+	ui->textEdit_HTTPserverMessages->setTextCursor(cursor);
+	ui->textEdit_HTTPserverMessages->ensureCursorVisible();
 }

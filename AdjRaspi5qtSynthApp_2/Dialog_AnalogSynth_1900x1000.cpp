@@ -4,6 +4,7 @@
  *	@date		22-Dec-2025
  *	@version	1.0
  *					1. First version.
+ *					2. Add a callback for selective update of the GUI controls
  *
  *	@brief		Used for controling the Analog Synthesizer instrument
  *				A single integrated 1900x1000 dialog version for large screen devices.
@@ -25,16 +26,28 @@
 
 Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::dialog_analog_synth_instance = NULL;
 
-CustomComboBox *Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[_NUM_OF_LFOS];
-CustomDial *Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[_NUM_OF_LFOS];
-CustomDial *Dialog_AnalogSynth_1900x1000::dial_lfo_rate[_NUM_OF_LFOS];
-QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_rate[_NUM_OF_LFOS];
-QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_symmetry[_NUM_OF_LFOS];
+//CustomComboBox *Dialog_AnalogSynth_1900x1000::combo_lfo_waveform[_NUM_OF_LFOS];
+//CustomDial *Dialog_AnalogSynth_1900x1000::dial_lfo_symmetry[_NUM_OF_LFOS];
+//CustomDial *Dialog_AnalogSynth_1900x1000::dial_lfo_rate[_NUM_OF_LFOS];
+//QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_rate[_NUM_OF_LFOS];
+//QLineEdit *Dialog_AnalogSynth_1900x1000::lineedit_lfo_symmetry[_NUM_OF_LFOS];
 
 void analog_synth_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
-	// Just forward to the dialog instance - it will emit a signal
-	Dialog_AnalogSynth_1900x1000::get_instance()->control_box_event_received(evnt, val);
+	if (Dialog_AnalogSynth_1900x1000::get_instance() != NULL)
+	{
+		// Just forward to the dialog instance - it will emit a signal
+		Dialog_AnalogSynth_1900x1000::get_instance()->control_box_event_received(evnt, val);
+	}
+}
+
+// Callback wrapper function near line 30 (after the existing control_box wrapper):
+void analog_synth_selective_update_callback_wrapper(uint32_t update_bitmap)
+{
+	if (Dialog_AnalogSynth_1900x1000::get_instance() != NULL)
+	{
+		Dialog_AnalogSynth_1900x1000::get_instance()->analog_selective_update_received(update_bitmap);
+	}
 }
 
 Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
@@ -43,8 +56,16 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 	int result;
 
 	ui->setupUi(this);
+		
 	dialog_analog_synth_instance = this;
+	
+	// Debug code to verify only one instance
+	static int instanceCount = 0;
+	instanceCount++;
+	qDebug() << "AnalogSynth instance #" << instanceCount << "created";
 
+	
+	
 	// Prevent dialog from being deleted when closed - only hide it
 	setAttribute(Qt::WA_DeleteOnClose, false);
 
@@ -528,19 +549,63 @@ Dialog_AnalogSynth_1900x1000::Dialog_AnalogSynth_1900x1000(QWidget *parent)
 
 	MainWindow::get_instance()->register_active_dialog(this);
 
+	// Connect signal to slot with Qt::QueuedConnection for thread-safety
+	connect(this, &Dialog_AnalogSynth_1900x1000::selective_update_signal,
+			this, &Dialog_AnalogSynth_1900x1000::handle_selective_update,
+			Qt::QueuedConnection);
+
 	// GUI Update timer start
 	start_update_timer(_UPDATE_TIMER_PERIOD_MS);
 }
 
 Dialog_AnalogSynth_1900x1000::~Dialog_AnalogSynth_1900x1000()
 {
+	// Set to NULL FIRST before unregistering callbacks
+	// This prevents callbacks from accessing the dying object
+	dialog_analog_synth_instance = NULL;
+	
 	// Disable callback during destruction
 	mod_synth_register_callback_control_box_event_update_ui(NULL);
 
+	// Unregister callback during destruction
+	mod_synth_register_callback_analog_selective_update(NULL);
+
+	// Destroy the native X11 window FIRST
+	// This prevents X server from sending expose events
+	hide();				// Hide first
+	setParent(nullptr); // Orphan from parent
+	destroy();			// Destroy the native window handle
+
+	// Remove ALL pending events for this dialog and its children
+	// This prevents Qt from trying to paint deleted widgets
+	QCoreApplication::removePostedEvents(this);
+
+	// Also remove events for all child widgets (including those QLineEdits)
+	QObjectList children = this->children();
+	for (QObject *child : children)
+	{
+		QCoreApplication::removePostedEvents(child);
+	}
+
+	// SAFE: Only unregister if WindowManager still exists and QApplication is still running
+	if (QCoreApplication::instance() != nullptr)
+	{
+		Dialog_WindowManager *wm = Dialog_WindowManager::get_instance();
+		if (wm != nullptr)
+		{
+			wm->unregister_dialog(this);
+		}
+	}
+
 	// Delete allocated objects
 	delete control_widgets_color_manager;
-	
-	dialog_analog_synth_instance = NULL;
+
+	// Debug code to verify only one instance
+	static int destroyCount = 0;
+	destroyCount++;
+	qDebug() << "AnalogSynth instance destroyed. Total destroyed:" << destroyCount;
+
+	//dialog_analog_synth_instance = NULL;
 	delete ui;
 }	
 
@@ -571,7 +636,7 @@ Ui::Dialog_AnalogSynth_1900x1000 *Dialog_AnalogSynth_1900x1000::get_ui_instance(
 }
 
 void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
-{
+{	
 	// Disable callback when hiding
 	mod_synth_register_callback_control_box_event_update_ui(NULL);
 
@@ -579,6 +644,9 @@ void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 
 	// Unregister from GuiNavigator
 	GuiNavigator::get_instance()->unregister_dialog(this);
+
+	// Unregister callback when hiding
+	mod_synth_register_callback_analog_selective_update(NULL);
 
 	// Hide instead of accept (which could trigger deletion)
 	event->ignore(); // Don't accept the close event
@@ -588,11 +656,41 @@ void Dialog_AnalogSynth_1900x1000::closeEvent(QCloseEvent *event)
 
 void Dialog_AnalogSynth_1900x1000::showEvent(QShowEvent *event)
 {
+	// Clear the problematic LFO QLineEdit widgets
+	for (int i = 0; i < _NUM_OF_LFOS; i++)
+	{
+		if (lineedit_lfo_rate[i] != nullptr)
+		{
+			QString text = lineedit_lfo_rate[i]->text();
+			lineedit_lfo_rate[i]->clear();
+			lineedit_lfo_rate[i]->setText(text); // Reset with fresh graphics context
+		}
+
+		if (lineedit_lfo_symmetry[i] != nullptr)
+		{
+			QString text = lineedit_lfo_symmetry[i]->text();
+			lineedit_lfo_symmetry[i]->clear();
+			lineedit_lfo_symmetry[i]->setText(text);
+		}
+	}
+	
 	QDialog::showEvent(event);
+
+	update_all();
+
+	// Apply any updates that were deferred while dialog was hidden
+	if (pending_update_bitmap != 0)
+	{
+		update_selective(pending_update_bitmap);
+		pending_update_bitmap = 0;
+	}
 
 	// Re-register callback when showing
 	mod_synth_register_callback_control_box_event_update_ui(
 		&analog_synth_control_box_event_update_ui_callback_wrapper);
+
+	mod_synth_register_callback_analog_selective_update(
+		&analog_synth_selective_update_callback_wrapper);
 }
 
 void Dialog_AnalogSynth_1900x1000::set_analog_synth_general_signals_connections()
@@ -970,8 +1068,36 @@ void Dialog_AnalogSynth_1900x1000::set_analog_synth_general_signals_connections(
 			SLOT(on_modulator_combo_box_mouse_exited(int)));
 }
 
+// Thread-safe function called from library callback wrapper - just emits signal
+void Dialog_AnalogSynth_1900x1000::analog_selective_update_received(uint32_t update_bitmap)
+{
+	// Emit signal - Qt will queue it to run in GUI thread
+	emit selective_update_signal(update_bitmap);
+}
+
+// Slot that runs in GUI thread - performs the actual updates
+void Dialog_AnalogSynth_1900x1000::handle_selective_update(uint32_t update_bitmap)
+{
+	// Don't update if dialog is not visible
+	if (!isVisible())
+	{
+		// Store the update request for when dialog is shown
+		pending_update_bitmap |= update_bitmap;
+		return;
+	}
+
+	// Call update_selective which does the actual work
+	update_selective(update_bitmap);
+}
+
 void Dialog_AnalogSynth_1900x1000::update_all()
 {
+	if (!isVisible())
+	{
+		qDebug() << "WARNING: update_all called while hidden!";
+		return; // MUST return here
+	}
+	
 	osc1_update();
 	osc2_update();
 	noise_update();
@@ -985,6 +1111,51 @@ void Dialog_AnalogSynth_1900x1000::update_all()
 	amps_update();
 	adsrs_update();
 	lfos_update();
+}
+
+void Dialog_AnalogSynth_1900x1000::update_selective(uint32_t update_bitmap)
+{
+	if (!isVisible())
+	{
+		qDebug() << "WARNING: update_selective called while hidden! Bitmap:" << update_bitmap;
+		return; // MUST return here
+	}
+	
+	if (update_bitmap & ANALOG_UPDATE_OSC1)
+		osc1_update();
+
+	if (update_bitmap & ANALOG_UPDATE_OSC2)
+		osc2_update();
+
+	if (update_bitmap & ANALOG_UPDATE_NOISE)
+		noise_update();
+
+	if (update_bitmap & ANALOG_UPDATE_KPS)
+		kps_update();
+
+	if (update_bitmap & ANALOG_UPDATE_MSO)
+	{
+		mso_update();
+		update_mso_waveform_plot();
+	}
+
+	if (update_bitmap & ANALOG_UPDATE_PAD)
+		pad_update();
+
+	if (update_bitmap & ANALOG_UPDATE_FILTERS)
+		filters_update();
+
+	if (update_bitmap & ANALOG_UPDATE_DISTORTION)
+		distortion_update();
+
+	if (update_bitmap & ANALOG_UPDATE_AMPS)
+		amps_update();
+
+	if (update_bitmap & ANALOG_UPDATE_ADSRS)
+		adsrs_update();
+
+	if (update_bitmap & ANALOG_UPDATE_LFOS)
+		lfos_update();
 }
 
 // Periodic GUI update function called by timer (Let Qt event loop to run GUI updates)

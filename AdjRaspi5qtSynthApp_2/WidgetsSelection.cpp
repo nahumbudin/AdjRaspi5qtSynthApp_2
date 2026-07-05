@@ -88,7 +88,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 								comboBox->hidePopup();
 							});
 						}
-						
+
 						switch (submodule)
 						{
 						case _OSC_1_EVENT:
@@ -105,6 +105,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 								break;
 
 							case _OSC_DETUNE_OCTAVE:
+								MAX_str = QString("+6");
+								MIN_str = QString("-6");
 								for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
 								{
 									max_str_list << QString::number(i);
@@ -113,6 +115,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 								break;
 
 							case _OSC_DETUNE_SEMITONES:
+								MAX_str = QString("+11");
+								MIN_str = QString("-11");
 								for (int i = _OSC_DETUNE_MIN_SEMITONES; i <= _OSC_DETUNE_MAX_SEMITONES; i++)
 								{
 									max_str_list << QString::number(i);
@@ -121,84 +125,21 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 								break;
 
 							case _OSC_DETUNE_CENTS:
+								MAX_str = QString("+7.5");
+								MIN_str = QString("-7.5");
 								for (int i = 4 * _OSC_DETUNE_MIN_CENTS; i <= 4 * _OSC_DETUNE_MAX_CENTS; i++)
 								{
 									// 0.25 steps
 									max_str_list << QString::number(i / 4.f);
 									min_str_list << QString::number(i / 4.f);
 								}
-								break;								
+								break;
 
 							case _OSC_FREQ_MOD_LFO:
 							case _OSC_AMP_MOD_LFO:
 							case _OSC_PWM_MOD_LFO:
-								max_str_list << "None" 
-											 << "LFO 1" << "LFO 1 0.5sec" << "LFO 1 1sec" << "LFO 1 1.5sec" << "LFO 1 2sec"
-											 << "LFO 2" << "LFO 2 0.5sec" << "LFO 2 1sec" << "LFO 2 1.5sec" << "LFO 2 2sec"
-											 << "LFO 3" << "LFO 3 0.5sec" << "LFO 3 1sec" << "LFO 3 1.5sec" << "LFO 3 2sec"
-											 << "LFO 4" << "LFO 4 0.5sec" << "LFO 4 1sec" << "LFO 4 1.5sec" << "LFO 4 2sec"
-											 << "LFO 5" << "LFO 5 0.5sec" << "LFO 5 1sec" << "LFO 5 1.5sec" << "LFO 5 2sec"
-											 << "LFO 6" << "LFO 6 0.5sec" << "LFO 6 1sec" << "LFO 6 1.5sec" << "LFO 6 2sec";
-
-								min_str_list << "None" << "LFO 1" << "LFO 1 0.5sec" << "LFO 1 1sec" << "LFO 1 2sec"
-											 << "LFO 2" << "LFO 2 0.5sec" << "LFO 2 1sec" << "LFO 2 1.5sec" << "LFO 2 2sec"
-											 << "LFO 3" << "LFO 3 0.5sec" << "LFO 3 1sec" << "LFO 3 1.5sec" << "LFO 3 2sec"
-											 << "LFO 4" << "LFO 4 0.5sec" << "LFO 4 1sec" << "LFO 4 1.5sec" << "LFO 4 2sec"
-											 << "LFO 5" << "LFO 5 0.5sec" << "LFO 5 1sec" << "LFO 5 1.5sec" << "LFO 5 2sec"
-											 << "LFO 6" << "LFO 6 0.5sec" << "LFO 6 1sec" << "LFO 6 1.5sec" << "LFO 6 2sec";
-								
-								break;
-
-							case _OSC_FREQ_MOD_ENV:
-							case _OSC_AMP_MOD_ENV:
-							case _OSC_PWM_MOD_ENV:
-								max_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
-								min_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
-								break;
-								
-							case _OSC_UNISON_MODE:
-								max_str_list << "12345678" << "Hammond" << "Octaves" << "C Chord" << "Cm Chord" << "C7 Chord" << "Cm7 Chord";
-								min_str_list << "12345678" << "Hammond" << "Octaves" << "C Chord" << "Cm Chord" << "C7 Chord" << "Cm7 Chord";
-								break;
-								
-							case _OSC_HAMMOND_PERCUSION_MODE:
-								max_str_list << "Off" << "2nd Soft Slow" << "2nd Soft Fast" << "2nd Norm Slow" << "2nd Norm Fast" 
-											 << "3rd Soft Slow" << "3rd Soft Fast" << "3rd Norm Slow" << "3rd Norm Fast";
-								min_str_list << "Off" << "2nd Soft Slow" << "2nd Soft Fast" << "2nd Norm Slow" << "2nd Norm Fast"
-											 << "3rd Soft Slow" << "3rd Soft Fast" << "3rd Norm Slow" << "3rd Norm Fast";
-								break;
-							}
-
-						case _MSO_1_EVENT:
-							switch (param)
-							{
-							case _MSO_DETUNE_OCTAVE:
-								for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
-								{
-									max_str_list << QString::number(i);
-									min_str_list << QString::number(i);
-								}
-								break;
-
-							case _MSO_DETUNE_SEMITONES:
-								for (int i = _OSC_DETUNE_MIN_SEMITONES; i <= _OSC_DETUNE_MAX_SEMITONES; i++)
-								{
-									max_str_list << QString::number(i);
-									min_str_list << QString::number(i);
-								}
-								break;
-
-							case _MSO_DETUNE_CENTS:
-								for (int i = 4 * _OSC_DETUNE_MIN_CENTS; i <= 4 * _OSC_DETUNE_MAX_CENTS; i++)
-								{
-									// 0.25 steps
-									max_str_list << QString::number(i / 4.f);
-									min_str_list << QString::number(i / 4.f);
-								}
-								break;
-
-							case _MSO_FREQ_MOD_LFO:
-							case _MSO_AMP_MOD_LFO:
+								MAX_str = QString("LFO 6 2sec");
+								MIN_str = QString("None");								
 								max_str_list << "None"
 											 << "LFO 1" << "LFO 1 0.5sec" << "LFO 1 1sec" << "LFO 1 1.5sec" << "LFO 1 2sec"
 											 << "LFO 2" << "LFO 2 0.5sec" << "LFO 2 1sec" << "LFO 2 1.5sec" << "LFO 2 2sec"
@@ -218,11 +159,124 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 
 							case _OSC_FREQ_MOD_ENV:
 							case _OSC_AMP_MOD_ENV:
+							case _OSC_PWM_MOD_ENV:
+								MAX_str = QString("ADSR 6");
+								MIN_str = QString("ADSR 1");
+								max_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
+								min_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
+								break;
+
+							case _OSC_UNISON_MODE:
+								MAX_str = QString("Cm7 Chord");
+								MIN_str = QString("12345678");
+								max_str_list << "12345678" << "Hammond" << "Octaves" << "C Chord" << "Cm Chord" << "C7 Chord" << "Cm7 Chord";
+								min_str_list << "12345678" << "Hammond" << "Octaves" << "C Chord" << "Cm Chord" << "C7 Chord" << "Cm7 Chord";
+								break;
+
+							case _OSC_HAMMOND_PERCUSION_MODE:
+								MAX_str = QString("3rd Norm Fast");
+								MIN_str = QString("Off");
+								max_str_list << "Off" << "2nd Soft Slow" << "2nd Soft Fast" << "2nd Norm Slow" << "2nd Norm Fast"
+											 << "3rd Soft Slow" << "3rd Soft Fast" << "3rd Norm Slow" << "3rd Norm Fast";
+								min_str_list << "Off" << "2nd Soft Slow" << "2nd Soft Fast" << "2nd Norm Slow" << "2nd Norm Fast"
+											 << "3rd Soft Slow" << "3rd Soft Fast" << "3rd Norm Slow" << "3rd Norm Fast";
+								break;
+							}
+
+							break;
+
+						case _MSO_1_EVENT:
+							switch (param)
+							{
+								MAX_str = QString("+6");
+								MIN_str = QString("-6");
+							case _MSO_DETUNE_OCTAVE:
+								for (int i = _OSC_DETUNE_MIN_OCTAVE; i <= _OSC_DETUNE_MAX_OCTAVE; i++)
+								{
+									max_str_list << QString::number(i);
+									min_str_list << QString::number(i);
+								}
+								break;
+
+							case _MSO_DETUNE_SEMITONES:
+								MAX_str = QString("+11");
+								MIN_str = QString("-11");
+								for (int i = _OSC_DETUNE_MIN_SEMITONES; i <= _OSC_DETUNE_MAX_SEMITONES; i++)
+								{
+									max_str_list << QString::number(i);
+									min_str_list << QString::number(i);
+								}
+								break;
+
+							case _MSO_DETUNE_CENTS:
+								MAX_str = QString("+7.5");
+								MIN_str = QString("-7.5");
+								for (int i = 4 * _OSC_DETUNE_MIN_CENTS; i <= 4 * _OSC_DETUNE_MAX_CENTS; i++)
+								{
+									// 0.25 steps
+									max_str_list << QString::number(i / 4.f);
+									min_str_list << QString::number(i / 4.f);
+								}
+								break;
+
+							case _MSO_FREQ_MOD_LFO:
+							case _MSO_AMP_MOD_LFO:
+								MAX_str = QString("LFO 6 2sec");
+								MIN_str = QString("None");
+								max_str_list << "None"
+											 << "LFO 1" << "LFO 1 0.5sec" << "LFO 1 1sec" << "LFO 1 1.5sec" << "LFO 1 2sec"
+											 << "LFO 2" << "LFO 2 0.5sec" << "LFO 2 1sec" << "LFO 2 1.5sec" << "LFO 2 2sec"
+											 << "LFO 3" << "LFO 3 0.5sec" << "LFO 3 1sec" << "LFO 3 1.5sec" << "LFO 3 2sec"
+											 << "LFO 4" << "LFO 4 0.5sec" << "LFO 4 1sec" << "LFO 4 1.5sec" << "LFO 4 2sec"
+											 << "LFO 5" << "LFO 5 0.5sec" << "LFO 5 1sec" << "LFO 5 1.5sec" << "LFO 5 2sec"
+											 << "LFO 6" << "LFO 6 0.5sec" << "LFO 6 1sec" << "LFO 6 1.5sec" << "LFO 6 2sec";
+
+								min_str_list << "None" << "LFO 1" << "LFO 1 0.5sec" << "LFO 1 1sec" << "LFO 1 2sec"
+											 << "LFO 2" << "LFO 2 0.5sec" << "LFO 2 1sec" << "LFO 2 1.5sec" << "LFO 2 2sec"
+											 << "LFO 3" << "LFO 3 0.5sec" << "LFO 3 1sec" << "LFO 3 1.5sec" << "LFO 3 2sec"
+											 << "LFO 4" << "LFO 4 0.5sec" << "LFO 4 1sec" << "LFO 4 1.5sec" << "LFO 4 2sec"
+											 << "LFO 5" << "LFO 5 0.5sec" << "LFO 5 1sec" << "LFO 5 1.5sec" << "LFO 5 2sec"
+											 << "LFO 6" << "LFO 6 0.5sec" << "LFO 6 1sec" << "LFO 6 1.5sec" << "LFO 6 2sec";
+
+								break;
+
+							case _MSO_FREQ_MOD_ENV:
+							case _MSO_AMP_MOD_ENV:
+								MAX_str = QString("ADSR 6");
+								MIN_str = QString("ADSR1");
+								max_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
+								min_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
+								break;
+
+							case _OSC_FREQ_MOD_ENV:
+							case _OSC_AMP_MOD_ENV:
+								MAX_str = QString("ADSR 6");
+								MIN_str = QString("ADSR1");
 								max_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
 								min_str_list << "None" << "ADSR 1" << "ADSR 2" << "ADSR 3" << "ADSR 4" << "ADSR 5" << "ADSR 6";
 								break;
 							}
-						}						
+
+						case _KARPLUS_1_EVENT:
+							switch (param)
+							{
+							case _KARPLUS_STRONG_EXCITATION_WAVEFORM:
+								MAX_str = QString("Square Wave");
+								MIN_str = QString("White Noise");
+								max_str_list << "White Noise" << "Pink Noise" << "Sine Chirp" << "Decayed Sine"
+											 << "Sawtooth Wave" << "Square Wave";
+								min_str_list << "White Noise" << "Pink Noise" << "Sine Chirp" << "Decayed Sine"
+											 << "Sawtooth Wave" << "Square Wave";
+								break;
+
+							case _KARPLUS_STRONG_STRING_DUMP_CALC_MODE:
+								MAX_str = QString("Magic");
+								MIN_str = QString("Direct");
+								max_str_list << "Direct" << "Magic";
+								min_str_list << "Direct" << "Magic";
+								break;
+							}
+						}
 					}
 
 					else

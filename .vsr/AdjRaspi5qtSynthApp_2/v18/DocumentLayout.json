@@ -1,0 +1,107 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\Audio\\audioRecording.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|solutionrelative:AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\Audio\\audioRecording.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dialog_HTTPserver.h",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.h",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.h",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.h",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-06-29T11:26:59.223Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Dialog_HTTPserver.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_HTTPserver.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-29T11:22:07.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "audioRecording.h",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\Audio\\audioRecording.h",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\Audio\\audioRecording.h",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\Audio\\audioRecording.h",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\Audio\\audioRecording.h",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAowBAAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-06-29T09:15:56.171Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Dialog_Recording.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "RelativeDocumentMoniker": "AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "RelativeToolTip": "AdjRaspi5qtSynthApp_2\\Dialog_Recording.cpp",
+              "ViewState": "AgIAALYAAAAAAAAAAAAAwKEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-27T19:05:17.942Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "audioRecording.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\Audio\\audioRecording.cpp",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\Audio\\audioRecording.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\Audio\\audioRecording.cpp",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\Audio\\audioRecording.cpp",
+              "ViewState": "AgIAABMBAAAAAAAAAAAEwCEBAABmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-06-27T18:50:43.722Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

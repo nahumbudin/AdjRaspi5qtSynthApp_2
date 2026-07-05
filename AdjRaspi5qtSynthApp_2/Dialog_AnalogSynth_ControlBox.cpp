@@ -18,7 +18,7 @@
 
 void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t val)
 {
-	if (!this->hasFocus())
+	if (!isVisible() || !this->hasFocus())
 	{
 		return;
 	}
@@ -516,7 +516,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_send_filter_1,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1SendFilter1->setValue(osc1_send_filter_1);
 			}
@@ -529,7 +529,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_send_filter_2,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1SendFilter2->setValue(osc1_send_filter_2);
 			}
@@ -542,7 +542,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_waveform,
 					_OSC_WAVEFORM_SINE,
 					_OSC_WAVEFORM_SAMPHOLD,
-					1);
+					_COMBOBOX_INCREMENTS, 50);
 
 				ui->comboBox_Osc1Waveform->setCurrentIndex(osc1_waveform);
 			}
@@ -555,7 +555,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_tune_offset_octave,
 					tune_offset_octave_min,
 					tune_offset_octave_max,
-					1);
+					_COMBOBOX_INCREMENTS, 50);
 
 				ui->comboBox_Osc1TuneOctave->setCurrentIndex(osc1_tune_offset_octave);
 			}
@@ -568,7 +568,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_tune_offset_semitone,
 					tune_offset_semitone_min,
 					tune_offset_semitone_max,
-					1);
+					_COMBOBOX_INCREMENTS, 50);
 
 				ui->comboBox_Osc1TuneSemitones->setCurrentIndex(osc1_tune_offset_semitone);
 			}
@@ -581,7 +581,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_tune_offset_cents,
 					tune_offset_cents_min,
 					tune_offset_cents_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1TuneCents->setCurrentIndex(osc1_tune_offset_cents);
 			}
@@ -596,7 +596,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_freq_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1FreqModLFO->setCurrentIndex(osc1_freq_mod_lfo);
 			}
@@ -609,7 +609,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_freq_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1FreqModAdsr->setCurrentIndex(osc1_freq_mod_adsr);
 			}
@@ -622,7 +622,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_freq_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1FreqModLFOLevel->setValue(osc1_freq_mod_lfo_level);
 			}
@@ -635,7 +635,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_pwm_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1FreqModAdsrLevel->setValue(osc1_freq_mod_adsr_level);
 			}
@@ -648,7 +648,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_amp_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1AmpModLFO->setCurrentIndex(osc1_amp_mod_lfo);
 			}
@@ -661,7 +661,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_amp_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1AmpModAdsr->setCurrentIndex(osc1_amp_mod_adsr);
 			}
@@ -674,7 +674,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_amp_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1AmpModLFOLevel->setValue(osc1_amp_mod_lfo_level);
 			}
@@ -687,7 +687,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_amp_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1AmpModAdsrLevel->setValue(osc1_amp_mod_adsr_level);
 			}
@@ -802,7 +802,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_hammond_percussion_mode,
 					hammond_percussion_mode_min,
 					hammond_percussion_mode_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1HammondPercussionMode->setCurrentIndex(osc1_hammond_percussion_mode);
 			}
@@ -815,7 +815,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_unison_mode,
 					unison_mode_min,
 					unison_mode_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1UnisonMode->setCurrentIndex(osc1_unison_mode);
 			}
@@ -828,7 +828,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_pwm_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1PwmModLFO->setCurrentIndex(osc1_pwm_mod_lfo);
 			}
@@ -841,7 +841,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_pwm_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc1PwmModAdsr->setCurrentIndex(osc1_pwm_mod_adsr);
 			}
@@ -854,7 +854,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_pwm_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1PwmModLFOLevel->setValue(osc1_pwm_mod_lfo_level);
 			}
@@ -867,7 +867,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc1_pwm_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc1PwmModAdsrLevel->setValue(osc1_pwm_mod_adsr_level);
 			}
@@ -956,7 +956,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_send_filter_1,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc2SendFilter1->setValue(osc2_send_filter_1);
 			}
@@ -969,7 +969,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_send_filter_2,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc2SendFilter2->setValue(osc2_send_filter_2);
 			}
@@ -982,7 +982,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_waveform,
 					_OSC_WAVEFORM_SINE,
 					_OSC_WAVEFORM_SAMPHOLD,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc2Waveform->setCurrentIndex(osc2_waveform);
 			}
@@ -995,7 +995,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_tune_offset_octave,
 					tune_offset_octave_min,
 					tune_offset_octave_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc2TuneOctave->setCurrentIndex(osc2_tune_offset_octave);
 			}
@@ -1008,7 +1008,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_tune_offset_semitone,
 					tune_offset_semitone_min,
 					tune_offset_semitone_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc2TuneSemitones->setCurrentIndex(osc2_tune_offset_semitone);
 			}
@@ -1021,7 +1021,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_tune_offset_cents,
 					tune_offset_cents_min,
 					tune_offset_cents_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc2TuneCents->setCurrentIndex(osc2_tune_offset_cents);
 			}
@@ -1050,7 +1050,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_amp_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc2AmpModLFO->setCurrentIndex(osc2_amp_mod_lfo);
 			}
@@ -1064,7 +1064,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_amp_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_Osc2AmpModAdsr->setCurrentIndex(osc2_amp_mod_adsr);
 			}
@@ -1077,7 +1077,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_amp_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc2AmpModLFOLevel->setValue(osc2_amp_mod_lfo_level);
 			}
@@ -1090,7 +1090,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_osc2_amp_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_Osc2AmpModAdsrLevel->setValue(osc2_amp_mod_adsr_level);
 			}
@@ -1107,7 +1107,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_freq_mod_lfo,
 						lfo_min,
 						lfo_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_Osc2FreqModLFO->setCurrentIndex(osc2_freq_mod_lfo);
 				}
@@ -1120,7 +1120,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_freq_mod_adsr,
 						adsr_min,
 						adsr_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_Osc2FreqModAdsr->setCurrentIndex(osc2_freq_mod_adsr);
 				}
@@ -1133,7 +1133,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_freq_mod_lfo_level,
 						modulation_min,
 						modulation_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_Osc2FreqModLFOLevel->setValue(osc2_freq_mod_lfo_level);
 				}
@@ -1146,7 +1146,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_freq_mod_adsr_level,
 						modulation_min,
 						modulation_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_Osc2FreqModAdsrLevel->setValue(osc2_freq_mod_adsr_level);
 				}				
@@ -1163,7 +1163,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_pwm_mod_lfo,
 						lfo_min,
 						lfo_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_Osc2PwmModLFO->setCurrentIndex(osc2_pwm_mod_lfo);
 				}
@@ -1176,7 +1176,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_pwm_mod_adsr,
 						adsr_min,
 						adsr_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_Osc2PwmModAdsr->setCurrentIndex(osc2_pwm_mod_adsr);
 				}
@@ -1189,7 +1189,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_pwm_mod_lfo_level,
 						modulation_min,
 						modulation_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_Osc2PwmModLFOLevel->setValue(osc2_pwm_mod_lfo_level);
 				}
@@ -1202,7 +1202,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_osc2_pwm_mod_adsr_level,
 						modulation_min,
 						modulation_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_Osc2PwmModAdsrLevel->setValue(osc2_pwm_mod_adsr_level);
 				}
@@ -1220,7 +1220,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_send_filter_1,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoSendFilter1->setValue(mso_send_filter_1);
 			}
@@ -1233,7 +1233,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_send_filter_2,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoSendFilter2->setValue(mso_send_filter_2);
 			}
@@ -1246,7 +1246,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_detune_octave,
 					tune_offset_octave_min,
 					tune_offset_octave_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoTuneOctave->setCurrentIndex(mso_detune_octave);
 			}
@@ -1259,7 +1259,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_detune_semitone,
 					tune_offset_semitone_min,
 					tune_offset_semitone_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoTuneSemitones->setCurrentIndex(mso_detune_semitone);
 			}
@@ -1272,7 +1272,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_detune_cents,
 					tune_offset_cents_min,
 					tune_offset_cents_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoTuneCents->setCurrentIndex(mso_detune_cents);
 			}
@@ -1287,7 +1287,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_freq_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoFreqModLFO->setCurrentIndex(mso_freq_mod_lfo);
 			}
@@ -1300,7 +1300,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_freq_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoFreqModAdsr->setCurrentIndex(mso_freq_mod_adsr);
 			}
@@ -1313,7 +1313,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_freq_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoFreqModLFOLevel->setValue(mso_freq_mod_lfo_level);
 			}
@@ -1326,7 +1326,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_freq_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoFreqModAdsrLevel->setValue(mso_freq_mod_adsr_level);
 			}
@@ -1339,7 +1339,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoAmpModLFO->setCurrentIndex(mso_amp_mod_lfo);
 			}
@@ -1352,7 +1352,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoAmpModAdsr->setCurrentIndex(mso_amp_mod_adsr);
 			}
@@ -1365,7 +1365,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoAmpModLFOLevel->setValue(mso_amp_mod_lfo_level);
 			}
@@ -1378,7 +1378,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoAmpModAdsrLevel->setValue(mso_amp_mod_adsr_level);
 			}
@@ -1395,7 +1395,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_preset,
 					mso_preset_min,
 					mso_preset_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoPreset->setCurrentIndex(mso_preset);
 			}
@@ -1408,7 +1408,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoAmpModLFO->setCurrentIndex(mso_amp_mod_lfo);
 			}
@@ -1421,7 +1421,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoAmpModAdsr->setCurrentIndex(mso_amp_mod_adsr);
 			}
@@ -1434,7 +1434,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoAmpModLFOLevel->setValue(mso_amp_mod_lfo_level);
 			}
@@ -1447,7 +1447,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_amp_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoAmpModAdsrLevel->setValue(mso_amp_mod_adsr_level);
 			}
@@ -1562,7 +1562,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_pwm_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoPwmModLFO->setCurrentIndex(mso_pwm_mod_lfo);
 			}
@@ -1575,7 +1575,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_pwm_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_MsoPwmModAdsr->setCurrentIndex(mso_pwm_mod_adsr);
 			}
@@ -1588,7 +1588,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_pwm_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoPwmModLFOLevel->setValue(mso_pwm_mod_lfo_level);
 			}
@@ -1601,7 +1601,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_mso_pwm_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_MsoPwmModAdsrLevel->setValue(mso_pwm_mod_adsr_level);
 			}
@@ -1618,7 +1618,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_send_filter_1,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_NoiseSendFilter1->setValue(noise_send_filter_1);
 			}
@@ -1631,7 +1631,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_send_filter_2,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_NoiseSendFilter2->setValue(noise_send_filter_2);
 			}
@@ -1644,7 +1644,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_color,
 					_WHITE_NOISE,
 					_BROWN_NOISE,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_NoiseColor->setCurrentIndex(noise_color);
 			}
@@ -1657,7 +1657,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_amp_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_NoiseAmpModLFO->setCurrentIndex(noise_amp_mod_lfo);
 			}
@@ -1670,7 +1670,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_amp_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_NoiseAmpModAdsr->setCurrentIndex(noise_amp_mod_adsr);
 			}
@@ -1683,7 +1683,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_amp_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_NoiseAmpModLFOLevel->setValue(noise_amp_mod_lfo_level);
 			}
@@ -1696,7 +1696,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_noise_amp_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_NoiseAmpModAdsrLevel->setValue(noise_amp_mod_adsr_level);
 			}
@@ -1712,7 +1712,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_kps_send_filter_1,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_KarplusSynth_SendFilter1->setValue(kps_send_filter_1);
 			}
@@ -1725,7 +1725,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_kps_send_filter_2,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_KarplusSynth_SendFilter2->setValue(kps_send_filter_2);
 			}
@@ -1738,7 +1738,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_kps_excitation_waveform,
 					kps_excitation_waveform_min,
 					kps_excitation_waveform_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_KarplusSynth_ExcitationWaveform->setCurrentIndex(kps_excitation_waveform);
 			}
@@ -1751,7 +1751,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_kps_damping_calculation,
 					kps_damping_calculation_min,
 					kps_damping_calculation_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_KarplusSynth_CalculationMode->setCurrentIndex(kps_damping_calculation);
 			}
@@ -1866,7 +1866,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_send_filter_1,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PadSendFilter1->setValue(pad_send_filter_1);
 			}
@@ -1879,7 +1879,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_send_filter_2,
 					send_min,
 					send_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PadSendFilter2->setValue(pad_send_filter_2);
 			}
@@ -1892,7 +1892,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_tune_offset_octave,
 					tune_offset_octave_min,
 					tune_offset_octave_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadTuneOctave->setCurrentIndex(pad_tune_offset_octave);
 			}
@@ -1905,7 +1905,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_tune_offset_semitone,
 					tune_offset_semitone_min,
 					tune_offset_semitone_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadTuneSemitones->setCurrentIndex(pad_tune_offset_semitone);
 			}
@@ -1918,7 +1918,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_tune_offset_cents,
 					tune_offset_cents_min,
 					tune_offset_cents_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadTuneCents->setCurrentIndex(pad_tune_offset_cents);
 			}
@@ -1933,7 +1933,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_freq_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadFreqModLFO->setCurrentIndex(pad_freq_mod_lfo);
 			}
@@ -1946,7 +1946,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_freq_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadFreqModAdsr->setCurrentIndex(pad_freq_mod_adsr);
 			}
@@ -1959,7 +1959,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_freq_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PadFreqModLFOLevel->setValue(pad_freq_mod_lfo_level);
 			}
@@ -1972,7 +1972,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_freq_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PadFreqModAdsrLevel->setValue(pad_freq_mod_adsr_level);
 			}
@@ -1985,7 +1985,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_amp_mod_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadAmpModLFO->setCurrentIndex(pad_amp_mod_lfo);
 			}
@@ -1998,7 +1998,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_amp_mod_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadAmpModAdsr->setCurrentIndex(pad_amp_mod_adsr);
 			}
@@ -2011,7 +2011,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_amp_mod_lfo_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PadAmpModLFOLevel->setValue(pad_amp_mod_lfo_level);
 			}
@@ -2024,7 +2024,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_amp_mod_adsr_level,
 					modulation_min,
 					modulation_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_PadAmpModAdsrLevel->setValue(pad_amp_mod_adsr_level);
 			}
@@ -2139,7 +2139,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_quality,
 					pad_quality_min,
 					pad_quality_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadQuality->setCurrentIndex(pad_quality);
 			}
@@ -2152,7 +2152,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_shape,
 					pad_shape_min,
 					pad_shape_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadShape->setCurrentIndex(pad_shape);
 			}
@@ -2165,7 +2165,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_shape_cutoff,
 					pad_shape_cutoff_min,
 					pad_shape_cutoff_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadShapeCutoff->setCurrentIndex(pad_shape_cutoff);
 			}
@@ -2178,7 +2178,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_pad_base_note,
 					pad_base_note_min,
 					pad_base_note_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_PadBaseNote->setCurrentIndex(pad_base_note);
 			}
@@ -2271,7 +2271,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_freq,
 					filter_frequency_min,
 					filter_frequency_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterFreq_1->setValue(filter_1_freq);
 			}
@@ -2284,7 +2284,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_mod_octave,
 					filter_modulation_octave_min,
 					filter_modulation_octave_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterOctave_1->setValue(filter_1_mod_octave);
 			}
@@ -2297,7 +2297,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_q,
 					filter_q_min,
 					filter_q_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterQ_1->setValue(filter_1_q);
 			}
@@ -2310,7 +2310,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_kbd_track,
 					filter_kbd_track_min,
 					filter_kbd_track_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterKbdTrack_1->setValue(filter_1_kbd_track);
 			}
@@ -2323,7 +2323,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_frequency_modulation_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_FilterFreqModLfo_1->setCurrentIndex(filter_1_frequency_modulation_lfo);
 				
@@ -2337,7 +2337,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_frequency_modulation_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_FilterFreqModAdsr_1->setCurrentIndex(filter_1_frequency_modulation_adsr);
 			}
@@ -2350,7 +2350,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_1_band,
 					filter_band_min,
 					filter_band_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_FilterBand_1->setCurrentIndex(filter_1_band);
 			}
@@ -2393,7 +2393,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_freq,
 					filter_frequency_min,
 					filter_frequency_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterFreq_2->setValue(filter_2_freq);
 			}
@@ -2406,7 +2406,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_mod_octave,
 					filter_modulation_octave_min,
 					filter_modulation_octave_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterOctave_2->setValue(filter_2_mod_octave);
 			}
@@ -2419,7 +2419,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_q,
 					filter_q_min,
 					filter_q_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterQ_2->setValue(filter_2_q);
 			}
@@ -2432,7 +2432,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_kbd_track,
 					filter_kbd_track_min,
 					filter_kbd_track_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_FilterKbdTrack_2->setValue(filter_2_kbd_track);
 			}
@@ -2445,7 +2445,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_frequency_modulation_lfo,
 					lfo_min,
 					lfo_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_FilterFreqModLfo_2->setCurrentIndex(filter_2_frequency_modulation_lfo);
 			}
@@ -2458,7 +2458,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_frequency_modulation_adsr,
 					adsr_min,
 					adsr_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_FilterFreqModAdsr_2->setCurrentIndex(filter_2_frequency_modulation_adsr);
 			}
@@ -2471,7 +2471,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_filter_2_band,
 					filter_band_min,
 					filter_band_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_FilterBand_2->setCurrentIndex(filter_2_band);
 			}
@@ -2516,7 +2516,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_distortion_1_drive,
 					distortion_control_min,
 					distortion_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_DistortionDrive_1->setValue(distortion_1_drive);
 			}
@@ -2529,7 +2529,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_distortion_1_range,
 					distortion_control_min,
 					distortion_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_DistortionRange_1->setValue(distortion_1_range);
 			}
@@ -2542,7 +2542,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_distortion_1_blend,
 					distortion_control_min,
 					distortion_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_DistortionBlend_1->setValue(distortion_1_blend);
 			}
@@ -2555,7 +2555,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_distortion_2_drive,
 					distortion_control_min,
 					distortion_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_DistortionDrive_2->setValue(distortion_2_drive);
 			}
@@ -2568,7 +2568,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_distortion_2_range,
 					distortion_control_min,
 					distortion_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_DistortionRange_2->setValue(distortion_2_range);
 			}
@@ -2581,7 +2581,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_distortion_2_blend,
 					distortion_control_min,
 					distortion_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_DistortionBlend_2->setValue(distortion_2_blend);
 			}
@@ -2596,7 +2596,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_preset,
 					reverb_preset_min,
 					reverb_preset_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_ReverbType->setCurrentIndex(reverb_preset);
 			}
@@ -2609,7 +2609,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_room_size,
 					reverb_room_size_min,
 					reverb_room_size_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_ReverbRoomSize->setValue(reverb_room_size);
 			}
@@ -2622,7 +2622,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_damping,
 					reverb_control_min,
 					reverb_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_ReverbDamp->setValue(reverb_damping);
 			}
@@ -2635,7 +2635,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_wet,
 					reverb_control_min,
 					reverb_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_ReverbWet->setValue(reverb_wet);
 			}
@@ -2648,7 +2648,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_dry,
 					reverb_control_min,
 					reverb_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_ReverbDry->setValue(reverb_dry);
 			}
@@ -2661,7 +2661,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_width,
 					reverb_width_min,
 					reverb_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_ReverbWidth->setValue(reverb_width);
 			}
@@ -2674,7 +2674,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_reverb_mode,
 					reverb_control_min,
 					reverb_mode_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_ReverbMode->setValue(reverb_mode);
 			}
@@ -2845,7 +2845,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_lfo_symmetry[0],
 					lfo_control_min,
 					lfo_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_LFOsymmetry_1->setValue(lfo_symmetry[0]);
 			}
@@ -2858,7 +2858,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_lfo_rate[0],
 					lfo_control_min,
 					lfo_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_LFOrate_1->setValue(lfo_rate[0]);
 			}
@@ -2871,7 +2871,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_lfo_waveform[0],
 					lfo_waveform_min,
 					lfo_waveform_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_LFOwaveform_1->setCurrentIndex(lfo_waveform[0]);
 			}
@@ -2884,7 +2884,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_lfo_symmetry[1],
 					lfo_control_min,
 					lfo_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_LFOsymmetry_2->setValue(lfo_symmetry[1]);
 			}
@@ -2897,7 +2897,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_lfo_rate[1],
 					lfo_control_min,
 					lfo_control_max,
-					4);
+					_DIAL_INCREMENTS);
 
 				ui->dial_LFOrate_2->setValue(lfo_rate[1]);
 			}
@@ -2910,7 +2910,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 					&prev_lfo_waveform[1],
 					lfo_waveform_min,
 					lfo_waveform_max,
-					1);
+					_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 				ui->comboBox_LFOwaveform_2->setCurrentIndex(lfo_waveform[1]);
 			}
@@ -3039,7 +3039,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_symmetry[2],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOsymmetry_3->setValue(lfo_symmetry[2]);
 				}
@@ -3052,7 +3052,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_rate[2],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOrate_3->setValue(lfo_rate[2]);
 				}
@@ -3065,7 +3065,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_waveform[2],
 						lfo_waveform_min,
 						lfo_waveform_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_LFOwaveform_3->setCurrentIndex(lfo_waveform[2]);
 				}
@@ -3078,7 +3078,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_symmetry[3],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOsymmetry_4->setValue(lfo_symmetry[3]);
 				}
@@ -3091,7 +3091,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_rate[3],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOrate_4->setValue(lfo_rate[3]);
 				}
@@ -3104,7 +3104,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_waveform[3],
 						lfo_waveform_min,
 						lfo_waveform_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_LFOwaveform_4->setCurrentIndex(lfo_waveform[3]);
 				}
@@ -3233,7 +3233,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_symmetry[4],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOsymmetry_5->setValue(lfo_symmetry[4]);
 				}
@@ -3246,7 +3246,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_rate[4],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOrate_5->setValue(lfo_rate[4]);
 				}
@@ -3259,7 +3259,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_waveform[4],
 						lfo_waveform_min,
 						lfo_waveform_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_LFOwaveform_5->setCurrentIndex(lfo_waveform[4]);
 				}
@@ -3272,7 +3272,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_symmetry[5],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOsymmetry_6->setValue(lfo_symmetry[5]);
 				}
@@ -3285,7 +3285,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_rate[5],
 						lfo_control_min,
 						lfo_control_max,
-						4);
+						_DIAL_INCREMENTS);
 
 					ui->dial_LFOrate_6->setValue(lfo_rate[5]);
 				}
@@ -3298,7 +3298,7 @@ void Dialog_AnalogSynth_1900x1000::handle_control_box_event(int evnt, uint16_t v
 						&prev_lfo_waveform[5],
 						lfo_waveform_min,
 						lfo_waveform_max,
-						1);
+						_COMBOBOX_INCREMENTS, _COMBOBOX_TIME_GUARD_MS);
 
 					ui->comboBox_LFOwaveform_6->setCurrentIndex(lfo_waveform[5]);
 				}
