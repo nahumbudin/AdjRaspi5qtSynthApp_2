@@ -117,7 +117,8 @@ void Dialog_Recording::on_start_recording_button_clicked()
 							startDir,
 							tr("MP3 Files (*.mp3);;All Files (*)"),
 							Qt::black,
-							CustomFileDialog::SaveMode);
+							CustomFileDialog::SaveMode,
+							"recording_save_mp3");
 
 	if (dialog.exec() == QDialog::Accepted)
 	{

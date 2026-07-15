@@ -187,7 +187,8 @@ void Dialog_TrainingParamsEditor::on_save_button_clicked()
 							startDir,
 							tr("ML Training Parameters (*.json *.JSON);;All Files (*)"),
 							Qt::black,
-							CustomFileDialog::SaveMode); // Set to Save mode
+							CustomFileDialog::SaveMode,
+							"training_save_params");
 
 	if (dialog.exec() == QDialog::Accepted)
 	{

@@ -80,11 +80,16 @@ class CustomFileDialog : public QDialog
 							  const QString &directory = QString(),
 							  const QString &filter = QString(),
 							  const QColor &backgroundColor = Qt::black,
-							  Mode mode = OpenMode); // Add mode parameter
+							  Mode mode = OpenMode, 
+							  const QString &contextId = QString()); 
 
 	QString selectedFile() const;
 	void selectFile(const QString &filename);
 	void setBackgroundColor(const QColor &color);
+
+	static QString last_selected_file(const QString &contextId);
+	static void set_last_selected_file(const QString &contextId, const QString &file);
+	static void clear_last_selected_file(const QString &contextId);
 
   private slots:
 	void onFileClicked(const QModelIndex &index);
@@ -102,6 +107,13 @@ class CustomFileDialog : public QDialog
 	void applyFilter(const QString &filterText);
 	void showEvent(QShowEvent *event) override;
 
+	static QMap<QString, QString> last_selected_files; // Per-context storage
+	
+	// Current dialog context
+	QString context_id;
+	
+	QString file_to_scroll_to; // Add this line
+
 	QFileSystemModel *model;
 	
 	// *treeView;
@@ -115,7 +127,7 @@ class CustomFileDialog : public QDialog
 	QString currentDirectory;
 	QString selectedFilePath;
 	QStringList filterList;
-	QString pendingFileSelection;
+	QString pending_file_selection;
 	Mode dialogMode; // Add this
 };
 

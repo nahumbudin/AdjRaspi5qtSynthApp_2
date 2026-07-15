@@ -593,7 +593,9 @@ void Dialog_MidiPlayer::on_open_file_clicked()
 							tr("Open MIDI File"),
 							startDir,
 							tr("Presets (*.mid *.MID);;All Files (*)"),
-							Qt::black); // Background color set here)
+							Qt::black,
+							CustomFileDialog::OpenMode,
+                           "midi_player"); 
 
 
 	// If we have a last file, select it and scroll to it

@@ -674,9 +674,11 @@ void InstrumentPannel::open_synth_patch_preset_dialog(int preset_index)
 							tr("Open Preset File"),
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
-							Qt::black); // Background color set here)
+							Qt::black,
+							CustomFileDialog::OpenMode,
+							"string_synth_load_presets");
 
-	// If we have a last file, select it and scroll to it
+	// If we have a last file, select it and scroll to it - do we still need it. CustomFileDialog selects last file.
 	if (!last_string_synth_preset_load_file[preset_index].isEmpty())
 	{
 		dialog.selectFile(last_string_synth_preset_load_file[preset_index]);

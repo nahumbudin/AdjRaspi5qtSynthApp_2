@@ -1,0 +1,56 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\AdjRaspi5qtSynthApp_2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\modSynth.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CDCA16F-2B48-4107-8815-D76C95869EB4}|AdjRaspi5qtSynthApp_2\\AdjRaspi5qtSynthApp_2.vgdbcmake|I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\ALSA\\alsaMidiSystemControl.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "alsaMidiSystemControl.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\ALSA\\alsaMidiSystemControl.cpp",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\ALSA\\alsaMidiSystemControl.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\ALSA\\alsaMidiSystemControl.cpp",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\ALSA\\alsaMidiSystemControl.cpp",
+              "ViewState": "AgIAADoDAAAAAAAAAAAIwEQDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-09T18:59:33.892Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "modSynth.cpp",
+              "DocumentMoniker": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\modSynth.cpp",
+              "RelativeDocumentMoniker": "..\\libAdjRaspi5Synth2\\modSynth.cpp",
+              "ToolTip": "I:\\Workspace\\RaspberryPi5\\VS_VGDB\\AdjRaspi5qtSynth_2\\libAdjRaspi5Synth2\\modSynth.cpp",
+              "RelativeToolTip": "..\\libAdjRaspi5Synth2\\modSynth.cpp",
+              "ViewState": "AgIAALUAAAAAAAAAAAAYwMkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-09T18:57:22.268Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

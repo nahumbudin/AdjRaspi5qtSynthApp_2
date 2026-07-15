@@ -38,3 +38,7 @@ ha
 regi
 instance
 close
+men
+sig
+lfo
+client

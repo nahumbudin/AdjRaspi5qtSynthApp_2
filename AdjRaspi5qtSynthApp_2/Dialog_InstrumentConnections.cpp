@@ -1,13 +1,17 @@
 /**
-* @file		Dialog_InstrumentConnections.cpp
-*	@author		Nahum Budin
-*	@date		5-Jul-2024
-*	@version	1.0
-*
-*	@brief		Used for selecting MIDI inputs and JackAudio outputs,
-*				as well as the active MIDI channels
-*
-*/
+ * @file		Dialog_InstrumentConnections.cpp
+ *	@author		Nahum Budin
+ *	@date		15-Jul-2026
+ *	@version	1.1
+ *					1. Expanding the number of MIDI and Jack clients to 20.
+ *
+ *	@brief		Used for selecting MIDI inputs and JackAudio outputs,
+ *				as well as the active MIDI channels
+ *
+ *	@History
+ *			version 1.0	5-Jul-2024	Initial version
+ *
+ */
 
 #include <time.h>
 
@@ -62,6 +66,14 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	midi_input_clients_select_pb[9] = ui->checkBox_source_10;
 	midi_input_clients_select_pb[10] = ui->checkBox_source_11;
 	midi_input_clients_select_pb[11] = ui->checkBox_source_12;
+	midi_input_clients_select_pb[12] = ui->checkBox_source_13;
+	midi_input_clients_select_pb[13] = ui->checkBox_source_14;
+	midi_input_clients_select_pb[14] = ui->checkBox_source_15;
+	midi_input_clients_select_pb[15] = ui->checkBox_source_16;
+	midi_input_clients_select_pb[16] = ui->checkBox_source_17;
+	midi_input_clients_select_pb[17] = ui->checkBox_source_18;
+	midi_input_clients_select_pb[18] = ui->checkBox_source_19;
+	midi_input_clients_select_pb[19] = ui->checkBox_source_20;
 	
 	jack_output_clients_select_pb[0] = ui->checkBox_JackOut_1;
 	jack_output_clients_select_pb[1] = ui->checkBox_JackOut_2;
@@ -75,23 +87,14 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	jack_output_clients_select_pb[9] = ui->checkBox_JackOut_10;
 	jack_output_clients_select_pb[10] = ui->checkBox_JackOut_11;
 	jack_output_clients_select_pb[11] = ui->checkBox_JackOut_12;
-	
-	active_midi_channel_pb[0] = ui->checkBox_ch_1;
-	active_midi_channel_pb[1] = ui->checkBox_ch_2;
-	active_midi_channel_pb[2] = ui->checkBox_ch_3;
-	active_midi_channel_pb[3] = ui->checkBox_ch_4;
-	active_midi_channel_pb[4] = ui->checkBox_ch_5;
-	active_midi_channel_pb[5] = ui->checkBox_ch_6;
-	active_midi_channel_pb[6] = ui->checkBox_ch_7;
-	active_midi_channel_pb[7] = ui->checkBox_ch_8;
-	active_midi_channel_pb[8] = ui->checkBox_ch_9;
-	active_midi_channel_pb[9] = ui->checkBox_ch_10;
-	active_midi_channel_pb[10] = ui->checkBox_ch_11;
-	active_midi_channel_pb[11] = ui->checkBox_ch_12;
-	active_midi_channel_pb[12] = ui->checkBox_ch_13;
-	active_midi_channel_pb[13] = ui->checkBox_ch_14;
-	active_midi_channel_pb[14] = ui->checkBox_ch_15;
-	active_midi_channel_pb[15] = ui->checkBox_ch_16;
+	jack_output_clients_select_pb[12] = ui->checkBox_JackOut_13;
+	jack_output_clients_select_pb[13] = ui->checkBox_JackOut_14;
+	jack_output_clients_select_pb[14] = ui->checkBox_JackOut_15;
+	jack_output_clients_select_pb[15] = ui->checkBox_JackOut_16;
+	jack_output_clients_select_pb[16] = ui->checkBox_JackOut_17;
+	jack_output_clients_select_pb[17] = ui->checkBox_JackOut_18;
+	jack_output_clients_select_pb[18] = ui->checkBox_JackOut_19;
+	jack_output_clients_select_pb[19] = ui->checkBox_JackOut_20;
 
 	// Connect signal to slot with Qt::QueuedConnection for thread-safety
 	// This ensures the slot runs in the GUI thread
@@ -143,50 +146,99 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	ui->checkBox_source_5->setLedStyle(true);
 	ui->checkBox_source_5->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_5->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_5->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_source_5->setFrameColor(_CONTROLS_COLOR_WHITE);
 
 	ui->checkBox_source_6->setReadOnly(false);
 	ui->checkBox_source_6->setLedStyle(true);
 	ui->checkBox_source_6->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_6->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_6->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_source_6->setFrameColor(_CONTROLS_COLOR_YELLOW);
 
 	ui->checkBox_source_7->setReadOnly(false);
 	ui->checkBox_source_7->setLedStyle(true);
 	ui->checkBox_source_7->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_7->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_7->setFrameColor(_CONTROLS_COLOR_WHITE);
+	ui->checkBox_source_7->setFrameColor(_CONTROLS_COLOR_RED);
 
 	ui->checkBox_source_8->setReadOnly(false);
 	ui->checkBox_source_8->setLedStyle(true);
 	ui->checkBox_source_8->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_8->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_8->setFrameColor(_CONTROLS_COLOR_YELLOW);
+	ui->checkBox_source_8->setFrameColor(_CONTROLS_COLOR_BLACK);
 
 	ui->checkBox_source_9->setReadOnly(false);
 	ui->checkBox_source_9->setLedStyle(true);
 	ui->checkBox_source_9->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_9->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_9->setFrameColor(_CONTROLS_COLOR_RED);
+	ui->checkBox_source_9->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
 
 	ui->checkBox_source_10->setReadOnly(false);
 	ui->checkBox_source_10->setLedStyle(true);
 	ui->checkBox_source_10->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_10->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_10->setFrameColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_10->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
 
 	ui->checkBox_source_11->setReadOnly(false);
 	ui->checkBox_source_11->setLedStyle(true);
 	ui->checkBox_source_11->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_11->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_11->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_source_11->setFrameColor(_CONTROLS_COLOR_GRAY);
 
 	ui->checkBox_source_12->setReadOnly(false);
 	ui->checkBox_source_12->setLedStyle(true);
 	ui->checkBox_source_12->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_source_12->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_source_12->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_source_12->setFrameColor(_CONTROLS_COLOR_PURPLE);
 
+	ui->checkBox_source_13->setReadOnly(false);
+	ui->checkBox_source_13->setLedStyle(true);
+	ui->checkBox_source_13->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_13->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_13->setFrameColor(_CONTROLS_COLOR_BLUE);
+
+	ui->checkBox_source_14->setReadOnly(false);
+	ui->checkBox_source_14->setLedStyle(true);
+	ui->checkBox_source_14->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_14->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_14->setFrameColor(_CONTROLS_COLOR_GREEN);
+
+	ui->checkBox_source_15->setReadOnly(false);
+	ui->checkBox_source_15->setLedStyle(true);
+	ui->checkBox_source_15->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_15->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_15->setFrameColor(_CONTROLS_COLOR_WHITE);
+
+	ui->checkBox_source_16->setReadOnly(false);
+	ui->checkBox_source_16->setLedStyle(true);
+	ui->checkBox_source_16->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_16->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_16->setFrameColor(_CONTROLS_COLOR_YELLOW);
+
+	ui->checkBox_source_17->setReadOnly(false);
+	ui->checkBox_source_17->setLedStyle(true);
+	ui->checkBox_source_17->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_17->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_17->setFrameColor(_CONTROLS_COLOR_RED);
+
+	ui->checkBox_source_18->setReadOnly(false);
+	ui->checkBox_source_18->setLedStyle(true);
+	ui->checkBox_source_18->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_18->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_18->setFrameColor(_CONTROLS_COLOR_BLACK);
+
+	ui->checkBox_source_19->setReadOnly(false);
+	ui->checkBox_source_19->setLedStyle(true);
+	ui->checkBox_source_19->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_19->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_19->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+
+	ui->checkBox_source_20->setReadOnly(false);
+	ui->checkBox_source_20->setLedStyle(true);
+	ui->checkBox_source_20->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_source_20->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_source_20->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	
+	
 	ui->checkBox_JackOut_1->setReadOnly(false);
 	ui->checkBox_JackOut_1->setLedStyle(true);
 	ui->checkBox_JackOut_1->setLedOnColor(_CONTROLS_COLOR_GREEN);
@@ -215,145 +267,98 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 	ui->checkBox_JackOut_5->setLedStyle(true);
 	ui->checkBox_JackOut_5->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_5->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_5->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_5->setFrameColor(_CONTROLS_COLOR_WHITE);
 
 	ui->checkBox_JackOut_6->setReadOnly(false);
 	ui->checkBox_JackOut_6->setLedStyle(true);
 	ui->checkBox_JackOut_6->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_6->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_6->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_6->setFrameColor(_CONTROLS_COLOR_YELLOW);
 
 	ui->checkBox_JackOut_7->setReadOnly(false);
 	ui->checkBox_JackOut_7->setLedStyle(true);
 	ui->checkBox_JackOut_7->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_7->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_7->setFrameColor(_CONTROLS_COLOR_WHITE);
+	ui->checkBox_JackOut_7->setFrameColor(_CONTROLS_COLOR_RED);
 
 	ui->checkBox_JackOut_8->setReadOnly(false);
 	ui->checkBox_JackOut_8->setLedStyle(true);
 	ui->checkBox_JackOut_8->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_8->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_8->setFrameColor(_CONTROLS_COLOR_YELLOW);
+	ui->checkBox_JackOut_8->setFrameColor(_CONTROLS_COLOR_BLACK);
 
 	ui->checkBox_JackOut_9->setReadOnly(false);
 	ui->checkBox_JackOut_9->setLedStyle(true);
 	ui->checkBox_JackOut_9->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_9->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_9->setFrameColor(_CONTROLS_COLOR_RED);
+	ui->checkBox_JackOut_9->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
 
 	ui->checkBox_JackOut_10->setReadOnly(false);
 	ui->checkBox_JackOut_10->setLedStyle(true);
 	ui->checkBox_JackOut_10->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_10->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_10->setFrameColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_10->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
 
 	ui->checkBox_JackOut_11->setReadOnly(false);
 	ui->checkBox_JackOut_11->setLedStyle(true);
 	ui->checkBox_JackOut_11->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_11->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_11->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_11->setFrameColor(_CONTROLS_COLOR_GRAY);
 
 	ui->checkBox_JackOut_12->setReadOnly(false);
 	ui->checkBox_JackOut_12->setLedStyle(true);
 	ui->checkBox_JackOut_12->setLedOnColor(_CONTROLS_COLOR_GREEN);
 	ui->checkBox_JackOut_12->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_JackOut_12->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_12->setFrameColor(_CONTROLS_COLOR_PURPLE);
 
-	ui->checkBox_ch_1->setReadOnly(false);
-	ui->checkBox_ch_1->setLedStyle(true);
-	ui->checkBox_ch_1->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_1->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_1->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_13->setReadOnly(false);
+	ui->checkBox_JackOut_13->setLedStyle(true);
+	ui->checkBox_JackOut_13->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_13->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_13->setFrameColor(_CONTROLS_COLOR_BLUE);
 
-	ui->checkBox_ch_2->setReadOnly(false);
-	ui->checkBox_ch_2->setLedStyle(true);
-	ui->checkBox_ch_2->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_2->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_2->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_14->setReadOnly(false);
+	ui->checkBox_JackOut_14->setLedStyle(true);
+	ui->checkBox_JackOut_14->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_14->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_14->setFrameColor(_CONTROLS_COLOR_GREEN);
 
-	ui->checkBox_ch_3->setReadOnly(false);
-	ui->checkBox_ch_3->setLedStyle(true);
-	ui->checkBox_ch_3->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_3->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_3->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_15->setReadOnly(false);
+	ui->checkBox_JackOut_15->setLedStyle(true);
+	ui->checkBox_JackOut_15->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_15->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_15->setFrameColor(_CONTROLS_COLOR_WHITE);
 
-	ui->checkBox_ch_4->setReadOnly(false);
-	ui->checkBox_ch_4->setLedStyle(true);
-	ui->checkBox_ch_4->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_4->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_4->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_16->setReadOnly(false);
+	ui->checkBox_JackOut_16->setLedStyle(true);
+	ui->checkBox_JackOut_16->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_16->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_16->setFrameColor(_CONTROLS_COLOR_YELLOW);
 
-	ui->checkBox_ch_5->setReadOnly(false);
-	ui->checkBox_ch_5->setLedStyle(true);
-	ui->checkBox_ch_5->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_5->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_5->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_17->setReadOnly(false);
+	ui->checkBox_JackOut_17->setLedStyle(true);
+	ui->checkBox_JackOut_17->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_17->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_17->setFrameColor(_CONTROLS_COLOR_RED);
 
-	ui->checkBox_ch_6->setReadOnly(false);
-	ui->checkBox_ch_6->setLedStyle(true);
-	ui->checkBox_ch_6->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_6->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_6->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_18->setReadOnly(false);
+	ui->checkBox_JackOut_18->setLedStyle(true);
+	ui->checkBox_JackOut_18->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_18->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_18->setFrameColor(_CONTROLS_COLOR_BLACK);
 
-	ui->checkBox_ch_7->setReadOnly(false);
-	ui->checkBox_ch_7->setLedStyle(true);
-	ui->checkBox_ch_7->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_7->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_7->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_19->setReadOnly(false);
+	ui->checkBox_JackOut_19->setLedStyle(true);
+	ui->checkBox_JackOut_19->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_19->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_19->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
 
-	ui->checkBox_ch_8->setReadOnly(false);
-	ui->checkBox_ch_8->setLedStyle(true);
-	ui->checkBox_ch_8->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_8->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_8->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_9->setReadOnly(false);
-	ui->checkBox_ch_9->setLedStyle(true);
-	ui->checkBox_ch_9->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_9->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_9->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_10->setReadOnly(false);
-	ui->checkBox_ch_10->setLedStyle(true);
-	ui->checkBox_ch_10->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_10->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_10->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_11->setReadOnly(false);
-	ui->checkBox_ch_11->setLedStyle(true);
-	ui->checkBox_ch_11->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_11->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_11->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_12->setReadOnly(false);
-	ui->checkBox_ch_12->setLedStyle(true);
-	ui->checkBox_ch_12->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_12->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_12->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_13->setReadOnly(false);
-	ui->checkBox_ch_13->setLedStyle(true);
-	ui->checkBox_ch_13->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_13->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_13->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_14->setReadOnly(false);
-	ui->checkBox_ch_14->setLedStyle(true);
-	ui->checkBox_ch_14->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_14->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_14->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_15->setReadOnly(false);
-	ui->checkBox_ch_15->setLedStyle(true);
-	ui->checkBox_ch_15->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_15->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_15->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
-
-	ui->checkBox_ch_16->setReadOnly(false);
-	ui->checkBox_ch_16->setLedStyle(true);
-	ui->checkBox_ch_16->setLedOnColor(_CONTROLS_COLOR_GREEN);
-	ui->checkBox_ch_16->setLedOffColor(_CONTROLS_COLOR_BLACK);
-	ui->checkBox_ch_16->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	ui->checkBox_JackOut_20->setReadOnly(false);
+	ui->checkBox_JackOut_20->setLedStyle(true);
+	ui->checkBox_JackOut_20->setLedOnColor(_CONTROLS_COLOR_GREEN);
+	ui->checkBox_JackOut_20->setLedOffColor(_CONTROLS_COLOR_BLACK);
+	ui->checkBox_JackOut_20->setFrameColor(_CONTROLS_COLOR_DARK_GRAY);
+	
 
 	update();
 	
@@ -436,6 +441,47 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 		SIGNAL(toggled(bool)),
 		this,
 		SLOT(on_select_midi_in_toggled_12(bool)));
+
+	connect(ui->checkBox_source_13,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_13(bool)));
+
+	connect(ui->checkBox_source_14,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_14(bool)));
+
+	connect(ui->checkBox_source_15,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_15(bool)));
+
+	connect(ui->checkBox_source_16,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_16(bool)));
+
+	connect(ui->checkBox_source_17,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_17(bool)));
+
+	connect(ui->checkBox_source_18,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_18(bool)));
+
+	connect(ui->checkBox_source_19,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_19(bool)));
+
+	connect(ui->checkBox_source_20,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_midi_in_toggled_20(bool)));
+	
 	
 	connect(ui->checkBox_JackOut_1,
 		SIGNAL(toggled(bool)),
@@ -496,92 +542,47 @@ Dialog_InstrumentConnections::Dialog_InstrumentConnections(
 		SIGNAL(toggled(bool)),
 		this,
 		SLOT(on_select_jack_out_toggled_12(bool)));
+
+	connect(ui->checkBox_JackOut_13,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_13(bool)));
 	
-	connect(ui->checkBox_ch_1,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_1(bool)));
-	
-	connect(ui->checkBox_ch_2,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_2(bool)));
-	
-	connect(ui->checkBox_ch_3,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_3(bool)));
-	
-	connect(ui->checkBox_ch_4,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_4(bool)));
-	
-	connect(ui->checkBox_ch_1,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_1(bool)));
-	
-	connect(ui->checkBox_ch_5,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_5(bool)));
-	
-	connect(ui->checkBox_ch_6,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_6(bool)));
-	
-	connect(ui->checkBox_ch_7,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_7(bool)));
-	
-	connect(ui->checkBox_ch_8,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_8(bool)));
-	
-	connect(ui->checkBox_ch_9,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_9(bool)));
-	
-	connect(ui->checkBox_ch_10,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_10(bool)));
-	
-	connect(ui->checkBox_ch_11,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_11(bool)));
-	
-	connect(ui->checkBox_ch_12,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_12(bool)));
-	
-	connect(ui->checkBox_ch_13,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_13(bool)));
-	
-	connect(ui->checkBox_ch_14,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_14(bool)));
-	
-	connect(ui->checkBox_ch_15,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_15(bool)));
-	
-	connect(ui->checkBox_ch_16,
-		SIGNAL(toggled(bool)),
-		this,
-		SLOT(on_select_active_midi_channel_16(bool)));
-	
+	connect(ui->checkBox_JackOut_14,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_14(bool)));
+
+	connect(ui->checkBox_JackOut_15,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_15(bool)));
+
+	connect(ui->checkBox_JackOut_16,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_16(bool)));
+
+	connect(ui->checkBox_JackOut_17,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_17(bool)));
+
+	connect(ui->checkBox_JackOut_18,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_18(bool)));
+
+	connect(ui->checkBox_JackOut_19,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_19(bool)));
+
+	connect(ui->checkBox_JackOut_20,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(on_select_jack_out_toggled_20(bool)));
+
 	MainWindow::get_instance()->register_active_dialog(this);
 }
 
@@ -627,8 +628,8 @@ void Dialog_InstrumentConnections::showEvent(QShowEvent *event)
 
 void Dialog_InstrumentConnections::handle_control_box_event(int evnt, uint16_t val)
 {
-	// Currently ignore.
-	
+	// Currently ignore. Update this function to handle control box events if needed and 6->10 
+
 	return;
 
 	int pb_num;
@@ -1227,7 +1228,7 @@ void Dialog_InstrumentConnections::update()
 	{
 		names_it = midi_inputs_names.begin();
 		
-		for (int i = 0; i < num_of_alsa_input_clients && i < 12; i++)
+		for (int i = 0; i < num_of_alsa_input_clients && i < 20; i++)
 		{
 			midi_input_clients_select_pb[i]->setEnabled(true);
 			midi_input_clients_select_pb[i]->setText(QString::fromStdString(names_it->c_str()));
@@ -1241,7 +1242,7 @@ void Dialog_InstrumentConnections::update()
 			advance(names_it, 1);
 		}
 		
-		for (int i = num_of_alsa_input_clients; i < 12; i++)
+		for (int i = num_of_alsa_input_clients; i < 20; i++)
 		{
 			midi_input_clients_select_pb[i]->setEnabled(false);
 			midi_input_clients_select_pb[i]->setText("");
@@ -1290,72 +1291,76 @@ void Dialog_InstrumentConnections::update()
 	
 	if (num_of_jack_input_clients > 0)
 	{		
-		for (cln = 0; cln < num_of_jack_input_clients && input_ports_count < 6; cln++)
+		for (cln = 0; cln < num_of_jack_input_clients && input_ports_count < 10; cln++)
 		{
 			cln_name = mod_synth_get_jack_input_client_name(cln);
-			
-			num_of_ports = mod_synth_get_num_of_jack_input_client_ports(cln);
-			
-			if (num_of_ports > 0)
+
+			if ((cln_name.find("PipeWire") == std::string::npos) &&
+				(cln_name.find("PulseAudio") == std::string::npos))
 			{
-				for (port = 0; port < num_of_ports && input_ports_count < 6; port++)
+				num_of_ports = mod_synth_get_num_of_jack_input_client_ports(cln);
+
+				if (num_of_ports > 0)
 				{
-					port_name = mod_synth_get_jack_input_client_port_name(cln, port);
-					
-					if ((port_name != "") && (port_name.find("midi_playback") == std::string::npos))
+					for (port = 0; port < num_of_ports && input_ports_count < 10; port++)
 					{
-						jack_output_client_names[input_ports_count] = cln_name;
-						jack_output_client_port_names[input_ports_count] = port_name;
-						input_name = cln_name + ":" + port_name;
+						port_name = mod_synth_get_jack_input_client_port_name(cln, port);
+
+						if ((port_name != "") && (port_name.find("midi_playback") == std::string::npos))
+						{
+							jack_output_client_names[input_ports_count] = cln_name;
+							jack_output_client_port_names[input_ports_count] = port_name;
+							input_name = cln_name + ":" + port_name;
+							/* Instrument Right output connections */
+							jack_output_clients_select_pb[input_ports_count]->setEnabled(true);
+							jack_output_clients_select_pb[input_ports_count]->setText(QString::fromStdString(input_name.c_str()));
+							jack_connections_names[input_ports_count] = input_name.c_str();
+							/* Uncheck all - connected will be checked below*/
+							jack_output_clients_select_pb[input_ports_count]->blockSignals(true);
+							jack_output_clients_select_pb[input_ports_count]->setChecked(false);
+							jack_output_clients_select_pb[input_ports_count]->blockSignals(false);
+							/* Instrument Left output connections */
+							jack_output_clients_select_pb[input_ports_count + 10]->setEnabled(true);
+							jack_output_clients_select_pb[input_ports_count + 10]->setText(QString::fromStdString(input_name.c_str()));
+							jack_connections_names[input_ports_count + 10] = input_name.c_str();
+							/* Uncheck all - connected will be checked below*/
+							jack_output_clients_select_pb[input_ports_count + 10]->blockSignals(true);
+							jack_output_clients_select_pb[input_ports_count + 10]->setChecked(false);
+							jack_output_clients_select_pb[input_ports_count + 10]->blockSignals(false);
+
+							input_ports_count++;
+						}
+					}
+
+					for (port = input_ports_count; port < 10; port++)
+					{
 						/* Instrument Right output connections */
-						jack_output_clients_select_pb[input_ports_count]->setEnabled(true);
-						jack_output_clients_select_pb[input_ports_count]->setText(QString::fromStdString(input_name.c_str()));
-						jack_connections_names[input_ports_count] = input_name.c_str();
-						/* Uncheck all - connected will be checked below*/
+						jack_output_clients_select_pb[input_ports_count]->setEnabled(false);
+						jack_output_clients_select_pb[input_ports_count]->setText("");
+						/* Uncheck all */
 						jack_output_clients_select_pb[input_ports_count]->blockSignals(true);
 						jack_output_clients_select_pb[input_ports_count]->setChecked(false);
 						jack_output_clients_select_pb[input_ports_count]->blockSignals(false);
 						/* Instrument Left output connections */
-						jack_output_clients_select_pb[input_ports_count + 6]->setEnabled(true);
-						jack_output_clients_select_pb[input_ports_count + 6]->setText(QString::fromStdString(input_name.c_str()));
-						jack_connections_names[input_ports_count +6 ] = input_name.c_str();
-						/* Uncheck all - connected will be checked below*/
-						jack_output_clients_select_pb[input_ports_count + 6]->blockSignals(true);
-						jack_output_clients_select_pb[input_ports_count + 6]->setChecked(false);
-						jack_output_clients_select_pb[input_ports_count + 6]->blockSignals(false);
-						
-						input_ports_count++;
+						jack_output_clients_select_pb[input_ports_count + 10]->setEnabled(false);
+						jack_output_clients_select_pb[input_ports_count + 10]->setText("");
+						/* Uncheck all */
+						jack_output_clients_select_pb[input_ports_count + 10]->blockSignals(true);
+						jack_output_clients_select_pb[input_ports_count + 10]->setChecked(false);
+						jack_output_clients_select_pb[input_ports_count + 10]->blockSignals(false);
 					}
 				}
-				
-				for (port = input_ports_count; port < 6; port++)
-				{
-					/* Instrument Right output connections */
-					jack_output_clients_select_pb[input_ports_count]->setEnabled(false);
-					jack_output_clients_select_pb[input_ports_count]->setText("");
-					/* Uncheck all */
-					jack_output_clients_select_pb[input_ports_count]->blockSignals(true);
-					jack_output_clients_select_pb[input_ports_count]->setChecked(false);
-					jack_output_clients_select_pb[input_ports_count]->blockSignals(false);
-					/* Instrument Left output connections */
-					jack_output_clients_select_pb[input_ports_count + 6]->setEnabled(false);
-					jack_output_clients_select_pb[input_ports_count + 6]->setText("");
-					/* Uncheck all */
-					jack_output_clients_select_pb[input_ports_count + 6]->blockSignals(true);
-					jack_output_clients_select_pb[input_ports_count + 6]->setChecked(false);
-					jack_output_clients_select_pb[input_ports_count + 6]->blockSignals(false);
-				}
-			}			
+			}
 		}		
 	}
 	
-	for (int i = input_ports_count; i < 6; i++)
+	for (int i = input_ports_count; i < 10; i++)
 	{
 		jack_output_clients_select_pb[i]->setEnabled(false);
 		jack_output_clients_select_pb[i]->setText("");
 		
-		jack_output_clients_select_pb[i+6]->setEnabled(false);
-		jack_output_clients_select_pb[i+6]->setText("");
+		jack_output_clients_select_pb[i+10]->setEnabled(false);
+		jack_output_clients_select_pb[i+10]->setText("");
 	}
 	
 	/* Connected to? */
@@ -1402,7 +1407,7 @@ void Dialog_InstrumentConnections::update()
 		
 		for (int j = 0; j < num_of_connected_jack_input_clients_left; j++)
 		{
-			for (int c = 0; c < 6; c++)
+			for (int c = 0; c < 10; c++)
 			{
 				if (connections_it->c_str() == jack_connections_names[c])
 				{
@@ -1422,7 +1427,7 @@ void Dialog_InstrumentConnections::update()
 		
 		for (int j = 0; j < num_of_connected_jack_input_clients_right; j++)
 		{
-			for (int c = 6; c < 12; c++)
+			for (int c = 10; c < 20; c++)
 			{
 				if (connections_it->c_str() == jack_connections_names[c])
 				{
@@ -1436,43 +1441,7 @@ void Dialog_InstrumentConnections::update()
 		} 
 	}
 	
-	active_midi_channels = mod_synth_get_instrument_active_midi_channels(instrument_name.toStdString());
 	
-	for (int i = 0; i < 16; i++)
-	{
-		if ((active_midi_channels & (1 << i)) != 0)
-		{
-			active_midi_channel_pb[i]->setCheckState(Qt::Checked);
-		}
-		else
-		{
-			active_midi_channel_pb[i]->setCheckState(Qt::Unchecked);
-		}
-	}
-	
-	
-}
-
-uint16_t Dialog_InstrumentConnections::build_channels_mask(uint16_t mask, int chan, bool en)
-{
-	uint16_t new_mask;
-	
-	if ((chan < 0) && (chan > 16))
-	{
-		return mask;
-	}
-
-	
-	if (en)
-	{
-		new_mask = mask | (1 << chan); 
-	}
-	else
-	{
-		new_mask = (mask & ~(1 << chan)) & 0xffff;
-	}
-	
-	return new_mask;
 }
 
 void Dialog_InstrumentConnections::on_dialog_ok()
@@ -1622,6 +1591,70 @@ void Dialog_InstrumentConnections::on_select_midi_in_toggled_12(bool sel)
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_13(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 12, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_14(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 13, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_15(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 14, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_16(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 15, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_17(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 16, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_18(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 17, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_19(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 18, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_midi_in_toggled_20(bool sel)
+{
+	mod_synth_connect_midi_clients(instrument_name.toStdString(), 19, 0, sel);
+
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
 
 void Dialog_InstrumentConnections::on_select_jack_out_toggled_1(bool sel)
 {
@@ -1704,6 +1737,58 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_6(bool sel)
 void Dialog_InstrumentConnections::on_select_jack_out_toggled_7(bool sel)
 {
 	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[6]),
+		replace_white_spaces(jack_output_client_port_names[6]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+	
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_8(bool sel)
+{
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[7]),
+		replace_white_spaces(jack_output_client_port_names[7]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+	
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_9(bool sel)
+{
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[8]),
+		replace_white_spaces(jack_output_client_port_names[8]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+	
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_10(bool sel)
+{
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[9]),
+		replace_white_spaces(jack_output_client_port_names[9]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+	
+	/* Set focus back on the Dialog */
+	this->setFocus(Qt::ActiveWindowFocusReason);
+}
+
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_11(bool sel)
+{
+	mod_synth_connect_jack_connection(
 		replace_white_spaces(jack_output_client_names[0]),
 		replace_white_spaces(jack_output_client_port_names[0]),
 		instrument_name.toStdString(),
@@ -1714,7 +1799,7 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_7(bool sel)
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_jack_out_toggled_8(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_12(bool sel)
 {
 	mod_synth_connect_jack_connection(
 		replace_white_spaces(jack_output_client_names[1]),
@@ -1727,7 +1812,7 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_8(bool sel)
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_jack_out_toggled_9(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_13(bool sel)
 {
 	mod_synth_connect_jack_connection(
 		replace_white_spaces(jack_output_client_names[2]),
@@ -1735,12 +1820,12 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_9(bool sel)
 		instrument_name.toStdString(),
 		"right",
 		sel);
-	
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_jack_out_toggled_10(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_14(bool sel)
 {
 	mod_synth_connect_jack_connection(
 		replace_white_spaces(jack_output_client_names[3]),
@@ -1748,12 +1833,12 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_10(bool sel)
 		instrument_name.toStdString(),
 		"right",
 		sel);
-	
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_jack_out_toggled_11(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_15(bool sel)
 {
 	mod_synth_connect_jack_connection(
 		replace_white_spaces(jack_output_client_names[4]),
@@ -1761,12 +1846,12 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_11(bool sel)
 		instrument_name.toStdString(),
 		"right",
 		sel);
-	
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_jack_out_toggled_12(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_16(bool sel)
 {
 	mod_synth_connect_jack_connection(
 		replace_white_spaces(jack_output_client_names[5]),
@@ -1774,151 +1859,59 @@ void Dialog_InstrumentConnections::on_select_jack_out_toggled_12(bool sel)
 		instrument_name.toStdString(),
 		"right",
 		sel);
-	
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_active_midi_channel_1(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_17(bool sel)
 {
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-												  build_channels_mask(active_midi_channels, 0, sel));
-	
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[6]),
+		replace_white_spaces(jack_output_client_port_names[6]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_active_midi_channel_2(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_18(bool sel)
 {
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 1, sel));
-	
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[7]),
+		replace_white_spaces(jack_output_client_port_names[7]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_active_midi_channel_3(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_19(bool sel)
 {
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 2, sel));
-	
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[8]),
+		replace_white_spaces(jack_output_client_port_names[8]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
+
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }
 
-void Dialog_InstrumentConnections::on_select_active_midi_channel_4(bool sel)
+void Dialog_InstrumentConnections::on_select_jack_out_toggled_20(bool sel)
 {
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 3, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
+	mod_synth_connect_jack_connection(
+		replace_white_spaces(jack_output_client_names[9]),
+		replace_white_spaces(jack_output_client_port_names[9]),
+		instrument_name.toStdString(),
+		"right",
+		sel);
 
-void Dialog_InstrumentConnections::on_select_active_midi_channel_5(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 4, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_6(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 5, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_7(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 6, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_8(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 7, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_9(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 8, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_10(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 9, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_11(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 10, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_12(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 11, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_13(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 12, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_14(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 13, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_15(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 14, sel));
-	
-	/* Set focus back on the Dialog */
-	this->setFocus(Qt::ActiveWindowFocusReason);
-}
-
-void Dialog_InstrumentConnections::on_select_active_midi_channel_16(bool sel)
-{
-	mod_synth_set_instrument_active_midi_channels(instrument_name.toStdString(),
-		build_channels_mask(active_midi_channels, 15, sel));
-	
 	/* Set focus back on the Dialog */
 	this->setFocus(Qt::ActiveWindowFocusReason);
 }

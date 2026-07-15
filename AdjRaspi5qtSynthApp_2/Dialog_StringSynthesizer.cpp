@@ -1050,7 +1050,9 @@ void Dialog_StringSynthesizer::on_presets_open_pushbutton_clicked()
 							tr("Open Preset File"),
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
-							Qt::black); // Background color set here)
+							Qt::black,
+							CustomFileDialog::OpenMode,
+							"string_synth_load_presets");
 
 	// If we have a last file, select it and scroll to it
 	if (!last_string_synth_preset_load_file.isEmpty())
@@ -1119,7 +1121,8 @@ void Dialog_StringSynthesizer::on_presets_save_pushbutton_clicked()
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
 							Qt::black,
-							CustomFileDialog::SaveMode); // Set to Save mode
+							CustomFileDialog::SaveMode,
+							"string_synth_save_presets"); 
 
 	if (dialog.exec() == QDialog::Accepted)
 	{

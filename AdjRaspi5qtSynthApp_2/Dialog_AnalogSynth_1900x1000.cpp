@@ -749,11 +749,11 @@ void Dialog_AnalogSynth_1900x1000::set_analog_synth_general_signals_connections(
 			SIGNAL(valueChanged(int)),
 			this,
 			SLOT(on_selected_adsr_release_slider_changed(int)));
-	
+
 	connect(ui->comboBox_LFOwaveform,
 			SIGNAL(currentIndexChanged(int)),
 			this,
-			SLOT(on_lfo_waveform_changed(int)));
+			SLOT(on_selected_lfo_waveform_combo_changed(int)));
 
 	connect(ui->dial_LFOrate,
 			SIGNAL(valueChanged(int)),

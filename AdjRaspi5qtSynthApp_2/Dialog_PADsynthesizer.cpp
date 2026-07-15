@@ -1209,8 +1209,9 @@ void Dialog_PADsynthesizer::on_presets_open_pushbutton_clicked()
 							tr("Open Preset File"),
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
-							Qt::black); // Background color set here)
-
+							Qt::black,
+							CustomFileDialog::OpenMode,
+							"pad_synth_load_presets");
 	// If we have a last file, select it and scroll to it
 	if (!last_pad_synth_preset_load_file.isEmpty())
 	{
@@ -1275,7 +1276,8 @@ void Dialog_PADsynthesizer::on_presets_save_pushbutton_clicked()
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
 							Qt::black,
-							CustomFileDialog::SaveMode); // Set to Save mode
+							CustomFileDialog::SaveMode,
+							"pad_synth_save_presets"); // Set to Save mode
 
 	if (dialog.exec() == QDialog::Accepted)
 	{

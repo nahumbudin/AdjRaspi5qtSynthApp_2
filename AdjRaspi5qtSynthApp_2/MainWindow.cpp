@@ -797,6 +797,36 @@ void MainWindow::create_menus()
 	controls_menu->addAction(open_recording_act);
 	controls_menu->addAction(open_http_server_act);
 
+	// Create Settings menu
+	settings_menu = ui->menubar->addMenu(tr("&Settings"));
+
+	// Create LFOs Sync submenu with mutually exclusive options
+	QMenu *lfos_sync_menu = settings_menu->addMenu(tr("Set LFOs Sync"));
+
+	// Create action group for mutual exclusivity
+	lfos_sync_action_group = new QActionGroup(this);
+	lfos_sync_action_group->setExclusive(true);
+
+	// Create the three options
+	lfos_sync_none_act = new QAction(tr("None"), this);
+	lfos_sync_none_act->setCheckable(true);
+	lfos_sync_none_act->setChecked(true); // Default selection
+	lfos_sync_action_group->addAction(lfos_sync_none_act);
+	lfos_sync_menu->addAction(lfos_sync_none_act);
+
+	lfos_sync_retrig_act = new QAction(tr("Retrig"), this);
+	lfos_sync_retrig_act->setCheckable(true);
+	lfos_sync_action_group->addAction(lfos_sync_retrig_act);
+	lfos_sync_menu->addAction(lfos_sync_retrig_act);
+
+	lfos_sync_retrig1st_act = new QAction(tr("Retrig 1st Note On"), this);
+	lfos_sync_retrig1st_act->setCheckable(true);
+	lfos_sync_action_group->addAction(lfos_sync_retrig1st_act);
+	lfos_sync_menu->addAction(lfos_sync_retrig1st_act);
+
+	// Connect to slot
+	connect(lfos_sync_action_group, &QActionGroup::triggered, this, &MainWindow::on_lfos_sync_changed);
+
 	view_menu = ui->menubar->addMenu(tr("&View"));
 	view_menu->addAction(auto_arrange_act);
 
@@ -2174,6 +2204,28 @@ void MainWindow::on_clear_widgets_selection_list()
 	else
 	{
 		return;
+	}
+}
+
+void MainWindow::on_lfos_sync_changed(QAction *action)
+{
+	if (action == lfos_sync_none_act)
+	{
+		// Handle None logic
+		//qDebug() << "LFO Sync None selected";
+		mod_synth_set_lfos_sync_on_note_on_mode(_LFO_NOTE_ON_SYNC_MODE_NONE);
+	}
+	else if (action == lfos_sync_retrig_act)
+	{
+		// Handle Retrig logic
+		//qDebug() << "LFO Sync Retrig selected";
+		mod_synth_set_lfos_sync_on_note_on_mode(_LFO_NOTE_ON_SYNC_MODE_RETRIGGER);
+	}
+	else if (action == lfos_sync_retrig1st_act)
+	{
+		// Handle Option 3 logic
+		//qDebug() << "LFO Sync Retrig 1st selected";
+		mod_synth_set_lfos_sync_on_note_on_mode(_LFO_NOTE_ON_SYNC_MODE_RETRIGGER_FIRST);
 	}
 }
 

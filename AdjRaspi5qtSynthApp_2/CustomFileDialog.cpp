@@ -23,13 +23,16 @@
 #include <QDebug>
 #include <QApplication>
 
+QMap<QString, QString> CustomFileDialog::last_selected_files;
+
 CustomFileDialog::CustomFileDialog(QWidget *parent,
 								   const QString &caption,
 								   const QString &directory,
 								   const QString &filter,
 								   const QColor &backgroundColor,
-								   Mode mode)
-	: QDialog(parent), dialogMode(mode)
+								   Mode mode,
+								   const QString &contextId)
+	: QDialog(parent), dialogMode(mode), context_id(contextId)
 {
 	setWindowTitle(caption.isEmpty() ? (mode == SaveMode ? tr("Save File") : tr("Open File")) : caption);
 	resize(900, 600);
@@ -201,6 +204,42 @@ CustomFileDialog::CustomFileDialog(QWidget *parent,
 	{
 		connect(fileNameEdit, &QLineEdit::textChanged, this, &CustomFileDialog::onFileNameEditChanged);
 	}
+
+	// Auto-restore last file for this context if available
+	if (!contextId.isEmpty() && last_selected_files.contains(contextId))
+	{
+		QString last_file = last_selected_files.value(contextId);
+		if (QFile::exists(last_file))
+		{
+			// Update directory to the last file's location
+			QFileInfo fileInfo(last_file);
+			currentDirectory = fileInfo.absolutePath();
+
+			// Update the path edit to show the correct directory
+			pathEdit->setText(currentDirectory);
+
+			// Use the existing pending file selection mechanism
+			pending_file_selection = last_file;
+		}
+	}
+}
+
+QString CustomFileDialog::last_selected_file(const QString &contextId)
+{
+	return last_selected_files.value(contextId);
+}
+
+void CustomFileDialog::set_last_selected_file(const QString &contextId, const QString &file)
+{
+	if (!contextId.isEmpty())
+	{
+		last_selected_files[contextId] = file;
+	}
+}
+
+void CustomFileDialog::clear_last_selected_file(const QString &contextId)
+{
+	last_selected_files.remove(contextId);
 }
 
 void CustomFileDialog::onFileNameEditChanged(const QString &text)
@@ -220,6 +259,13 @@ void CustomFileDialog::onOkClicked()
 		if (!fileName.isEmpty())
 		{
 			selectedFilePath = currentDirectory + "/" + fileName;
+
+			// Save for this context
+			if (!context_id.isEmpty())
+			{
+				last_selected_files[context_id] = selectedFilePath;
+			}
+			
 			accept();
 		}
 	}
@@ -228,6 +274,12 @@ void CustomFileDialog::onOkClicked()
 		// In Open mode, file must exist
 		if (!selectedFilePath.isEmpty() && QFile::exists(selectedFilePath))
 		{
+			// Save for this context
+			if (!context_id.isEmpty())
+			{
+				last_selected_files[context_id] = selectedFilePath;
+			}
+			
 			accept();
 		}
 	}
@@ -244,7 +296,7 @@ void CustomFileDialog::selectFile(const QString &filename)
 	{
 		selectedFilePath = filename;
 		fileNameEdit->setText(QFileInfo(filename).fileName());
-		pendingFileSelection = filename;
+		pending_file_selection = filename;
 
 		// Set the directory immediately
 		QString dir = QFileInfo(filename).absolutePath();
@@ -341,6 +393,13 @@ void CustomFileDialog::onFileDoubleClicked(const QModelIndex &index)
 	if (info.isFile())
 	{
 		selectedFilePath = info.absoluteFilePath();
+
+		// Save for this context
+		if (!context_id.isEmpty())
+		{
+			last_selected_files[context_id] = selectedFilePath;
+		}
+		
 		accept();
 	}
 	else if (info.isDir())
@@ -422,31 +481,42 @@ void CustomFileDialog::showEvent(QShowEvent *event)
 	});
 
 	// Handle pending file selection
-	if (!pendingFileSelection.isEmpty())
+	if (!pending_file_selection.isEmpty())
 	{
-		QString dir = QFileInfo(pendingFileSelection).absolutePath();
-		listView->setRootIndex(model->index(dir));
+		QString dir = QFileInfo(pending_file_selection).absolutePath();
+		QModelIndex dirIndex = model->index(dir);
+		listView->setRootIndex(dirIndex);
 
 		QPointer<CustomFileDialog> weakThis(this);
-		QString filePath = pendingFileSelection;
+		QString filePath = pending_file_selection;
 
-		QTimer::singleShot(100, this, [weakThis, filePath]() {
+		QTimer::singleShot(800, this, [weakThis, filePath, dirIndex]() {
 			if (!weakThis)
 			{
 				return;
 			}
 
-			QModelIndex index = weakThis->model->index(filePath);
-			if (index.isValid())
+			// Find the file within the directory's children
+			QString fileName = QFileInfo(filePath).fileName();
+			int rowCount = weakThis->model->rowCount(dirIndex);
+
+			//qDebug() << "Looking for:" << fileName << "in" << rowCount << "rows";
+
+			for (int i = 0; i < rowCount; ++i)
 			{
-				weakThis->listView->selectionModel()->setCurrentIndex(
-					index, QItemSelectionModel::ClearAndSelect);
-				weakThis->listView->scrollTo(index, QAbstractItemView::PositionAtCenter);
-				weakThis->fileNameEdit->setText(QFileInfo(filePath).fileName());
-				weakThis->selectedFilePath = filePath;
+				QModelIndex childIndex = weakThis->model->index(i, 0, dirIndex);
+				if (weakThis->model->fileName(childIndex) == fileName)
+				{
+					weakThis->listView->selectionModel()->setCurrentIndex(
+						childIndex, QItemSelectionModel::ClearAndSelect);
+					weakThis->listView->scrollTo(childIndex, QAbstractItemView::PositionAtCenter);
+					weakThis->fileNameEdit->setText(fileName);
+					weakThis->selectedFilePath = filePath;
+					break;
+				}
 			}
 
-			weakThis->pendingFileSelection.clear();
+			weakThis->pending_file_selection.clear();
 		});
 	}
 }

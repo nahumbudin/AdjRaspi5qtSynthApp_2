@@ -150,6 +150,8 @@ public slots:
 	void on_ml_widgets_selection_toggled();
 	void on_open_widgets_selction_edit_dialog();
 	void on_clear_widgets_selection_list();
+
+	void on_lfos_sync_changed(QAction *action);
 	
 
 	void on_load_synth_patch_preset_1();
@@ -239,6 +241,13 @@ private:
 	QAction *open_master_volume_act;
 	QAction *open_recording_act;
 	QAction *open_http_server_act;
+
+	// In the private section with other menu-related members
+	QMenu *settings_menu;
+	QActionGroup *lfos_sync_action_group;
+	QAction *lfos_sync_none_act;
+	QAction *lfos_sync_retrig_act;
+	QAction *lfos_sync_retrig1st_act;
 
 	QActionGroup *patch_files_group;
 	QAction *save_patch_file_act;

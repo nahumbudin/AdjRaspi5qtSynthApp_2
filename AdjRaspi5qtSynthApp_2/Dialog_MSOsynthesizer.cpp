@@ -634,7 +634,9 @@ void Dialog_MSOsynthesizer::on_presets_open_pushbutton_clicked()
 							tr("Open Preset File"),
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
-							Qt::black); // Background color set here)
+							Qt::black,
+							CustomFileDialog::OpenMode,
+							"mso_synth_load_presets");
 
 	// If we have a last file, select it and scroll to it
 	if (!last_mso_synth_preset_load_file.isEmpty())
@@ -704,7 +706,8 @@ void Dialog_MSOsynthesizer::on_presets_save_pushbutton_clicked()
 							startDir,
 							tr("Presets (*.xml *.XML);;All Files (*)"),
 							Qt::black,
-							CustomFileDialog::SaveMode); // Set to Save mode
+							CustomFileDialog::SaveMode,
+							"mso_synth_save_presets"); // Set to Save mode
 
 	if (dialog.exec() == QDialog::Accepted)
 	{

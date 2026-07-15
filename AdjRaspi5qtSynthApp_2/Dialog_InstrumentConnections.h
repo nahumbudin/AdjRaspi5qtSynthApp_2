@@ -77,6 +77,14 @@ public slots:
 	void on_select_midi_in_toggled_10(bool sel);
 	void on_select_midi_in_toggled_11(bool sel);
 	void on_select_midi_in_toggled_12(bool sel);
+	void on_select_midi_in_toggled_13(bool sel);
+	void on_select_midi_in_toggled_14(bool sel);
+	void on_select_midi_in_toggled_15(bool sel);
+	void on_select_midi_in_toggled_16(bool sel);
+	void on_select_midi_in_toggled_17(bool sel);
+	void on_select_midi_in_toggled_18(bool sel);
+	void on_select_midi_in_toggled_19(bool sel);
+	void on_select_midi_in_toggled_20(bool sel);
 	
 	void on_select_jack_out_toggled_1(bool sel);
 	void on_select_jack_out_toggled_2(bool sel);
@@ -90,39 +98,28 @@ public slots:
 	void on_select_jack_out_toggled_10(bool sel);
 	void on_select_jack_out_toggled_11(bool sel);
 	void on_select_jack_out_toggled_12(bool sel);
+	void on_select_jack_out_toggled_13(bool sel);
+	void on_select_jack_out_toggled_14(bool sel);
+	void on_select_jack_out_toggled_15(bool sel);
+	void on_select_jack_out_toggled_16(bool sel);
+	void on_select_jack_out_toggled_17(bool sel);
+	void on_select_jack_out_toggled_18(bool sel);
+	void on_select_jack_out_toggled_19(bool sel);
+	void on_select_jack_out_toggled_20(bool sel);
 	
-	void on_select_active_midi_channel_1(bool sel);
-	void on_select_active_midi_channel_2(bool sel);
-	void on_select_active_midi_channel_3(bool sel);
-	void on_select_active_midi_channel_4(bool sel);
-	void on_select_active_midi_channel_5(bool sel);
-	void on_select_active_midi_channel_6(bool sel);
-	void on_select_active_midi_channel_7(bool sel);
-	void on_select_active_midi_channel_8(bool sel);
-	void on_select_active_midi_channel_9(bool sel);
-	void on_select_active_midi_channel_10(bool sel);
-	void on_select_active_midi_channel_11(bool sel);
-	void on_select_active_midi_channel_12(bool sel);
-	void on_select_active_midi_channel_13(bool sel);
-	void on_select_active_midi_channel_14(bool sel);
-	void on_select_active_midi_channel_15(bool sel);
-	void on_select_active_midi_channel_16(bool sel);
 	
 private:
-	
-	uint16_t build_channels_mask(uint16_t mask, int chan, bool en);
 	
 	Ui::Dialog_InstrumentConnections *ui;
 	
 	QString instrument_name;
 	int client_number;
 	
-	QCheckBox *midi_input_clients_select_pb[12];
-	QCheckBox *jack_output_clients_select_pb[12];
-	QCheckBox *active_midi_channel_pb[16];
+	QCheckBox *midi_input_clients_select_pb[20];
+	QCheckBox *jack_output_clients_select_pb[20];
 	
-	std::string jack_output_client_names[6];
-	std::string jack_output_client_port_names[6];
+	std::string jack_output_client_names[10];
+	std::string jack_output_client_port_names[10];
 	
 	static Dialog_InstrumentConnections *dialog_InstrumentConnectionsInstance;
 	
@@ -130,6 +127,6 @@ private:
 	
 	uint16_t active_midi_channels;
 	
-	std::string alsa_connections_names[12];
-	std::string jack_connections_names[12];		
+	std::string alsa_connections_names[20];
+	std::string jack_connections_names[20];		
 };
