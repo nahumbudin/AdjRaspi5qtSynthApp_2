@@ -17,6 +17,9 @@
    <string notr="true">background-color: rgb(5,5,5);</string>
   </property>
   <widget class="CustomTabWidget" name="tabWidget_AnalogSynth">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -13651,6 +13654,9 @@ color: rgb(255, 255, 255);</string>
       <number>1</number>
      </property>
      <widget class="QLabel" name="label_FreeVerb3">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -13758,6 +13764,9 @@ color: rgb(0,0,0);</string>
      </property>
     </widget>
     <widget class="CustomFrame" name="frame_Equalizer">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>820</x>

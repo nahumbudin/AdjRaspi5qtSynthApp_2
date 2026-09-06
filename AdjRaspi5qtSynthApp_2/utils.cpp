@@ -270,3 +270,36 @@ std::string encode_base64(const std::vector<uint8_t> &input)
 
 	return out;
 }
+
+// Used for extracting Settings names:
+// /x/y/mso/file_name.xml -> mso: file_name
+std::optional<std::string> format_settings_name_string(std::string_view path)
+{
+	// 1. Locate the position of the extension dot and the last slash
+	size_t dot_pos = path.rfind('.');
+	size_t last_slash = path.rfind('/');
+
+	// Find the second-to-last slash by searching backwards from just before the last slash
+	size_t second_last_slash = (last_slash != std::string_view::npos && last_slash > 0)
+								   ? path.rfind('/', last_slash - 1)
+								   : std::string_view::npos;
+
+	// 2. Structural safety check: Ensure all necessary delimiters exist in the path
+	if (dot_pos == std::string_view::npos ||
+		last_slash == std::string_view::npos ||
+		second_last_slash == std::string_view::npos ||
+		last_slash >= dot_pos ||
+		second_last_slash >= last_slash)
+	{
+
+		return std::nullopt; // Return null state if the path format is unparseable
+	}
+
+	// 3. Slice out the directory 'y' and the 'file_name' safely using substrings
+	std::string_view folder = path.substr(second_last_slash + 1, last_slash - second_last_slash - 1);
+	std::string_view file_name = path.substr(last_slash + 1, dot_pos - last_slash - 1);
+
+	// 4. Build and return the consolidated layout string
+	return std::string(folder) + ": " + std::string(file_name);
+}
+

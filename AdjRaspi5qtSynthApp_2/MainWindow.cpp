@@ -35,6 +35,9 @@
 #include <QGuiApplication>
 
 #include <stdio.h>
+#include <string_view>
+
+#include "utils.h"
 
 #include "MainWindow.h"
 
@@ -42,6 +45,8 @@
 #include "ui_ModulePannel.h"
 
 #include "InstrumentPannel.h"
+
+#include "CustomFileDialog.h"
 
 #include "Dialog_AdjFluidSynth.h"
 #include "Dialog_MasterVolume.h"
@@ -66,12 +71,15 @@ Dialog_TrainingParamsEditor *MainWindow::training_params_editor_dialog = nullptr
 
 std::array<int, 8> MainWindow::param_info;
 
-SavePatchFileThread *save_patch_file_thread;
-LoadPatchFileThread *load_patch_file_thread;
+SavePatchFileThread *save_patch_file_thread = nullptr;
+LoadPatchFileThread *load_patch_file_thread = nullptr;
+SavePresetFileThread *save_preset_file_thread = nullptr;
+LoadPresetFileThread *load_preset_file_thread = nullptr;
 
 //HttpBridgeQt *MainWindow::http_bridge = nullptr;
 
 QString patch_file_name;
+QString preset_file_name;
 
 /** Callback wrapper */
 
@@ -174,6 +182,26 @@ void LoadPatchFileThread::run()
 	}	
 	
 	emit loadPatchFileDone(result);
+}
+
+void SavePresetFileThread::run()
+{
+	int res;
+
+	QString result = QString("Preset File Saved");
+	res = mod_synth_save_adj_synth_preset_file(preset_file_name.toStdString());
+
+	emit savePresetFileDone(result);
+}
+
+void LoadPresetFileThread::run()
+{
+	int res;
+
+	QString result = QString("Preset File Loaded");
+	res = mod_synth_open_adj_synth_preset_file(preset_file_name.toStdString());
+
+	emit loadPresetFileDone(result);
 }
 
 MainWindow *MainWindow::mwind = NULL;
@@ -565,7 +593,15 @@ void MainWindow::copy_sketch(int src, int dest)
 		if (msgBox.exec() == QMessageBox::Yes) 
 		{
 			mod_synth_copy_sketch(_SKETCH_PROGRAM_1 + src, _SKETCH_PROGRAM_1 + dest);
-			//Dialog_AnalogSynth_1900x1000::get_instance()->update_all(); // No update. Sketch only copied not changed yet!
+			if (mod_synth_get_active_sketch() == (_SKETCH_PROGRAM_1 + dest))
+			{
+				// Update the UI if the copied sketch is the active one
+				mod_synth_trigger_analog_selective_update(ANALOG_UPDATE_OSC1 | ANALOG_UPDATE_OSC2 |
+														  ANALOG_UPDATE_NOISE | ANALOG_UPDATE_KPS |
+														  ANALOG_UPDATE_MSO | ANALOG_UPDATE_PAD |
+														  ANALOG_UPDATE_FILTERS | ANALOG_UPDATE_DISTORTION |
+														  ANALOG_UPDATE_AMPS | ANALOG_UPDATE_ADSRS | ANALOG_UPDATE_LFOS);
+			}
 		}
 		else 
 		{
@@ -691,6 +727,14 @@ void MainWindow::create_actions()
 	load_patch_file_act->setStatusTip(tr("Loads AdjHeart Patch File"));
 	connect(load_patch_file_act, SIGNAL(triggered()), this, SLOT(on_load_patch_file()));
 	
+	save_active_sketch = new QAction(tr("&Save Active Sketch"), this);
+	save_active_sketch->setStatusTip(tr("Saves the Active Sketch"));
+	connect(save_active_sketch, SIGNAL(triggered()), this, SLOT(on_save_active_sketch()));
+	
+	load_active_sketch = new QAction(tr("&Load Active Sketch"), this);
+	load_active_sketch->setStatusTip(tr("Loads the Active Sketch"));
+	connect(load_active_sketch, SIGNAL(triggered()), this, SLOT(on_load_active_sketch()));
+	
 	copy_sketch1_to_sketch2_act = new QAction(tr("&Copy Sketch 1 to Sketch 2"), this);
 	copy_sketch1_to_sketch2_act->setStatusTip(tr("Copy Sketch 1 to Sketch 2"));
 	connect(copy_sketch1_to_sketch2_act, SIGNAL(triggered()), this, SLOT(on_copy_sketch1_to_sketch2()));
@@ -730,7 +774,7 @@ void MainWindow::create_actions()
 	auto_arrange_act = new QAction(tr("&Auto Arrange"), this);
 	auto_arrange_act->setStatusTip(tr("Enable/Disable automatic window arrangement"));
 	auto_arrange_act->setCheckable(true); // Make it checkable
-	auto_arrange_act->setChecked(false);  // Initial state
+	auto_arrange_act->setChecked(true);  // Initial state
 	connect(auto_arrange_act, SIGNAL(toggled(bool)), this, SLOT(on_auto_arrange_toggled(bool)));
 
 	toggle_widgets_selection_act = new QAction(tr("&Widgets Selection"), this);
@@ -774,6 +818,13 @@ void MainWindow::create_actions()
 		load_preset_actions[i]->setStatusTip(QString("Load Synth Patch %1").arg(preset_name));
 		connect(load_preset_actions[i], SIGNAL(triggered()), this, slot_names[i]);
 	}
+
+	midi_mapping_mode_mapping_act = new QAction(tr("Mapping"), this);
+	midi_mapping_mode_mapping_act->setCheckable(true);
+	midi_mapping_mode_mapping_act->setChecked(true); // Default selection
+
+	midi_mapping_mode_sketch_act = new QAction(tr("Sketch"), this);
+	midi_mapping_mode_sketch_act->setCheckable(true);
 	
 	//add_modules_group = new QActionGroup(this);
 	//add_modules_group->addAction(add_fluid_synth_act);
@@ -824,8 +875,21 @@ void MainWindow::create_menus()
 	lfos_sync_action_group->addAction(lfos_sync_retrig1st_act);
 	lfos_sync_menu->addAction(lfos_sync_retrig1st_act);
 
+	QMenu *midi_mapping_mode_menu = settings_menu->addMenu(tr("MIDI Mapping Mode"));
+
+	midi_mapping_mode_action_group = new QActionGroup(this);
+	midi_mapping_mode_action_group->setExclusive(true);
+
+	midi_mapping_mode_action_group->addAction(midi_mapping_mode_mapping_act);
+	midi_mapping_mode_menu->addAction(midi_mapping_mode_mapping_act);
+
+	midi_mapping_mode_action_group->addAction(midi_mapping_mode_sketch_act);
+	midi_mapping_mode_menu->addAction(midi_mapping_mode_sketch_act);
+
 	// Connect to slot
 	connect(lfos_sync_action_group, &QActionGroup::triggered, this, &MainWindow::on_lfos_sync_changed);
+	connect(midi_mapping_mode_action_group, &QActionGroup::triggered, this, 
+			&MainWindow::on_midi_mapping_mode_changed);
 
 	view_menu = ui->menubar->addMenu(tr("&View"));
 	view_menu->addAction(auto_arrange_act);
@@ -869,10 +933,15 @@ void MainWindow::create_menus()
 	sketches_menu = ui->menubar->addMenu(tr("&Sketches"));
 	sketches_menu->addAction(copy_sketch1_to_sketch2_act);
 	sketches_menu->addAction(copy_sketch1_to_sketch3_act);
+	add_module_menu->addSeparator();
 	sketches_menu->addAction(copy_sketch2_to_sketch1_act);
 	sketches_menu->addAction(copy_sketch2_to_sketch3_act);
+	add_module_menu->addSeparator();
 	sketches_menu->addAction(copy_sketch3_to_sketch1_act);
-	sketches_menu->addAction(copy_sketch3_to_sketch2_act);	
+	sketches_menu->addAction(copy_sketch3_to_sketch2_act);
+	add_module_menu->addSeparator();
+	sketches_menu->addAction(save_active_sketch);
+	sketches_menu->addAction(load_active_sketch);
 	
 	sketches_menu->setDisabled(true);
 
@@ -920,6 +989,32 @@ InstrumentPannel *MainWindow::add_instrument_pannel(QString instrument_name_stri
 														instrument_name_string,
 														&wrapper_close_instrument_pannel_id,
 														instrument_id);
+
+	if (instrument_name_string.toStdString().find(_INSTRUMENT_NAME_ANALOG_SYNTH_PRESET_STR_KEY) != std::string::npos)
+	{
+		// A preset Instrument Get the preset number from the instrument name.
+		// Find the position of the last dash '-'
+		size_t last_dash = instrument_name_string.toStdString().rfind('-');
+		if (last_dash != std::string::npos)
+		{
+			// Extract the substring following the last dash using string_view (zero-copy)
+			std::string_view num_str = std::string_view(instrument_name_string.toStdString()).substr(last_dash + 1);
+
+			// Convert the substring to an integer
+			int preset_number = std::stoi(std::string(num_str)) - 1; // 1... -> 0...
+
+			if (preset_number >= 0 && preset_number < _MAX_NUM_OF_ANALOG_PRESET_INSTRUMENTS)
+			{
+				std::string preset_file_name = mod_synth_get_preset_last_file_path(preset_number);
+				auto preset_name = format_settings_name_string(preset_file_name);
+				if (preset_name)
+				{
+					std::string preset_name_str = *preset_name;
+					new_pannel->set_preset_text(QString::fromStdString(preset_name_str));
+				}
+			}
+		}
+	}
 
 	if (new_pannel == nullptr)
 	{
@@ -1979,6 +2074,150 @@ void MainWindow::on_copy_sketch3_to_sketch2()
 	copy_sketch(2, 1);
 }
 
+void MainWindow::on_save_active_sketch()
+{
+	QString startDir = last_sketch_preset_save_file.isEmpty() ? QString(_SKETCHES_PRESETS_FILES_DEFAULT_DIR) : last_sketch_preset_save_file;
+
+	// Use CustomFileDialog in Save mode
+	CustomFileDialog dialog(this,
+							tr("Save as Preset File"),
+							startDir,
+							tr("Presets (*.xml *.XML);;All Files (*)"),
+							Qt::black,
+							CustomFileDialog::SaveMode,
+							"sketch_synth_save_presets");
+
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		preset_file_name = dialog.selectedFile();
+
+		if (!preset_file_name.isEmpty())
+		{
+			// Ensure .xml extension
+			if (!preset_file_name.endsWith(".xml", Qt::CaseInsensitive))
+			{
+				preset_file_name += ".xml";
+			}
+
+			// Check if file exists and ask for confirmation
+			if (QFile::exists(preset_file_name))
+			{
+				QMessageBox msgBox;
+				msgBox.setIcon(QMessageBox::Warning);
+				msgBox.setWindowTitle("Confirm Overwrite");
+				msgBox.setText(QString("File '%1' already exists.")
+								   .arg(QFileInfo(preset_file_name).fileName()));
+				msgBox.setInformativeText("Do you want to overwrite it?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+				msgBox.setDefaultButton(QMessageBox::Cancel);
+
+				if (msgBox.exec() != QMessageBox::Yes)
+				{
+					return;
+				}
+			}
+
+			// Remember the directory and file for next time
+			last_sketch_preset_directory = QFileInfo(preset_file_name).absolutePath();
+			last_sketch_preset_save_file = preset_file_name;
+
+			// Display saving message
+			std::string file_name = std::string("Now Saving: ");
+			file_name += std::filesystem::path(preset_file_name.toStdString()).stem().string();
+			// ui->textEdit_HammondPresetText->setText(QString::fromStdString(file_name));
+
+			// Check if thread is still running
+			if (save_preset_file_thread != nullptr &&
+				!save_preset_file_thread->isFinished())
+			{
+				return;
+			}
+
+			// Start the save thread
+			save_preset_file_thread = new SavePresetFileThread();
+
+			connect(save_preset_file_thread,
+					&SavePresetFileThread::finished,
+					this,
+					[=]() {
+						save_preset_file_thread->deleteLater();
+						save_preset_file_thread = nullptr; // Reset to nullptr after deletion
+					});
+			connect(save_preset_file_thread,
+					&SavePresetFileThread::savePresetFileDone,
+					this,
+					&MainWindow::on_preset_file_saved);
+			// Reset pointer when thread is destroyed
+			connect(save_preset_file_thread,
+					&QObject::destroyed,
+					[]() { save_preset_file_thread = nullptr; });
+
+			save_preset_file_thread->start();
+		}
+	}
+}
+
+void MainWindow::on_load_active_sketch()
+{
+	QString startDir = last_sketch_preset_load_file.isEmpty() ? QString(_SKETCHES_PRESETS_FILES_DEFAULT_DIR) : last_sketch_preset_load_file;
+
+	CustomFileDialog dialog(this,
+							tr("Open Preset File"),
+							startDir,
+							tr("Presets (*.xml *.XML);;All Files (*)"),
+							Qt::black,
+							CustomFileDialog::OpenMode,
+							"sketch_synth_load_presets");
+
+	// If we have a last file, select it and scroll to it
+	if (!last_sketch_preset_load_file.isEmpty())
+	{
+		dialog.selectFile(last_sketch_preset_load_file);
+	}
+
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		preset_file_name = dialog.selectedFile();
+
+		if (!preset_file_name.isEmpty())
+		{
+			// Remember the directory and file for next time
+			last_sketch_preset_directory = QFileInfo(preset_file_name).absolutePath();
+			last_sketch_preset_load_file = preset_file_name;
+
+			std::string file_name;
+			// file_name = std::string("Now Loading: ");
+			file_name = std::filesystem::path(preset_file_name.toStdString()).stem();
+
+			// Check if thread is still running - prevent creating duplicate threads
+			if (load_preset_file_thread != nullptr &&
+				!load_preset_file_thread->isFinished())
+			{
+				// Thread still running, ignore this request or wait
+				return;
+			}
+
+			load_preset_file_thread = new LoadPresetFileThread();
+			connect(load_preset_file_thread,
+					&LoadPresetFileThread::finished,
+					this,
+					[=]() {
+						load_preset_file_thread->deleteLater();
+						load_preset_file_thread = nullptr; // Reset to nullptr after deletion
+					});
+			connect(load_preset_file_thread,
+					&LoadPresetFileThread::loadPresetFileDone,
+					this,
+					&MainWindow::on_preset_file_loaded);
+			// Reset pointer when thread is destroyed
+			connect(load_preset_file_thread,
+					&QObject::destroyed,
+					[]() { load_preset_file_thread = nullptr; });
+			load_preset_file_thread->start();
+		}
+	}
+}
+
 void MainWindow::on_open_master_volume_dialog()
 {
 	static Dialog_MasterVolume *master_volume_dialog = nullptr;
@@ -2229,6 +2468,20 @@ void MainWindow::on_lfos_sync_changed(QAction *action)
 	}
 }
 
+void MainWindow::on_midi_mapping_mode_changed(QAction *action)
+{
+	if (action == midi_mapping_mode_mapping_act)
+	{
+		// Handle Mapping mode
+		mod_synth_set_midi_mapping_mode(_MIDI_MAPPING_MODE_MAPPING);
+	}
+	else if (action == midi_mapping_mode_sketch_act)
+	{
+		// Handle Sketch mode
+		mod_synth_set_midi_mapping_mode(_MIDI_MAPPING_MODE_SKETCH);
+	}
+}
+
 void MainWindow::set_auto_arrange(bool enabled)
 {
 	auto_arrange_enabled = enabled;
@@ -2397,6 +2650,19 @@ void MainWindow::arrange_instrument_panels()
 	update_layout_geometry();
 }
 
+void MainWindow::on_preset_file_loaded(const QString &s)
+{
+	mod_synth_trigger_analog_selective_update(ANALOG_UPDATE_OSC1 | ANALOG_UPDATE_OSC2 |
+											  ANALOG_UPDATE_NOISE | ANALOG_UPDATE_KPS |
+											  ANALOG_UPDATE_MSO | ANALOG_UPDATE_PAD |
+											  ANALOG_UPDATE_FILTERS | ANALOG_UPDATE_DISTORTION |
+											  ANALOG_UPDATE_AMPS | ANALOG_UPDATE_ADSRS | ANALOG_UPDATE_LFOS);
+}
+
+void MainWindow::on_preset_file_saved(const QString &s)
+{
+	
+}
 
 
 	

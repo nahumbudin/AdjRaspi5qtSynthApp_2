@@ -152,6 +152,19 @@ int main(int argc, char *argv[])
 		return 1; // Critical - no audio means no synth
 	}
 
+	result = mod_synth_init_fluid_synth();
+	if (result != 0)
+	{
+		fprintf(stderr, "Error: mod_synth_init_fluid_synth() failed with code %d\n", result);
+		// Cleanup before exit
+		if (pFile != NULL)
+		{
+			fflush(pFile);
+			fclose(pFile);
+		}
+		return 1; // Critical - cannot continue without FluidSynth
+	}
+
 	result = mod_synth_init_bt_services();
 	if (result != 0)
 	{

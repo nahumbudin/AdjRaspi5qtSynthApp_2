@@ -26,6 +26,7 @@
 #define _STRING_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/StringSynth"
 #define _PAD_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/PADsynth"
 #define _MSO_SYNTH_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/MSOsynth"
+#define _SKETCHES_PRESETS_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Presets/Sketches"
 
 #define _RECORDINGS_MP3_FILES_DEFAULT_DIR "/home/pi/AdjRaspiSynth5qtApp_2/Recordings"
 

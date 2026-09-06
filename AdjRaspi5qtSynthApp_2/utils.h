@@ -11,6 +11,8 @@
 #pragma once
 
 #include <string>
+#include <string_view>
+#include <optional>
 
 #include "Defs.h"
 
@@ -35,3 +37,7 @@ std::vector<uint8_t> decode_base64(const std::string &input);
 
 // Converts raw binary bytes into a Base64 encoded string
 std::string encode_base64(const std::vector<uint8_t> &input);
+
+// Used for extracting Settings names:
+// /x/y/mso/file_name.xml -> mso: file_name
+std::optional<std::string> format_settings_name_string(std::string_view path);

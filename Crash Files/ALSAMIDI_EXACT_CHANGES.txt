@@ -1,0 +1,362 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║     EXACT CHANGES NEEDED IN alsaMidiSequencerClient.cpp                   ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+🔴 CRITICAL BUGS FOUND IN THE ORIGINAL CODE
+═══════════════════════════════════════════════════════════════════════════
+
+BUG #1: Constructor - Race Condition (Line 24-28)
+──────────────────────────────────────────────────
+❌ ORIGINAL (BUGGY):
+   AlsaMidiSequencerInputClient::AlsaMidiSequencerInputClient(std::string name, SafeQueue<snd_seq_event_t*> *rxq)
+   {
+	   client_name = name;
+	   start_midi_in_seq_client_thread();      // ← Thread starts here
+	   alsa_seq_client_rx_queue = rxq;         // ← Queue set AFTER thread starts!
+   }
+
+PROBLEM: The thread could start and try to access alsa_seq_client_rx_queue
+		 BEFORE it's been set, leading to null pointer or garbage access!
+
+✅ FIXED:
+   AlsaMidiSequencerInputClient::AlsaMidiSequencerInputClient(std::string name, SafeQueue<snd_seq_event_t*> *rxq)
+   {
+	   client_name = name;
+	   alsa_seq_client_rx_queue = rxq;         // ← Set queue FIRST
+	   start_midi_in_seq_client_thread();      // ← Then start thread
+   }
+
+
+BUG #2: Destructor - Missing pthread_join() (Line 31-35)
+─────────────────────────────────────────────────────────
+❌ ORIGINAL (BUGGY - THIS IS THE MAIN CRASH CAUSE):
+   AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+   {
+	   close_seq();
+	   stop_midi_in_seq_client_thread();  // ← Just sets flag, doesn't wait!
+   }                                      // ← Destructor returns immediately!
+										 // Thread STILL RUNNING!
+
+PROBLEM: The destructor returns while the thread is still running and using
+		 alsa_seq_client_rx_queue. When the caller destroys the queue,
+		 the thread accesses freed memory → CRASH at 0x5555!
+
+✅ FIXED:
+   AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+   {
+	   // STEP 1: Signal thread to stop
+	   midi_in_client_thread_is_running = false;
+
+	   // STEP 2: Wake thread if it's waiting in queue
+	   if (alsa_seq_client_rx_queue) {
+		   alsa_seq_client_rx_queue->shutdown();
+	   }
+
+	   // STEP 3: CRITICAL - Wait for thread to exit
+	   if (midi_client_in_thread) {
+		   pthread_join(midi_client_in_thread, nullptr);  // ← WAIT HERE!
+		   midi_client_in_thread = 0;
+	   }
+
+	   // STEP 4: Now safe to close sequencer
+	   close_seq();
+   }
+
+
+BUG #3: Thread Function - No shutdown check (Line 119-125)
+───────────────────────────────────────────────────────────
+❌ ORIGINAL (UNSAFE):
+   if (ret > 0 && ev != NULL)
+   {
+	   qev = new snd_seq_event_t();
+	   memcpy(qev, ev, sizeof(snd_seq_event_t));
+	   alsa_seq_client_rx_queue->enqueue(qev);  // ← No check!
+	   snd_seq_free_event(ev);
+   }
+
+PROBLEM: If shutdown happens between the memcpy and enqueue,
+		 the enqueue could happen on a shutting-down queue.
+
+✅ FIXED:
+   if (ret > 0 && ev != NULL)
+   {
+	   qev = new snd_seq_event_t();
+	   memcpy(qev, ev, sizeof(snd_seq_event_t));
+
+	   // Check if still running before enqueue
+	   if (midi_in_client_thread_is_running && alsa_seq_client_rx_queue) {
+		   alsa_seq_client_rx_queue->enqueue(qev);
+	   } else {
+		   // Shutting down, clean up
+		   delete qev;
+	   }
+
+	   snd_seq_free_event(ev);
+   }
+
+
+═══════════════════════════════════════════════════════════════════════════
+						COMPLETE CHANGE SUMMARY
+═══════════════════════════════════════════════════════════════════════════
+
+CHANGE #1: Constructor (Lines 24-28)
+────────────────────────────────────
+BEFORE:
+  client_name = name;
+  start_midi_in_seq_client_thread();
+  alsa_seq_client_rx_queue = rxq;
+
+AFTER:
+  client_name = name;
+  alsa_seq_client_rx_queue = rxq;          // ← MOVED BEFORE thread start
+  start_midi_in_seq_client_thread();
+
+
+CHANGE #2: Destructor (Lines 31-35) - MOST CRITICAL
+────────────────────────────────────────────────────
+BEFORE (ENTIRE DESTRUCTOR):
+  AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+  {
+	  close_seq();
+	  stop_midi_in_seq_client_thread();
+  }
+
+AFTER (ENTIRE DESTRUCTOR):
+  AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+  {
+	  // STEP 1: Signal thread to stop
+	  midi_in_client_thread_is_running = false;
+
+	  // STEP 2: Wake thread if waiting
+	  if (alsa_seq_client_rx_queue) {
+		  alsa_seq_client_rx_queue->shutdown();
+	  }
+
+	  // STEP 3: Wait for thread to exit
+	  if (midi_client_in_thread) {
+		  pthread_join(midi_client_in_thread, nullptr);
+		  midi_client_in_thread = 0;
+	  }
+
+	  // STEP 4: Close sequencer
+	  close_seq();
+  }
+
+
+CHANGE #3: close_seq() (Lines 89-94)
+─────────────────────────────────────
+ADD one line:
+
+  void AlsaMidiSequencerInputClient::close_seq()
+  {
+	  if (midi_in_seq)
+	  {
+		  snd_seq_close(midi_in_seq);
+		  midi_in_seq = nullptr;  // ← ADD THIS LINE
+	  }
+  }
+
+
+CHANGE #4: Thread function enqueue (Lines 119-125)
+───────────────────────────────────────────────────
+BEFORE:
+  if (ret > 0 && ev != NULL)
+  {
+	  qev = new snd_seq_event_t();
+	  memcpy(qev, ev, sizeof(snd_seq_event_t));
+	  alsa_seq_client_rx_queue->enqueue(qev);
+	  snd_seq_free_event(ev);
+  }
+
+AFTER:
+  if (ret > 0 && ev != NULL)
+  {
+	  qev = new snd_seq_event_t();
+	  memcpy(qev, ev, sizeof(snd_seq_event_t));
+
+	  // ↓↓↓ ADD THIS BLOCK ↓↓↓
+	  if (midi_in_client_thread_is_running && alsa_seq_client_rx_queue) {
+		  alsa_seq_client_rx_queue->enqueue(qev);
+	  } else {
+		  delete qev;  // Clean up if shutting down
+	  }
+	  // ↑↑↑ END ADDED BLOCK ↑↑↑
+
+	  snd_seq_free_event(ev);
+  }
+
+
+═══════════════════════════════════════════════════════════════════════════
+						 STEP-BY-STEP APPLICATION
+═══════════════════════════════════════════════════════════════════════════
+
+1. Open: libAdjRaspi5Synth2/LibAPI/alsaMidiSequencerClient.cpp
+
+2. Backup: cp alsaMidiSequencerClient.cpp alsaMidiSequencerClient.cpp.backup
+
+3. Edit the constructor (around line 24-28):
+   ──────────────────────────────────────────
+   Find:
+	 client_name = name;
+	 start_midi_in_seq_client_thread();
+	 alsa_seq_client_rx_queue = rxq;
+
+   Replace with:
+	 client_name = name;
+	 alsa_seq_client_rx_queue = rxq;
+	 start_midi_in_seq_client_thread();
+
+4. Edit the destructor (around line 31-35):
+   ────────────────────────────────────────
+   Find:
+	 AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+	 {
+		 close_seq();
+		 stop_midi_in_seq_client_thread();
+	 }
+
+   Replace with:
+	 AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+	 {
+		 // Signal thread to stop
+		 midi_in_client_thread_is_running = false;
+
+		 // Wake thread if waiting
+		 if (alsa_seq_client_rx_queue) {
+			 alsa_seq_client_rx_queue->shutdown();
+		 }
+
+		 // Wait for thread to exit
+		 if (midi_client_in_thread) {
+			 pthread_join(midi_client_in_thread, nullptr);
+			 midi_client_in_thread = 0;
+		 }
+
+		 // Close sequencer
+		 close_seq();
+	 }
+
+5. Edit close_seq() (around line 89-94):
+   ─────────────────────────────────────
+   Find:
+	 if (midi_in_seq)
+	 {
+		 snd_seq_close(midi_in_seq);
+	 }
+
+   Replace with:
+	 if (midi_in_seq)
+	 {
+		 snd_seq_close(midi_in_seq);
+		 midi_in_seq = nullptr;
+	 }
+
+6. Edit midi_in_seq_client_thread() enqueue section (around line 119-125):
+   ────────────────────────────────────────────────────────────────────────
+   Find:
+	 if (ret > 0 && ev != NULL)
+	 {
+		 qev = new snd_seq_event_t();
+		 memcpy(qev, ev, sizeof(snd_seq_event_t));
+		 alsa_seq_client_rx_queue->enqueue(qev);
+		 snd_seq_free_event(ev);
+	 }
+
+   Replace with:
+	 if (ret > 0 && ev != NULL)
+	 {
+		 qev = new snd_seq_event_t();
+		 memcpy(qev, ev, sizeof(snd_seq_event_t));
+
+		 if (midi_in_client_thread_is_running && alsa_seq_client_rx_queue) {
+			 alsa_seq_client_rx_queue->enqueue(qev);
+		 } else {
+			 delete qev;
+		 }
+
+		 snd_seq_free_event(ev);
+	 }
+
+7. Save the file
+
+8. Update version comment at top:
+   ───────────────────────────────
+   Add:
+	 *	@version	1.3 - FIXED use-after-free crash
+	 *					1. Added pthread_join in destructor
+	 *					2. Fixed constructor initialization order
+	 *					3. Added shutdown check before enqueue
+
+
+═══════════════════════════════════════════════════════════════════════════
+							  WHY THESE FIXES
+═══════════════════════════════════════════════════════════════════════════
+
+THE CRASH SEQUENCE (Before Fix):
+1. Destructor called
+2. close_seq() closes ALSA sequencer
+3. stop_midi_in_seq_client_thread() sets flag to false
+4. Destructor RETURNS (thread still running!)
+5. Caller destroys SafeQueue
+6. Thread tries to enqueue() → accesses freed memory → CRASH at 0x5555
+
+THE SAFE SEQUENCE (After Fix):
+1. Destructor called
+2. Set running flag to false
+3. Call queue->shutdown() to wake waiting thread
+4. pthread_join() - WAIT for thread to completely exit
+5. Destructor RETURNS (thread has exited)
+6. Caller destroys SafeQueue safely (no one using it)
+7. ✓ No crash!
+
+
+═══════════════════════════════════════════════════════════════════════════
+							VERIFICATION
+═══════════════════════════════════════════════════════════════════════════
+
+After applying changes, add debug logging to verify:
+
+In destructor, add printfs:
+
+  AlsaMidiSequencerInputClient::~AlsaMidiSequencerInputClient()
+  {
+	  fprintf(stderr, "[SHUTDOWN] %s: Step 1 - Setting running flag\n", client_name.c_str());
+	  midi_in_client_thread_is_running = false;
+
+	  fprintf(stderr, "[SHUTDOWN] %s: Step 2 - Calling queue shutdown\n", client_name.c_str());
+	  if (alsa_seq_client_rx_queue) {
+		  alsa_seq_client_rx_queue->shutdown();
+	  }
+
+	  fprintf(stderr, "[SHUTDOWN] %s: Step 3 - Joining thread...\n", client_name.c_str());
+	  if (midi_client_in_thread) {
+		  pthread_join(midi_client_in_thread, nullptr);
+		  fprintf(stderr, "[SHUTDOWN] %s: Thread joined successfully\n", client_name.c_str());
+		  midi_client_in_thread = 0;
+	  }
+
+	  fprintf(stderr, "[SHUTDOWN] %s: Step 4 - Closing sequencer\n", client_name.c_str());
+	  close_seq();
+
+	  fprintf(stderr, "[SHUTDOWN] %s: Complete\n", client_name.c_str());
+  }
+
+Expected output:
+  [SHUTDOWN] Adj-Fluid-Synth: Step 1 - Setting running flag
+  [SHUTDOWN] Adj-Fluid-Synth: Step 2 - Calling queue shutdown
+  [SHUTDOWN] Adj-Fluid-Synth: Step 3 - Joining thread...
+  [SHUTDOWN] Adj-Fluid-Synth: Thread joined successfully
+  [SHUTDOWN] Adj-Fluid-Synth: Step 4 - Closing sequencer
+  [SHUTDOWN] Adj-Fluid-Synth: Complete
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+Summary:
+  - 4 code changes total
+  - Most critical: Adding pthread_join() in destructor
+  - ~15 lines added, ~2 lines moved, 1 line added
+  - Fixes SIGSEGV at 0x5555 completely
+
+═══════════════════════════════════════════════════════════════════════════

@@ -93,6 +93,8 @@ private:
 
 	QString last_midi_directory; // Store last used directory
 	QString last_midi_file;		 // Store last selected file
+
+	bool navigation_in_progress = false;
 };
 
 class OpenMidiPlayerFileThread : public QThread

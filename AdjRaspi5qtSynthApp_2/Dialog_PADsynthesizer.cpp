@@ -93,6 +93,7 @@ Dialog_PADsynthesizer::Dialog_PADsynthesizer(QWidget *parent)
 
 	update_adsr_plot = true;
 	update_spectrum_plot = true;
+	update_profile_plot = true;
 	//update_adsr_plot = true;
 
 	// Register with GuiNavigator (no tabs, no frames for PAD Synthesizer)

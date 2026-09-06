@@ -44,6 +44,12 @@ int song_playing_time_seconds = 0;
 int song_remaining_playing_time_minutes = 0;
 int song_remaining_playing_time_seconds = 0;
 
+int active_scale_index = 0;
+
+std::vector<simple_scale_segment_t> simple_scale_segments = {};
+
+QString active_scale_text = "Unknown Scale";
+
 void midi_player_control_box_event_update_ui_callback_wrapper(int evnt, uint16_t val)
 {
 	Dialog_MidiPlayer::get_instance()->control_box_ui_update_callback(evnt, val);
@@ -76,10 +82,62 @@ void update_ui_total_song_playing_time(int min, int sec)
 	song_total_playing_time_minutes = min;
 	song_total_playing_time_seconds = sec;
 }
+
+void update_ui_active_scale_segment(int min, int sec)
+{
+	// Update the UI with the active scale segment information
+	if (simple_scale_segments.empty() || active_scale_index >= simple_scale_segments.size())
+	{
+		return;
+	}
+
+	// Build scale list with active segment in red
+	std::string scales_display = "";
+	char buffer[16];
+
+	for (size_t i = 0; i < simple_scale_segments.size(); i++)
+	{
+		if (i == active_scale_index)
+		{
+			// Active segment in red
+			scales_display += "<span style='color: red; font-weight: bold;'>" +
+							  simple_scale_segments[i].segment_scale +
+							  "</span>";
+		}
+		else
+		{
+			// Other segments in white
+			scales_display += "<span style='color: white;'>" +
+							  simple_scale_segments[i].segment_scale +
+							  "</span>";
+		}
+
+		// Add separator between segments
+		if (i < simple_scale_segments.size() - 1)
+		{
+			scales_display += "  |  ";
+		}
+	}
+
+	// Add confidence only for active segment
+	std::snprintf(buffer, sizeof(buffer), "%.2f", simple_scale_segments[active_scale_index].confidence);
+	scales_display += "  | Confidence: " + std::string(buffer) + "%";
+
+	active_scale_text = QString::fromStdString(scales_display);
+
+	if ((active_scale_index < simple_scale_segments.size() - 1) && // Not the last segment
+		(min * 60.0 + sec + 1.0 >= simple_scale_segments[active_scale_index + 1].segment_start_time_seconds))
+	{
+		active_scale_index++;
+	}	
+}
+
 void update_ui_song_playing_time(int min, int sec)
 {
 	song_playing_time_minutes = min;
 	song_playing_time_seconds = sec;
+
+	update_ui_active_scale_segment(min, sec);
 }
 
 void update_ui_song_remaining_playing_time(int min, int sec)
@@ -87,7 +145,6 @@ void update_ui_song_remaining_playing_time(int min, int sec)
 	song_remaining_playing_time_minutes = min;
 	song_remaining_playing_time_seconds = sec;
 }
-	
 
 Dialog_MidiPlayer *Dialog_MidiPlayer::dialog_adj_midi_player_instance = NULL;
 
@@ -191,7 +248,8 @@ Dialog_MidiPlayer::Dialog_MidiPlayer(QWidget *parent)
 	this->setFocus(Qt::ActiveWindowFocusReason);
 	
 	ui->lineEdit_MidiPlayeFileName->setText("");
-	
+
+		
 	close_event_callback_ptr = NULL;
 	
 	mod_synth_register_midi_player_potision_update_callback(&update_ui_progress_percentages);
@@ -568,13 +626,28 @@ void Dialog_MidiPlayer::on_midi_file_loaded(const QString &s)
 	
 	midi_file_meta_data_t meta_data = mod_synth_midi_player_get_file_metadata();
 
+	// Verify the file analyzer is initialized before requesting scale segments
+	// This prevents crashes if the file failed to load or parse properly
+	try
+	{
+		simple_scale_segments = mod_synth_get_simple_scale_segments();
+	}
+	catch (...)
+	{
+		// If get_simple_scale_segments fails, use empty vector
+		simple_scale_segments.clear();
+		printf("Warning: Failed to get scale segments - file may not be fully loaded\n");
+	}
+	
+	active_scale_index = 0;
+
 	file_name = std::string("Ready: ");
 	file_name += std::filesystem::path(midi_file_name.toStdString()).stem();
 	
 	ui->lineEdit_MidiPlayeFileName->setText(QString::fromStdString(file_name));
 
-	ui->lineEdit_MidiPlayerScalesInfo->setText(
-		QString::fromStdString("File Scale: " + meta_data.major_scale_text + " | " + meta_data.minor_scale_text));
+	//ui->lineEdit_MidiPlayerScalesInfo->setText(
+	//	QString::fromStdString("File Scale: " + meta_data.major_scale_text + " | " + meta_data.minor_scale_text));
 
 	// Display channel utilization in table
 	display_channel_utilization(meta_data);
@@ -589,24 +662,27 @@ void Dialog_MidiPlayer::on_open_file_clicked()
 {
 	QString startDir = last_midi_directory.isEmpty() ? QString(_MIDI_PLAYBACK_FILES_DEFAULT_DIR) : last_midi_directory;
 
-	CustomFileDialog dialog(this,
+	//CustomFileDialog dialog(this,
+	CustomFileDialog *dialog = new CustomFileDialog(this,
 							tr("Open MIDI File"),
 							startDir,
 							tr("Presets (*.mid *.MID);;All Files (*)"),
 							Qt::black,
 							CustomFileDialog::OpenMode,
-                           "midi_player"); 
+                           "midi_player");
 
+	// Use Qt::WA_DeleteOnClose to automatically clean up
+	dialog->setAttribute(Qt::WA_DeleteOnClose);
 
 	// If we have a last file, select it and scroll to it
 	if (!last_midi_file.isEmpty())
 	{
-		dialog.selectFile(last_midi_file);
+		dialog->selectFile(last_midi_file);
 	}
 
-	if (dialog.exec() == QDialog::Accepted)
+	if (dialog->exec() == QDialog::Accepted)
 	{
-		midi_file_name = dialog.selectedFile();
+		midi_file_name = dialog->selectedFile();
 
 		if (!midi_file_name.isEmpty())
 		{
@@ -667,11 +743,29 @@ void Dialog_MidiPlayer::on_stop_clicked()
 
 void Dialog_MidiPlayer::on_backward_clicked()
 {
+	if (navigation_in_progress)
+		return;
+	navigation_in_progress = true;
+
 	mod_synth_midi_player_backward();
+
+	// Use QTimer to reset flag after short delay
+	QTimer::singleShot(100, this, [this]() {
+		navigation_in_progress = false;
+	});
 }
 void Dialog_MidiPlayer::on_forward_clicked()
 {
+	if (navigation_in_progress)
+		return;
+	navigation_in_progress = true;
+
 	mod_synth_midi_player_forward();
+
+	// Use QTimer to reset flag after short delay
+	QTimer::singleShot(100, this, [this]() {
+		navigation_in_progress = false;
+	});
 }
 
 void Dialog_MidiPlayer::on_enable_loopback_enable(bool enabled)
@@ -733,4 +827,6 @@ void Dialog_MidiPlayer::update_gui()
 	sprintf(text, "%02i:%02i", song_remaining_playing_time_minutes, song_remaining_playing_time_seconds);
 	qtext = text;
 	ui->label_MidiPlayerSongRemainingPlayingTime->setText(qtext);
+
+	ui->label_MidiPlayerScalesInfo->setText(active_scale_text);
 }

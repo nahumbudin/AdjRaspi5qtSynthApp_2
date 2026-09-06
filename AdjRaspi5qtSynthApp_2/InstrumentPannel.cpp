@@ -695,6 +695,8 @@ void InstrumentPannel::open_synth_patch_preset_dialog(int preset_index)
 			last_string_synth_preset_directory[preset_index] = QFileInfo(string_synth_patch_preset_file_name).absolutePath();
 			last_string_synth_preset_load_file[preset_index] = string_synth_patch_preset_file_name;
 
+			mod_synth_set_preset_last_file_path(string_synth_patch_preset_id, string_synth_patch_preset_file_name.toStdString());
+
 			std::string file_name;
 			// file_name = std::string("Now Loading: ");
 			file_name = std::filesystem::path(string_synth_patch_preset_file_name.toStdString()).stem();

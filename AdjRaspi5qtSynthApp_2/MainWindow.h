@@ -141,6 +141,9 @@ public slots:
 	void on_copy_sketch3_to_sketch1();
 	void on_copy_sketch3_to_sketch2();
 
+	void on_save_active_sketch();
+	void on_load_active_sketch();
+
 	void on_open_master_volume_dialog();
 	void on_open_recording_dialog();
 	void on_open_http_server_dialog();
@@ -152,6 +155,7 @@ public slots:
 	void on_clear_widgets_selection_list();
 
 	void on_lfos_sync_changed(QAction *action);
+	void on_midi_mapping_mode_changed(QAction *action);
 	
 
 	void on_load_synth_patch_preset_1();
@@ -175,6 +179,9 @@ protected:
 //	void timerEvent(QTimerEvent *event);
 	virtual void update_gui();
 	void closeEvent(QCloseEvent *event) override;
+
+	void on_preset_file_loaded(const QString &s);
+	void on_preset_file_saved(const QString &s);
     
 
 private:
@@ -189,7 +196,7 @@ private:
 
 	void open_synth_patch_preset_int(int preset_num);
 
-	bool auto_arrange_enabled = false;
+	bool auto_arrange_enabled = true;
 
 	static bool widgets_selection_active;
 
@@ -248,6 +255,9 @@ private:
 	QAction *lfos_sync_none_act;
 	QAction *lfos_sync_retrig_act;
 	QAction *lfos_sync_retrig1st_act;
+	QActionGroup *midi_mapping_mode_action_group;
+	QAction *midi_mapping_mode_mapping_act;
+	QAction *midi_mapping_mode_sketch_act;
 
 	QActionGroup *patch_files_group;
 	QAction *save_patch_file_act;
@@ -260,6 +270,9 @@ private:
 	QAction *copy_sketch2_to_sketch3_act;
 	QAction *copy_sketch3_to_sketch1_act;
 	QAction *copy_sketch3_to_sketch2_act;
+
+	QAction *save_active_sketch;
+	QAction *load_active_sketch;
 
 	QMenu *view_menu;
 	QAction *auto_arrange_act;
@@ -281,6 +294,10 @@ private:
 	int control_box_scroll_select_new_value = 0;
 	int control_box_scroll_select_prev_value = -1;
 	bool control_box_scroll_pushbutton_pressed = false;
+
+	QString last_sketch_preset_directory = "";
+	QString last_sketch_preset_load_file = "";
+	QString last_sketch_preset_save_file = "";
 };
 
 class SavePatchFileThread : public QThread
@@ -301,5 +318,23 @@ class LoadPatchFileThread : public QThread
 signals:
 	void loadPatchFileDone(const QString &s);	
 		
+};
+
+class LoadPresetFileThread : public QThread
+{
+	Q_OBJECT
+	void run();
+
+  signals:
+	void loadPresetFileDone(const QString &s);
+};
+
+class SavePresetFileThread : public QThread
+{
+	Q_OBJECT
+	void run();
+
+  signals:
+	void savePresetFileDone(const QString &s);
 };
 

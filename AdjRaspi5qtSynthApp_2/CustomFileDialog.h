@@ -81,7 +81,7 @@ class CustomFileDialog : public QDialog
 							  const QString &filter = QString(),
 							  const QColor &backgroundColor = Qt::black,
 							  Mode mode = OpenMode, 
-							  const QString &contextId = QString()); 
+							  const QString &contextId = QString());
 
 	QString selectedFile() const;
 	void selectFile(const QString &filename);

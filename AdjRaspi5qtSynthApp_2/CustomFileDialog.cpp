@@ -43,7 +43,7 @@ CustomFileDialog::CustomFileDialog(QWidget *parent,
 	filterList = filter.split(";;", Qt::SkipEmptyParts);
 
 	// Create model
-	model = new QFileSystemModel(this);
+	model = new QFileSystemModel(); // (this); // No parent to avoid memory management issues
 	model->setRootPath(QDir::rootPath());
 	model->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
 
